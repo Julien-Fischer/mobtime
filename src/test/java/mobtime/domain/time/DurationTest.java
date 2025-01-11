@@ -1,14 +1,18 @@
 package mobtime.domain.time;
 
 import org.assertj.core.data.Offset;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.stream.Stream;
 
+import static mobtime.test.Builders.aDuration;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 class DurationTest {
 
@@ -48,6 +52,7 @@ class DurationTest {
         );
     }
 
+
     @ParameterizedTest
     @MethodSource("minuteConversionTable")
     void get_minutes_returns_duration_in_minutes(Duration duration, double expected) {
@@ -67,6 +72,21 @@ class DurationTest {
     void get_millis_returns_duration_in_milliseconds(Duration duration, int expected) {
         assertThat(duration.getMillis())
                 .isEqualTo(expected);
+    }
+
+    @Test
+    void negative_throws_exception() {
+        assertThatThrownBy(() -> new Duration(-1, ChronoUnit.SECONDS))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("must be non-negative");
+    }
+
+    @Test
+    void getUnits_returns_supported_units() {
+        var supportedUnits = List.of(ChronoUnit.MILLIS, ChronoUnit.SECONDS, ChronoUnit.MINUTES);
+
+        assertThat(aDuration().getUnits())
+                .isEqualTo(supportedUnits);
     }
 
 }
