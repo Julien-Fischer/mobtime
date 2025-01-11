@@ -13,38 +13,50 @@ public class NaiveTimeLoop implements TimerPort {
 
     private static final int DEFAULT_FREQUENCY_MS = 1000;
 
-    private final int sleepInterval;
+    private final int tickFrequencyMilliseconds;
+
+    private Runnable callback;
+    private double timerDurationMilliseconds;
 
 
     public NaiveTimeLoop() {
         this(DEFAULT_FREQUENCY_MS);
     }
 
-    public NaiveTimeLoop(int tickFrequency) {
-        this.sleepInterval = tickFrequency;
+    public NaiveTimeLoop(int tickFrequencyMilliseconds) {
+        this.tickFrequencyMilliseconds = tickFrequencyMilliseconds;
     }
 
 
     @Override
-    public void runFor(Duration milliseconds) {
+    public void runFor(Duration milliseconds, Runnable then) {
+        timerDurationMilliseconds = milliseconds.getSeconds();
+        callback = then;
         try {
-            runInBackground(milliseconds.getSeconds());
+            runInBackground();
         } catch (InterruptedException cause) {
             Thread.currentThread().interrupt();
             throw new MobTimeException(cause);
         }
     }
 
-    private void runInBackground(long timerDuration) throws InterruptedException {
+    private void runInBackground() throws InterruptedException {
         double startTime = now();
-        double endTime = startTime + timerDuration;
+        double endTime = startTime + timerDurationMilliseconds;
 
         while (now() < endTime) {
-            AppLogger.log("  Mob Next in " + DurationFormatter.formatRemainingTime(timerDuration, startTime));
-            Thread.sleep(sleepInterval);
+            var durationString = DurationFormatter.formatRemainingTime(timerDurationMilliseconds, startTime);
+            AppLogger.log("  Mob Next in " + durationString);
+            Thread.sleep(tickFrequencyMilliseconds);
         }
 
-        AppLogger.log(timerDuration + " seconds have passed. Exiting the program.");
+        onTimerStop();
+    }
+
+    private void onTimerStop() {
+        callback.run();
+        var durationString = DurationFormatter.formatDuration(timerDurationMilliseconds);
+        AppLogger.log(durationString + " seconds have passed. Exiting the program.");
     }
 
 }

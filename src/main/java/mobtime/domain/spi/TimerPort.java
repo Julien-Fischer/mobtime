@@ -4,6 +4,10 @@ import java.time.Duration;
 
 public interface TimerPort {
 
-    void runFor(Duration milliseconds);
+    default void runFor(Duration duration) {
+        runFor(duration, () -> {});
+    }
+
+    void runFor(Duration milliseconds, Runnable then);
 
 }

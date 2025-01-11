@@ -63,8 +63,12 @@ public class App {
             var durationString = formatDuration(minutesToMilliseconds(sessionDuration));
             AppLogger.log("Mob session ending in " + durationString);
             var timer = new NaiveTimeLoop();
-            timer.runFor(durationMs);
+            timer.runFor(durationMs, App::notifyUser);
         }
+    }
+
+    private static void notifyUser() {
+        AppLogger.log("Mob session ended");
     }
 
     private static double readDuration(String argument) {
