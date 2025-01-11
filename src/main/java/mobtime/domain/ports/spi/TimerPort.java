@@ -1,6 +1,6 @@
 package mobtime.domain.ports.spi;
 
-import mobtime.domain.time.Duration;
+import mobtime.domain.Duration;
 
 public interface TimerPort {
 

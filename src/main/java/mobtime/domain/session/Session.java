@@ -1,6 +1,20 @@
 package mobtime.domain.session;
 
-import mobtime.domain.time.Duration;
+import mobtime.domain.Duration;
 
-public record Session(Duration duration, Runnable callback) {
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+
+import static mobtime.utils.TimeUtils.now;
+
+public record Session(Duration duration, Instant created) {
+
+    public Session(Duration duration) {
+        this(duration, Instant.now());
+    }
+
+    public Duration actualDuration() {
+        return new Duration(now() - duration().getMillis(), ChronoUnit.MILLIS);
+    }
+
 }

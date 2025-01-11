@@ -1,4 +1,4 @@
-package mobtime.domain.time;
+package mobtime.domain;
 
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;

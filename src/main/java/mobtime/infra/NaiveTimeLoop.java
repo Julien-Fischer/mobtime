@@ -1,8 +1,8 @@
 package mobtime.infra;
 
 import mobtime.MobTimeException;
+import mobtime.domain.Duration;
 import mobtime.domain.ports.spi.TimerPort;
-import mobtime.domain.time.Duration;
 import mobtime.utils.AppLogger;
 import mobtime.utils.DurationFormatter;
 
@@ -54,8 +54,6 @@ public class NaiveTimeLoop implements TimerPort {
 
     private void onTimerStop() {
         callback.run();
-        var durationString = DurationFormatter.formatDuration(timerDurationMilliseconds);
-        AppLogger.log(durationString + " seconds have passed. Exiting the program.");
     }
 
 }

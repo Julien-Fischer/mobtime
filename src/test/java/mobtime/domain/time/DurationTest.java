@@ -1,5 +1,6 @@
 package mobtime.domain.time;
 
+import mobtime.domain.Duration;
 import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

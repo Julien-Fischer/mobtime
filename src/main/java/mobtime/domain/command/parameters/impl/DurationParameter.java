@@ -1,7 +1,7 @@
 package mobtime.domain.command.parameters.impl;
 
+import mobtime.domain.Duration;
 import mobtime.domain.command.parameters.ValueParameter;
-import mobtime.domain.time.Duration;
 
 public class DurationParameter extends ValueParameter<Duration> {
 

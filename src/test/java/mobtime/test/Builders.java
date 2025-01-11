@@ -1,10 +1,11 @@
 package mobtime.test;
 
+import mobtime.domain.Duration;
 import mobtime.domain.command.commands.impl.StartCommand;
 import mobtime.domain.command.parameters.Parameter;
 import mobtime.domain.command.parameters.impl.DryRunParameter;
 import mobtime.domain.command.parameters.impl.DurationParameter;
-import mobtime.domain.time.Duration;
+import mobtime.domain.session.Session;
 
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
@@ -28,6 +29,10 @@ public class Builders {
 
     public static Duration aDuration() {
         return new Duration(3, ChronoUnit.SECONDS);
+    }
+
+    public static Session aSession() {
+        return new Session(aDuration());
     }
 
 }

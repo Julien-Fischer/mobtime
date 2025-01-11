@@ -1,10 +1,10 @@
 package mobtime.domain.command.commands;
 
+import mobtime.domain.Duration;
 import mobtime.domain.command.commands.impl.StartCommand;
 import mobtime.domain.command.parameters.Parameter;
 import mobtime.domain.command.parameters.impl.DryRunParameter;
 import mobtime.domain.command.parameters.impl.DurationParameter;
-import mobtime.domain.time.Duration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

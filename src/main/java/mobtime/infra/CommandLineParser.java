@@ -1,12 +1,12 @@
 package mobtime.infra;
 
+import mobtime.domain.Duration;
 import mobtime.domain.command.commands.Command;
 import mobtime.domain.command.commands.impl.StartCommand;
 import mobtime.domain.command.parameters.Parameter;
 import mobtime.domain.command.parameters.impl.DryRunParameter;
 import mobtime.domain.command.parameters.impl.DurationParameter;
 import mobtime.domain.session.SessionService;
-import mobtime.domain.time.Duration;
 import mobtime.utils.AppLogger;
 
 import java.util.HashSet;

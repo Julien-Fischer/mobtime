@@ -1,13 +1,12 @@
 package mobtime.domain.command.commands.impl;
 
+import mobtime.domain.Duration;
 import mobtime.domain.command.commands.AbstractCommand;
 import mobtime.domain.command.parameters.Parameter;
 import mobtime.domain.command.parameters.impl.DryRunParameter;
 import mobtime.domain.command.parameters.impl.DurationParameter;
 import mobtime.domain.session.Session;
 import mobtime.domain.session.SessionService;
-import mobtime.domain.time.Duration;
-import mobtime.utils.AppLogger;
 
 import java.util.Optional;
 import java.util.Set;
@@ -42,13 +41,9 @@ public class StartCommand extends AbstractCommand {
 
     private void mobStart() {
         if (!isDryRunEnabled()) {
-            var session = new Session(getDuration(), this::notifyUser);
+            var session = new Session(getDuration());
             sessionService.start(session);
         }
-    }
-
-    private void notifyUser() {
-        AppLogger.log("Mob session ended");
     }
 
     private Duration findDuration() {
