@@ -1,11 +1,10 @@
 package mobtime.infra;
 
 import mobtime.MobTimeException;
-import mobtime.domain.spi.TimerPort;
+import mobtime.domain.ports.spi.TimerPort;
+import mobtime.domain.time.Duration;
 import mobtime.utils.AppLogger;
 import mobtime.utils.DurationFormatter;
-
-import java.time.Duration;
 
 import static mobtime.utils.TimeUtils.now;
 
@@ -29,8 +28,8 @@ public class NaiveTimeLoop implements TimerPort {
 
 
     @Override
-    public void runFor(Duration milliseconds, Runnable then) {
-        timerDurationMilliseconds = milliseconds.getSeconds();
+    public void runFor(Duration duration, Runnable then) {
+        timerDurationMilliseconds = duration.getMillis();
         callback = then;
         try {
             runInBackground();

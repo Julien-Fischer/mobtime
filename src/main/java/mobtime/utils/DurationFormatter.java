@@ -11,7 +11,7 @@ public class DurationFormatter {
     private DurationFormatter() {}
 
     public static String formatDuration(double durationMs) {
-        double remainingSeconds = millisecondsToSeconds(durationMs);
+        double remainingSeconds = millisToSeconds(durationMs);
         return formatTime(durationMs - remainingSeconds);
     }
 
@@ -21,7 +21,7 @@ public class DurationFormatter {
     }
 
     private static String formatTime(double remainingMilliseconds) {
-        double remainingSeconds = millisecondsToSeconds(remainingMilliseconds);
+        double remainingSeconds = millisToSeconds(remainingMilliseconds);
         double remainingMinutes = secondsToMinutes(remainingSeconds);
         if (remainingSeconds <= 60) {
             DecimalFormat df = new DecimalFormat(SECONDS_FORMAT);

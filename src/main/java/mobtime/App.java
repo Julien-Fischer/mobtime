@@ -1,12 +1,12 @@
 package mobtime;
 
+import mobtime.domain.session.Session;
+import mobtime.domain.session.SessionService;
+import mobtime.domain.time.Duration;
 import mobtime.infra.NaiveTimeLoop;
 import mobtime.utils.AppLogger;
 
-import java.time.Duration;
-
-import static mobtime.utils.DurationFormatter.formatDuration;
-import static mobtime.utils.TimeUtils.minutesToMilliseconds;
+import java.time.temporal.ChronoUnit;
 
 public class App {
 
@@ -15,6 +15,8 @@ public class App {
     private static boolean dryRun = false;
     private static boolean startSession = false;
     private static double sessionDuration = DEFAULT_DURATION_MINUTES;
+
+    private static SessionService sessionService = new SessionService(new NaiveTimeLoop());
 
 
     public static void main(String[] args) {
@@ -59,11 +61,9 @@ public class App {
 
     private static void mobStart() {
         if (!dryRun) {
-            var durationMs = milliseconds(sessionDuration);
-            var durationString = formatDuration(minutesToMilliseconds(sessionDuration));
-            AppLogger.log("Mob session ending in " + durationString);
-            var timer = new NaiveTimeLoop();
-            timer.runFor(durationMs, App::notifyUser);
+            var duration = new Duration(sessionDuration, ChronoUnit.MINUTES);
+            var session = new Session(duration, App::notifyUser);
+            sessionService.start(session);
         }
     }
 
@@ -74,10 +74,6 @@ public class App {
     private static double readDuration(String argument) {
         String[] split = argument.split("=");
         return (split.length == 2) ? Integer.parseInt(split[1]) : DEFAULT_DURATION_MINUTES;
-    }
-
-    private static Duration milliseconds(double durationMinutes) {
-        return Duration.ofSeconds((int) minutesToMilliseconds(durationMinutes));
     }
 
 }

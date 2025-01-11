@@ -1,6 +1,6 @@
-package mobtime.domain.spi;
+package mobtime.domain.ports.spi;
 
-import java.time.Duration;
+import mobtime.domain.time.Duration;
 
 public interface TimerPort {
 
@@ -8,6 +8,6 @@ public interface TimerPort {
         runFor(duration, () -> {});
     }
 
-    void runFor(Duration milliseconds, Runnable then);
+    void runFor(Duration duration, Runnable then);
 
 }
