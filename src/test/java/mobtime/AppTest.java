@@ -49,6 +49,17 @@ class AppTest {
     }
 
     @Test
+    void app_with_duration_parameter_prints_duration() {
+        withParameters("--start", "--duration=42", "--dry-run");
+
+        runApp();
+
+        assertStandardOutput()
+                .contains("--start")
+                .contains("--duration=42");
+    }
+
+    @Test
     void app_with_invalid_parameters_throws() {
         withParameters("--invalid=parameter");
 
@@ -70,8 +81,8 @@ class AppTest {
         return assertThat(outContent.toString().trim());
     }
 
-    private void withParameters(String parameters) {
-        args = new String[] {parameters};
+    private void withParameters(String... parameters) {
+        args = parameters;
     }
 
 }
