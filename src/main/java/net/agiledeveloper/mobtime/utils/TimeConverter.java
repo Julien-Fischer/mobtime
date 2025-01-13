@@ -1,12 +1,9 @@
 package net.agiledeveloper.mobtime.utils;
 
-public class TimeUtils {
+public class TimeConverter {
 
-    private TimeUtils() {}
+    private TimeConverter() {}
 
-    public static double now() {
-        return System.currentTimeMillis();
-    }
 
     public static double minutesToSeconds(double duration) {
         return duration * 60;
@@ -14,10 +11,6 @@ public class TimeUtils {
 
     public static double minutesToMillis(double duration) {
         return duration * 1000 * 60;
-    }
-
-    public static double millisToSeconds(double duration) {
-        return duration / 1000;
     }
 
     public static double secondsToMinutes(double duration) {
@@ -30,6 +23,10 @@ public class TimeUtils {
 
     public static double millisToMinutes(double duration) {
         return duration / 1000 / 60;
+    }
+
+    public static double millisToSeconds(double duration) {
+        return duration / 1000;
     }
 
 }

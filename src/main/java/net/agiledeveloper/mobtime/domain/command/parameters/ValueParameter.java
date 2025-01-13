@@ -4,11 +4,16 @@ import net.agiledeveloper.mobtime.domain.command.commands.AbstractParameter;
 
 public abstract class ValueParameter<V> extends AbstractParameter {
 
-    protected ValueParameter(String name) {
+    private final V val;
+
+    protected ValueParameter(String name, V val) {
         super(name);
+        this.val = val;
     }
 
-    public abstract V value();
+    public V value() {
+        return val;
+    }
 
     public String toString() {
         return "--" + name() + "=" + value();

@@ -1,7 +1,8 @@
 package net.agiledeveloper.mobtime.domain.session;
 
-import net.agiledeveloper.mobtime.domain.Duration;
-import net.agiledeveloper.mobtime.domain.Notification;
+import net.agiledeveloper.mobtime.domain.notification.Notification;
+import net.agiledeveloper.mobtime.domain.ports.api.OnDone;
+import net.agiledeveloper.mobtime.domain.ports.api.OnTick;
 import net.agiledeveloper.mobtime.domain.ports.spi.NotificationPort;
 import net.agiledeveloper.mobtime.domain.ports.spi.TimerPort;
 import net.agiledeveloper.mobtime.test.BaseMock;
@@ -24,19 +25,19 @@ class SessionServiceTest {
 
 
     @Test
-    void start_triggers_a_timer() {
+    void open_triggers_a_timer() {
         var sessionService = new SessionService(timerMock, notificationMock);
 
-        sessionService.start(aSession());
+        sessionService.open(aSession());
 
         assertThat(timerMock.wasCalledOnce()).isTrue();
     }
 
     @Test
-    void end_dispatches_a_notification() {
+    void close_dispatches_a_notification() {
         var sessionService = new SessionService(timerMock, notificationMock);
 
-        sessionService.end(aSession());
+        sessionService.close(aSession());
 
         assertThat(notificationMock.wasCalledOnce()).isTrue();
     }
@@ -45,15 +46,20 @@ class SessionServiceTest {
 
 
 class NotificationMock extends BaseMock implements NotificationPort {
+
     @Override
     public void send(Notification notification) {
         incrementCallCount();
     }
+
 }
 
+
 class TimerMock extends BaseMock implements TimerPort {
+
     @Override
-    public void runFor(Duration duration, Runnable then) {
+    public void runFor(Session session, OnTick onTick, OnDone onDone) {
         incrementCallCount();
     }
+
 }

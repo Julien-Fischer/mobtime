@@ -1,12 +1,12 @@
 package net.agiledeveloper.mobtime.test;
 
-import net.agiledeveloper.mobtime.domain.Duration;
 import net.agiledeveloper.mobtime.domain.command.commands.impl.StartCommand;
 import net.agiledeveloper.mobtime.domain.command.parameters.Parameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.impl.DryRunParameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.impl.DurationParameter;
 import net.agiledeveloper.mobtime.domain.session.Session;
 
+import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 
@@ -28,7 +28,7 @@ public class Builders {
     }
 
     public static Duration aDuration() {
-        return new Duration(3, ChronoUnit.SECONDS);
+        return Duration.of(3, ChronoUnit.SECONDS);
     }
 
     public static Session aSession() {

@@ -1,16 +1,19 @@
 package net.agiledeveloper.mobtime.infra;
 
-import net.agiledeveloper.mobtime.domain.Duration;
 import net.agiledeveloper.mobtime.domain.command.commands.Command;
 import net.agiledeveloper.mobtime.domain.command.commands.impl.StartCommand;
 import net.agiledeveloper.mobtime.domain.command.parameters.Parameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.impl.DryRunParameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.impl.DurationParameter;
+import net.agiledeveloper.mobtime.domain.session.Session;
 import net.agiledeveloper.mobtime.domain.session.SessionService;
 import net.agiledeveloper.mobtime.utils.AppLogger;
 
+import java.time.Duration;
 import java.util.HashSet;
 import java.util.Set;
+
+import static net.agiledeveloper.mobtime.utils.TimeConverter.minutesToSeconds;
 
 public class CommandLineParser {
 
@@ -30,8 +33,10 @@ public class CommandLineParser {
         Set<Parameter> parameters = new HashSet<>();
         Command command = null;
 
+        AppLogger.logSeparator();
+        AppLogger.log("Starting MobTime with parameters:");
         for (var argument : commandLine) {
-            AppLogger.log(argument);
+            AppLogger.log(" ", argument);
 
             if (argument.equals("--start")) {
                 command = new StartCommand(parameters, sessionService);
@@ -42,7 +47,7 @@ public class CommandLineParser {
             }
 
             else if (argument.startsWith("--duration")) {
-                parameters.add(new DurationParameter(of(argument)));
+                parameters.add(new DurationParameter(readDuration(argument)));
             }
 
             else if (argument.startsWith("--invalid")) {
@@ -60,17 +65,24 @@ public class CommandLineParser {
     }
 
 
-    public static Duration of(String argument) {
+    private static Duration readDuration(String argument) {
         String[] split = argument.split("=");
-        var amount = Duration.DEFAULT_VALUE_MINUTES;
+        var seconds = Session.DEFAULT_DURATION_SECONDS;
         if (split.length == 2) {
             try {
-                amount = Integer.parseInt(split[1]);
+                seconds = Integer.parseInt(split[1]);
+                if (seconds < 0) {
+                    throw new IllegalArgumentException("--duration can not be negative. Received: " + seconds);
+                }
             } catch (Exception cause) {
-                throw new IllegalArgumentException("Invalid duration parameter: " + argument, cause);
+                reject(argument, cause);
             }
         }
-        return Duration.fromMinutes(amount);
+        return Duration.ofSeconds((long) minutesToSeconds(seconds));
+    }
+
+    private static void reject(String argument, Throwable cause) {
+        throw new IllegalArgumentException("Invalid duration parameter: " + argument, cause);
     }
 
 }

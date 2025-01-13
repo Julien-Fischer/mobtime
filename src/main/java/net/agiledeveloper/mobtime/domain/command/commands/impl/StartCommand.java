@@ -1,6 +1,5 @@
 package net.agiledeveloper.mobtime.domain.command.commands.impl;
 
-import net.agiledeveloper.mobtime.domain.Duration;
 import net.agiledeveloper.mobtime.domain.command.commands.AbstractCommand;
 import net.agiledeveloper.mobtime.domain.command.parameters.Parameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.impl.DryRunParameter;
@@ -8,6 +7,7 @@ import net.agiledeveloper.mobtime.domain.command.parameters.impl.DurationParamet
 import net.agiledeveloper.mobtime.domain.session.Session;
 import net.agiledeveloper.mobtime.domain.session.SessionService;
 
+import java.time.Duration;
 import java.util.Optional;
 import java.util.Set;
 
@@ -17,10 +17,12 @@ public class StartCommand extends AbstractCommand {
 
     private Duration durationCache = null;
 
+
     public StartCommand(Set<Parameter> parameters, SessionService sessionService) {
         super(parameters);
         this.sessionService = sessionService;
     }
+
 
     @Override
     public void execute() {
@@ -42,7 +44,7 @@ public class StartCommand extends AbstractCommand {
     private void mobStart() {
         if (!isDryRunEnabled()) {
             var session = new Session(getDuration());
-            sessionService.start(session);
+            sessionService.open(session);
         }
     }
 
@@ -52,7 +54,7 @@ public class StartCommand extends AbstractCommand {
             var durationParameter = (DurationParameter) duration.get();
             return durationParameter.value();
         } else {
-            return Duration.fromMinutes(Duration.DEFAULT_VALUE_MINUTES);
+            return Duration.ofSeconds((long) Session.DEFAULT_DURATION_SECONDS);
         }
     }
 

@@ -1,20 +1,20 @@
 package net.agiledeveloper.mobtime.domain.session;
 
-import net.agiledeveloper.mobtime.domain.Duration;
-
+import java.time.Duration;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 
-import static net.agiledeveloper.mobtime.utils.TimeUtils.now;
+public record Session(Duration duration, Instant createdAt) {
 
-public record Session(Duration duration, Instant created) {
+    public static final double DEFAULT_DURATION_SECONDS = 15 * 60;
+    private static final int DEFAULT_GRACE_DURATION_SECONDS = 2;
+
 
     public Session(Duration duration) {
         this(duration, Instant.now());
     }
 
-    public Duration actualDuration() {
-        return new Duration(now() - duration().getMillis(), ChronoUnit.MILLIS);
+    public Duration graceDuration() {
+        return Duration.ofSeconds(DEFAULT_GRACE_DURATION_SECONDS);
     }
 
 }

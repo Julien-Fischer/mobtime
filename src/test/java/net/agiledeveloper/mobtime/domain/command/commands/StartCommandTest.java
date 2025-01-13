@@ -1,24 +1,26 @@
 package net.agiledeveloper.mobtime.domain.command.commands;
 
-import net.agiledeveloper.mobtime.domain.Duration;
 import net.agiledeveloper.mobtime.domain.command.commands.impl.StartCommand;
 import net.agiledeveloper.mobtime.domain.command.parameters.Parameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.impl.DryRunParameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.impl.DurationParameter;
+import net.agiledeveloper.mobtime.domain.session.Session;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Set;
 
 import static net.agiledeveloper.mobtime.test.Builders.aDurationParameter;
+import static net.agiledeveloper.mobtime.utils.TimeConverter.secondsToMinutes;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 class StartCommandTest {
 
-    private static final Duration FIVE_MINUTES = Duration.fromMinutes(5);
-    private static final Duration TEN_SECONDS = new Duration(10, ChronoUnit.SECONDS);
-    private static final Duration ONE_MILLISECOND = new Duration(1, ChronoUnit.MILLIS);
+    private static final Duration FIVE_MINUTES = Duration.ofMinutes(5);
+    private static final Duration TEN_SECONDS = Duration.of(10, ChronoUnit.SECONDS);
+    private static final Duration ONE_MILLISECOND = Duration.of(1, ChronoUnit.MILLIS);
 
     private StartCommand command;
 
@@ -43,7 +45,7 @@ class StartCommandTest {
     }
 
     @Test
-    void getDuration_when_present_returns_true() {
+    void getDuration_when_present_returns_specified_duration() {
         havingParameters(
                 new DryRunParameter(),
                 new DurationParameter(FIVE_MINUTES)
@@ -56,43 +58,43 @@ class StartCommandTest {
     }
 
     @Test
-    void getDuration_when_absent_returns_false() {
+    void getDuration_when_absent_returns_default_duration() {
         havingParameters(new DryRunParameter());
 
         var duration = command.getDuration();
 
-        assertThat(duration.getMinutes())
-                .isEqualTo(Duration.DEFAULT_VALUE_MINUTES);
+        assertThat(duration.toMinutes())
+                .isEqualTo((long) secondsToMinutes(Session.DEFAULT_DURATION_SECONDS));
     }
 
     @Test
-    void getMinutes_returns_duration_in_minutes() {
+    void getDuration_returns_duration_in_minutes() {
         havingParameters(new DurationParameter(FIVE_MINUTES));
 
         var duration = command.getDuration();
 
-        assertThat(duration.unit())
-                .isEqualTo(ChronoUnit.MINUTES);
+        assertThat(duration.toMinutes())
+                .isEqualTo(5);
     }
 
     @Test
-    void getSeconds_returns_duration_in_seconds() {
+    void getDuration_returns_duration_in_seconds() {
         havingParameters(new DurationParameter(TEN_SECONDS));
 
         var duration = command.getDuration();
 
-        assertThat(duration.unit())
-                .isEqualTo(ChronoUnit.SECONDS);
+        assertThat(duration.getSeconds())
+                .isEqualTo(10);
     }
 
     @Test
-    void getMillis_returns_duration_in_milliseconds() {
+    void getDuration_returns_duration_in_milliseconds() {
         havingParameters(new DurationParameter(ONE_MILLISECOND));
 
         var duration = command.getDuration();
 
-        assertThat(duration.unit())
-                .isEqualTo(ChronoUnit.MILLIS);
+        assertThat(duration.toMillis())
+                .isEqualTo(1);
     }
 
 
