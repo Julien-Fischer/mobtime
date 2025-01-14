@@ -22,6 +22,8 @@ public class Application {
         try {
             command = parser.parse(commandLine);
         } catch (Exception exception) {
+            AppLogger.logSeparator();
+            AppLogger.log("Closing mob session...");
             shellAdapter.execute("mob done");
             throw exception;
         }
