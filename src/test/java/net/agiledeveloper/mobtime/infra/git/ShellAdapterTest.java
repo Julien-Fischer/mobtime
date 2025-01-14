@@ -15,9 +15,9 @@ import java.nio.file.Path;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class MobShAdapterTest {
+class ShellAdapterTest {
 
-    private final MobShAdapter mobShAdapter = new MobShAdapter();
+    private final ShellAdapter shellAdapter = new ShellAdapter();
     private ByteArrayOutputStream outputStream;
     private int statusCode;
 
@@ -32,7 +32,7 @@ class MobShAdapterTest {
 
 
     @Test
-    void executeShell_when_status_code_zero() throws IOException, InfraException {
+    void execute_when_status_code_zero() throws IOException, InfraException {
         givenThatScriptReturns(0);
 
         whenAdapterExecutes("echo 'Hello, world!'");
@@ -43,7 +43,7 @@ class MobShAdapterTest {
     }
 
     @Test
-    void executeShell_when_status_code_non_zero() throws IOException, InfraException {
+    void execute_when_status_code_non_zero() throws IOException, InfraException {
         givenThatScriptReturns(1);
 
         whenAdapterExecutes("echo 'An error occurred!'");
@@ -64,7 +64,7 @@ class MobShAdapterTest {
         // Redirect System.out to capture the output
         outputStream = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outputStream));
-        mobShAdapter.executeShell(scriptPath.toString());
+        shellAdapter.execute(scriptPath.toString());
     }
 
     private void givenThatScriptReturns(int statusCode) {

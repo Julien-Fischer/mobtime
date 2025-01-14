@@ -8,12 +8,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class MobShAdapter implements MobPort {
+public class ShellAdapter implements MobPort {
 
     @Override
     public void next() {
         try {
-            executeShell("mob next");
+            execute("mob next");
         } catch (InfraException cause) {
             throw new InfraException(cause);
         }
@@ -23,7 +23,7 @@ public class MobShAdapter implements MobPort {
     @Override
     public void done() {
         try {
-            executeShell("mob done");
+            execute("mob done");
         } catch (InfraException cause) {
             throw new InfraException(cause);
         }
@@ -31,7 +31,7 @@ public class MobShAdapter implements MobPort {
     }
 
 
-    public int executeShell(String command) throws InfraException {
+    public int execute(String command) throws InfraException {
         String[] commandLine = new String[] {"sh", "-c", command};
         try {
             Process process = Runtime.getRuntime().exec(commandLine);
