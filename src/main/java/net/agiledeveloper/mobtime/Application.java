@@ -18,14 +18,16 @@ public class Application {
         var sessionService = new SessionService(new SwingWorkerTimeAdapter(), notificationAdapter);
         var parser = new CommandLineParser(sessionService);
 
-        Command command;
+        Command command = null;
         try {
             command = parser.parse(commandLine);
         } catch (Exception exception) {
             AppLogger.logSeparator();
+            AppLogger.log("Error parsing command: " + exception.getMessage());
             AppLogger.log("Closing mob session...");
+            AppLogger.logSeparator();
             shellAdapter.execute("mob done");
-            throw exception;
+            System.exit(0);
         }
 
         command.execute();
