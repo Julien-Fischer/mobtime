@@ -17,10 +17,10 @@ public abstract class BaseMock {
         return callCount == n;
     }
 
+
     protected int getCallCount() {
         return callCount;
     }
-
 
     protected void incrementCallCount() {
         callCount++;

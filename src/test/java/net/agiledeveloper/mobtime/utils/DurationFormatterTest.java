@@ -12,7 +12,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 class DurationFormatterTest {
 
-
     static Stream<Arguments> invalidDurations() {
         return Stream.of(
                 Arguments.of(Duration.ofMinutes(0).plusSeconds(2),   "00:02"),
