@@ -107,9 +107,6 @@ public class CommandLineParser {
 
     private static final class BashParameter implements Parameter {
 
-        public static final String PREFIX = "--";
-        public static final String SEPARATOR = "=";
-
         private final String[] split;
 
         BashParameter(String argument) {

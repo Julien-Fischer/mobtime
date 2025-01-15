@@ -9,7 +9,7 @@ public abstract class FlagParameter extends AbstractParameter {
     }
 
     public String toString() {
-        return "--" + name();
+        return SEPARATOR + name();
     }
 
 }

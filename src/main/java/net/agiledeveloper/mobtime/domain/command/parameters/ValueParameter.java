@@ -16,7 +16,7 @@ public abstract class ValueParameter<V> extends AbstractParameter {
     }
 
     public String toString() {
-        return "--" + name() + "=" + value();
+        return super.toString() + SEPARATOR + value();
     }
 
 }
