@@ -9,7 +9,7 @@ import net.agiledeveloper.mobtime.utils.AppLogger;
 
 import java.time.Duration;
 
-import static net.agiledeveloper.mobtime.utils.DurationFormatter.formatDuration;
+import static net.agiledeveloper.mobtime.utils.TimeFormatter.formatDuration;
 
 public class SessionService {
 

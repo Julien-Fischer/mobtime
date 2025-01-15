@@ -1,8 +1,8 @@
 package net.agiledeveloper.mobtime.utils;
 
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
+
+import static net.agiledeveloper.mobtime.utils.TimeFormatter.formatInstant;
 
 public class AppLogger {
 
@@ -35,9 +35,7 @@ public class AppLogger {
     }
 
     private static String now() {
-        return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-                .withZone(ZoneId.systemDefault())
-                .format(Instant.now());
+        return formatInstant(Instant.now());
     }
 
 }
