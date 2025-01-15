@@ -1,6 +1,6 @@
 package net.agiledeveloper.mobtime.test;
 
-public abstract class BaseMock {
+public abstract class Mock {
 
     private int callCount = 0;
 
