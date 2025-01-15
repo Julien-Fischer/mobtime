@@ -3,6 +3,7 @@ package net.agiledeveloper.mobtime.infra;
 import net.agiledeveloper.mobtime.domain.command.commands.Command;
 import net.agiledeveloper.mobtime.domain.command.commands.impl.StartCommand;
 import net.agiledeveloper.mobtime.domain.command.parameters.Parameter;
+import net.agiledeveloper.mobtime.domain.command.parameters.impl.AutoModeParameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.impl.DryRunParameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.impl.DurationParameter;
 import net.agiledeveloper.mobtime.domain.session.Session;
@@ -59,6 +60,10 @@ public class CommandLineParser {
 
             else if (argument.hasName("duration")) {
                 parameters.add(new DurationParameter(readDuration(argument)));
+            }
+
+            else if (argument.hasName("auto")) {
+                parameters.add(new AutoModeParameter());
             }
 
             else if (argument.hasName("invalid")) {

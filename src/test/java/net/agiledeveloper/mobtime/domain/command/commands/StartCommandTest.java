@@ -2,6 +2,7 @@ package net.agiledeveloper.mobtime.domain.command.commands;
 
 import net.agiledeveloper.mobtime.domain.command.commands.impl.StartCommand;
 import net.agiledeveloper.mobtime.domain.command.parameters.Parameter;
+import net.agiledeveloper.mobtime.domain.command.parameters.impl.AutoModeParameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.impl.DryRunParameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.impl.DurationParameter;
 import net.agiledeveloper.mobtime.domain.session.Session;
@@ -42,6 +43,20 @@ class StartCommandTest {
         havingParameters(aDurationParameter());
 
         assertThat(command.isDryRunEnabled()).isFalse();
+    }
+
+    @Test
+    void isAutoModeEnabled_when_not_enabled_returns_false() {
+        havingParameters(aDurationParameter());
+
+        assertThat(command.isAutoModeEnabled()).isFalse();
+    }
+
+    @Test
+    void isAutoModeEnabled_when_enabled_returns_true() {
+        havingParameters(aDurationParameter(), new AutoModeParameter());
+
+        assertThat(command.isAutoModeEnabled()).isTrue();
     }
 
     @Test

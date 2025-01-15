@@ -2,6 +2,7 @@ package net.agiledeveloper.mobtime.domain.command.commands.impl;
 
 import net.agiledeveloper.mobtime.domain.command.commands.AbstractCommand;
 import net.agiledeveloper.mobtime.domain.command.parameters.Parameter;
+import net.agiledeveloper.mobtime.domain.command.parameters.impl.AutoModeParameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.impl.DryRunParameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.impl.DurationParameter;
 import net.agiledeveloper.mobtime.domain.session.Session;
@@ -27,6 +28,10 @@ public class StartCommand extends AbstractCommand {
     @Override
     public void execute() {
         mobStart();
+    }
+
+    public boolean isAutoModeEnabled() {
+        return has(AutoModeParameter.class);
     }
 
     public boolean isDryRunEnabled() {
