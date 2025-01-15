@@ -44,8 +44,21 @@ class EntryPointTest {
 
 
     @Test
-    void app_without_command_throws() {
+    void app_without_any_parameter_throws() {
         havingNoParameters();
+
+        assertThatThrownBy(this::runApp)
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("No command specified");
+
+        assertStandardOutput()
+                .contains("No command specified")
+                .doesNotContain("Done");
+    }
+
+    @Test
+    void app_with_parameters_but_no_command_throws() {
+        withParameters("--duration=1");
 
         assertThatThrownBy(this::runApp)
                 .isInstanceOf(IllegalArgumentException.class)
