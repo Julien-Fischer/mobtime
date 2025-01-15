@@ -32,7 +32,7 @@ public class Builders {
     }
 
     public static Session aSession() {
-        return new Session(aDuration());
+        return new Session(aDuration(), false);
     }
 
 }
