@@ -56,7 +56,7 @@
     </properties>
 
     <build>
-        <finalName>mobtime-${project.version}</finalName>
+        <finalName>mobtime</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
