@@ -74,7 +74,6 @@ class NotificationMock extends Mock implements NotificationPort {
 
 }
 
-
 class TimerMock extends Mock implements TimerPort {
 
     @Override
