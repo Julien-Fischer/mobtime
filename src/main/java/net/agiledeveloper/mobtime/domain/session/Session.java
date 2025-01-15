@@ -8,7 +8,7 @@ import static net.agiledeveloper.mobtime.utils.TimeFormatter.formatInstant;
 
 public record Session(Duration duration, boolean isAutoModeEnabled, Instant createdAt) {
 
-    public static final double DEFAULT_DURATION_SECONDS = 5;
+    public static final double DEFAULT_DURATION_SECONDS = 15 * 60;
     private static final int DEFAULT_GRACE_DURATION_SECONDS = 2;
 
 

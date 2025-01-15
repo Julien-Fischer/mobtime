@@ -35,4 +35,8 @@ public class Builders {
         return new Session(aDuration(), false);
     }
 
+    public static Session aSession(boolean autoModeEnabled) {
+        return new Session(aDuration(), autoModeEnabled);
+    }
+
 }

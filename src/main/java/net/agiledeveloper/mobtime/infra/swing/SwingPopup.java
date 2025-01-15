@@ -15,6 +15,7 @@ public class SwingPopup extends JFrame {
     private transient Consumer<GUIEvent> onClickCallback;
     private JLabel messageLabel;
     private JLabel valueLabel;
+    private JComponent buttonsContainer;
 
 
     public SwingPopup(Notification notification) {
@@ -40,6 +41,10 @@ public class SwingPopup extends JFrame {
         valueLabel.setForeground(color);
     }
 
+    public void setButtonsVisible(boolean visible) {
+        buttonsContainer.setVisible(visible);
+    }
+
     public void onClick(Consumer<GUIEvent> onClickCallback) {
         this.onClickCallback = onClickCallback;
     }
@@ -58,9 +63,13 @@ public class SwingPopup extends JFrame {
         return label;
     }
 
-    private JComponent createContainer() {
+    private JComponent createButtonsContainer() {
         var button1 = new Button("Done", GUIEvent.DONE);
         var button2 = new Button("Next", GUIEvent.NEXT);
+        return wrap(button1, button2);
+    }
+
+    private JComponent createContainer() {
         var container = new JPanel(new BorderLayout());
         var notificationPanel = new JPanel(new BorderLayout());
         notificationPanel.setOpaque(false);
@@ -69,7 +78,7 @@ public class SwingPopup extends JFrame {
         container.setOpaque(true);
         container.setBackground(Color.BLACK);
         container.add(notificationPanel, BorderLayout.CENTER);
-        container.add(wrap(button1, button2), BorderLayout.EAST);
+        container.add(buttonsContainer, BorderLayout.EAST);
         return container;
     }
 
@@ -80,8 +89,9 @@ public class SwingPopup extends JFrame {
         setResizable(false);
         messageLabel = createLabel(Component.LEFT_ALIGNMENT, 20);
         valueLabel = createLabel(Component.RIGHT_ALIGNMENT);
-        this.setMessage(notification, DEFAUlT_COLOR);
+        buttonsContainer = createButtonsContainer();
         add(createContainer(), BorderLayout.CENTER);
+        this.setMessage(notification, DEFAUlT_COLOR);
         pack();
     }
 

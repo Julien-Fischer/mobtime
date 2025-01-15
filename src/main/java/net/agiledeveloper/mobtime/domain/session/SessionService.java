@@ -3,6 +3,8 @@ package net.agiledeveloper.mobtime.domain.session;
 import net.agiledeveloper.mobtime.domain.notification.session.SessionCloseNotification;
 import net.agiledeveloper.mobtime.domain.notification.session.SessionOpenNotification;
 import net.agiledeveloper.mobtime.domain.notification.session.SessionRefreshNotification;
+import net.agiledeveloper.mobtime.domain.notification.session.SessionShutdownNotification;
+import net.agiledeveloper.mobtime.domain.ports.spi.MobPort;
 import net.agiledeveloper.mobtime.domain.ports.spi.NotificationPort;
 import net.agiledeveloper.mobtime.domain.ports.spi.TimerPort;
 import net.agiledeveloper.mobtime.utils.AppLogger;
@@ -15,11 +17,13 @@ public class SessionService {
 
     private final TimerPort timerPort;
     private final NotificationPort notificationPort;
+    private final MobPort mobPort;
 
 
-    public SessionService(TimerPort timerPort, NotificationPort notificationPort) {
+    public SessionService(TimerPort timerPort, NotificationPort notificationPort, MobPort mobPort) {
         this.timerPort = timerPort;
         this.notificationPort = notificationPort;
+        this.mobPort = mobPort;
     }
 
 
@@ -36,10 +40,11 @@ public class SessionService {
     }
 
     public void close(Session session) {
-        var notification = new SessionCloseNotification("Time out!", "Click Next or Done to switch driver");
-        notificationPort.send(notification);
-        AppLogger.logSeparator();
-        AppLogger.log("Time out! Use mob next or mob done to switch driver");
+        if (session.isAutoModeEnabled()) {
+            mobNext();
+        } else {
+            suggestMobNext();
+        }
     }
 
 
@@ -57,6 +62,21 @@ public class SessionService {
     private boolean isGracePeriodOver(Session session, Duration remainingTime) {
         Duration elapsed = remainingTime.minus(session.duration());
         return !elapsed.isPositive();
+    }
+
+    private void suggestMobNext() {
+        var notification = new SessionCloseNotification("Time out!", "Click Next or Done to switch driver");
+        notificationPort.send(notification);
+        AppLogger.logSeparator();
+        AppLogger.log("Time out! Use mob next or mob done to switch driver");
+    }
+
+    private void mobNext() {
+        var notification = new SessionShutdownNotification("Time out!", "Next to drive.");
+        notificationPort.send(notification);
+        AppLogger.logSeparator();
+        AppLogger.log("Time out! Next to drive.");
+        mobPort.next();
     }
 
 }

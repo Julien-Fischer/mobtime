@@ -4,6 +4,7 @@ import net.agiledeveloper.mobtime.domain.notification.Notification;
 import net.agiledeveloper.mobtime.domain.notification.session.SessionCloseNotification;
 import net.agiledeveloper.mobtime.domain.notification.session.SessionOpenNotification;
 import net.agiledeveloper.mobtime.domain.notification.session.SessionRefreshNotification;
+import net.agiledeveloper.mobtime.domain.notification.session.SessionShutdownNotification;
 import net.agiledeveloper.mobtime.domain.ports.api.SessionPort;
 import net.agiledeveloper.mobtime.domain.ports.spi.NotificationPort;
 
@@ -31,10 +32,13 @@ public class SwingNotificationAdapter implements NotificationPort {
             notifySessionStart(notification);
         } else if (notification instanceof SessionRefreshNotification) {
             currentColor = Color.GREEN;
-            notifySessionRunning(notification);
+            displayMessage(notification);
         } else if (notification instanceof SessionCloseNotification) {
             currentColor = Color.MAGENTA;
             notifySessionEnd(notification);
+        } else if (notification instanceof SessionShutdownNotification) {
+            currentColor = Color.MAGENTA;
+            shutdown(notification);
         }
     }
 
@@ -64,10 +68,15 @@ public class SwingNotificationAdapter implements NotificationPort {
         });
     }
 
-    private void notifySessionRunning(Notification notification) {
+    private void displayMessage(Notification notification) {
         SwingUtilities.invokeLater(() ->
                 currentFrame.setMessage(notification, currentColor)
         );
+    }
+
+    private void shutdown(Notification notification) {
+        displayMessage(notification);
+        currentFrame.setButtonsVisible(false);
     }
 
     private void createPopupFor(Notification notification) {

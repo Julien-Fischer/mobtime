@@ -17,18 +17,21 @@ class SessionServiceTest {
 
     private TimerMock timerMock;
     private NotificationMock notificationMock;
+    private ShellMock shellMock;
+
+    private SessionService sessionService;
 
     @BeforeEach
     void setUp() {
         timerMock = new TimerMock();
         notificationMock = new NotificationMock();
+        shellMock = new ShellMock();
+        sessionService = new SessionService(timerMock, notificationMock, shellMock);
     }
 
 
     @Test
     void open_triggers_a_timer() {
-        var sessionService = new SessionService(timerMock, notificationMock);
-
         sessionService.open(aSession());
 
         expectThat(timerMock).wasCalledOnce();
@@ -36,11 +39,27 @@ class SessionServiceTest {
 
     @Test
     void close_dispatches_a_notification() {
-        var sessionService = new SessionService(timerMock, notificationMock);
-
         sessionService.close(aSession());
 
         expectThat(notificationMock).wasCalledOnce();
+    }
+
+    @Test
+    void close_when_auto_mode_enabled_calls_mob_port() {
+        var session = aSession(true);
+
+        sessionService.close(session);
+
+        expectThat(shellMock).wasCalledOnce();
+    }
+
+    @Test
+    void close_when_auto_mode_enabled_does_not_call_mob_port() {
+        var session = aSession(false);
+
+        sessionService.close(session);
+
+        expectThat(shellMock).wasNeverCalled();
     }
 
 }

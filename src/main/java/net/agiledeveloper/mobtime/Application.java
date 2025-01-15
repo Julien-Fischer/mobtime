@@ -15,7 +15,7 @@ public class Application {
         var shellAdapter = new ShellAdapter();
         var mobService = new MobService(shellAdapter);
         var notificationAdapter = new SwingNotificationAdapter(mobService);
-        var sessionService = new SessionService(new SwingWorkerTimeAdapter(), notificationAdapter);
+        var sessionService = new SessionService(new SwingWorkerTimeAdapter(), notificationAdapter, shellAdapter);
         var parser = new CommandLineParser(sessionService);
 
         Command command;
