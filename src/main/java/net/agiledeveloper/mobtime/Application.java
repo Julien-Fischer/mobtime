@@ -18,11 +18,12 @@ public class Application {
         var sessionService = new SessionService(new SwingWorkerTimeAdapter(), notificationAdapter);
         var parser = new CommandLineParser(sessionService);
 
-        Command command = null;
+        Command command;
         try {
             command = parser.parse(commandLine);
         } catch (Exception exception) {
-            terminate(exception, shellAdapter);
+            logError(exception.getMessage(), shellAdapter);
+            throw exception;
         }
 
         command.execute();
@@ -31,15 +32,14 @@ public class Application {
     }
 
 
-    private static void terminate(Exception exception, ShellAdapter shellAdapter) {
+    private static void logError(String message, ShellAdapter shellAdapter) {
         var SEPARATOR = "/!\\ ".repeat(20);
         AppLogger.logSeparator(SEPARATOR);
         AppLogger.err("Error parsing command");
-        AppLogger.err("E: " + exception.getMessage());
+        AppLogger.err("E: " + message);
         AppLogger.err("Closing mob session...");
         AppLogger.logSeparator(SEPARATOR);
         shellAdapter.execute("mob done");
-        System.exit(0);
     }
 
 }

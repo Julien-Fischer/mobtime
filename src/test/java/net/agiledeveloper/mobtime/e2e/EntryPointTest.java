@@ -45,17 +45,20 @@ class EntryPointTest {
 
     @Test
     void app_without_command_throws() {
+        havingNoParameters();
+
         assertThatThrownBy(this::runApp)
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("No command specified");
 
         assertStandardOutput()
+                .contains("No command specified")
                 .doesNotContain("Done");
     }
 
     @Test
     void app_with_parameters_runs() {
-        withParameters("--start", "--dry-run");
+        withParameters("--start");
 
         runApp();
 
@@ -65,18 +68,29 @@ class EntryPointTest {
 
     @Test
     void app_with_duration_parameter_prints_duration() {
-        withParameters("--start", "--duration=42", "--dry-run");
+        withParameters("--start", "--duration=42");
+
+        runApp();
+
+        assertStandardOutput()
+                .contains("--duration=42");
+    }
+
+    @Test
+    void app_prints_all_input_parameters() {
+        withParameters("--start", "--duration=42", "--mode=zen");
 
         runApp();
 
         assertStandardOutput()
                 .contains("--start")
-                .contains("--duration=42");
+                .contains("--duration=42")
+                .contains("--mode=zen");
     }
 
     @Test
     void app_with_invalid_parameters_throws() {
-        withParameters("--invalid=name");
+        withParameters("--start", "--invalid=name");
 
         assertThatThrownBy(this::runApp)
                 .isInstanceOf(IllegalArgumentException.class)
@@ -90,7 +104,7 @@ class EntryPointTest {
     @ParameterizedTest
     @MethodSource("invalidDurations")
     void app_with_invalid_duration_throws(String invalidDuration) {
-        withParameters("--start", "--dry-run", "--duration=" + invalidDuration);
+        withParameters("--start", "--duration=" + invalidDuration);
 
         assertThatThrownBy(this::runApp)
                 .isInstanceOf(IllegalArgumentException.class)
@@ -107,7 +121,13 @@ class EntryPointTest {
     }
 
     private void withParameters(String... parameters) {
-        args = parameters;
+        args = new String[parameters.length + 1];
+        System.arraycopy(parameters, 0, args, 0, parameters.length);
+        args[parameters.length] = "--dry-run";
+    }
+
+    private void havingNoParameters() {
+        withParameters();
     }
 
 }
