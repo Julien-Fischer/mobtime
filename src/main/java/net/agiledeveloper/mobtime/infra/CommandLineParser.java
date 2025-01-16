@@ -119,7 +119,6 @@ public class CommandLineParser {
 
         BashParameter(String argument) {
             split = argument.substring(2).split(SEPARATOR);
-            System.out.println("debug");
         }
 
         @Override
