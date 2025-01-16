@@ -10,4 +10,8 @@ public class DurationParameter extends ValueParameter<Duration> {
         super("duration", value);
     }
 
+    @Override
+    public String toString() {
+        return PREFIX + name() + SEPARATOR + value().toMinutes();
+    }
 }

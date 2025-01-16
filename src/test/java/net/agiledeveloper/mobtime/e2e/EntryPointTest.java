@@ -1,6 +1,7 @@
 package net.agiledeveloper.mobtime.e2e;
 
 import net.agiledeveloper.mobtime.EntryPoint;
+import net.agiledeveloper.mobtime.domain.session.Session;
 import org.assertj.core.api.AbstractStringAssert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -87,6 +88,16 @@ class EntryPointTest {
 
         assertStandardOutput()
                 .contains("--duration=42");
+    }
+
+    @Test
+    void app_when_missing_duration_value_uses_default_duration() {
+        withParameters("--start", "--duration=");
+
+        runApp();
+
+        assertStandardOutput()
+                .contains("--duration=" + Session.DEFAULT_DURATION.toMinutes());
     }
 
     @Test

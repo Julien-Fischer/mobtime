@@ -15,8 +15,9 @@ public abstract class ValueParameter<V> extends AbstractParameter {
         return val;
     }
 
+    @Override
     public String toString() {
-        return super.toString() + SEPARATOR + value();
+        return PREFIX + name() + SEPARATOR + value();
     }
 
 }

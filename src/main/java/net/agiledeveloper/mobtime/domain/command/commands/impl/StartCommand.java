@@ -64,7 +64,7 @@ public class StartCommand extends AbstractCommand {
             var durationParameter = (DurationParameter) duration.get();
             return durationParameter.value();
         } else {
-            return Duration.ofSeconds((long) Session.DEFAULT_DURATION_SECONDS);
+            return Session.DEFAULT_DURATION;
         }
     }
 

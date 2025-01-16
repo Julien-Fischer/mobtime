@@ -17,8 +17,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static net.agiledeveloper.mobtime.utils.TimeConverter.minutesToSeconds;
-
 public class CommandLineParser {
 
     private final SessionService sessionService;
@@ -48,30 +46,30 @@ public class CommandLineParser {
 
         AppLogger.logSeparator();
         AppLogger.log("Starting MobTime with parameters:");
-        for (var argument : bashParameters) {
-            AppLogger.log(" ", argument.toString());
+        for (var parameter : bashParameters) {
+            AppLogger.log(" ", parameter.toString());
 
-            if (argument.hasName("start")) {
+            if (parameter.hasName("start")) {
                 command = new StartCommand(parameters, sessionService);
             }
 
-            else if (argument.hasName("dry-run")) {
+            else if (parameter.hasName("dry-run")) {
                 parameters.add(new DryRunParameter());
             }
 
-            else if (argument.hasName("duration")) {
-                parameters.add(new DurationParameter(readDuration(argument)));
+            else if (parameter.hasName("duration")) {
+                parameters.add(new DurationParameter(readDuration(parameter)));
             }
 
-            else if (argument.hasName("auto")) {
+            else if (parameter.hasName("auto")) {
                 parameters.add(new AutoModeParameter());
             }
 
-            else if (argument.hasName("zen")) {
+            else if (parameter.hasName("zen")) {
                 parameters.add(new ZenParameter());
             }
 
-            else if (argument.hasName("invalid")) {
+            else if (parameter.hasName("invalid")) {
                 var msg = "Error: --invalid is not a valid argument";
                 AppLogger.log(msg);
                 throw new IllegalArgumentException(msg);
@@ -82,23 +80,28 @@ public class CommandLineParser {
             throw new IllegalArgumentException("No command specified");
         }
 
+        AppLogger.logSeparator();
+        AppLogger.log("Command parameters:");
+        for (var parameter : command.parameters()) {
+            AppLogger.log(" ", parameter.toString());
+        }
         return command;
     }
 
 
     private static Duration readDuration(BashParameter argument) {
-        var seconds = Session.DEFAULT_DURATION_SECONDS;
+        var minutes = Session.DEFAULT_DURATION.toMinutes();
         if (argument.hasValue()) {
             try {
-                seconds = Integer.parseInt(argument.value());
-                if (seconds < 0) {
-                    throw new IllegalArgumentException("--duration can not be negative. Received: " + seconds);
+                minutes = Integer.parseInt(argument.value());
+                if (minutes < 0) {
+                    throw new IllegalArgumentException("--duration can not be negative. Received: " + minutes);
                 }
             } catch (Exception cause) {
                 reject(argument, cause);
             }
         }
-        return Duration.ofSeconds((long) minutesToSeconds(seconds));
+        return Duration.ofMinutes(minutes);
     }
 
     private static void reject(BashParameter argument, Throwable cause) {
@@ -116,6 +119,7 @@ public class CommandLineParser {
 
         BashParameter(String argument) {
             split = argument.substring(2).split(SEPARATOR);
+            System.out.println("debug");
         }
 
         @Override

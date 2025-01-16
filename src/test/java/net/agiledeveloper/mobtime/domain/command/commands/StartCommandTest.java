@@ -15,7 +15,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.Set;
 
 import static net.agiledeveloper.mobtime.test.Builders.aDurationParameter;
-import static net.agiledeveloper.mobtime.utils.TimeConverter.secondsToMinutes;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 class StartCommandTest {
@@ -93,8 +92,8 @@ class StartCommandTest {
 
         var duration = command.getDuration();
 
-        assertThat(duration.toMinutes())
-                .isEqualTo((long) secondsToMinutes(Session.DEFAULT_DURATION_SECONDS));
+        assertThat(duration)
+                .isEqualTo(Session.DEFAULT_DURATION);
     }
 
     @Test
