@@ -5,6 +5,7 @@ import net.agiledeveloper.mobtime.domain.command.parameters.Parameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.impl.AutoModeParameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.impl.DryRunParameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.impl.DurationParameter;
+import net.agiledeveloper.mobtime.domain.command.parameters.impl.ZenParameter;
 import net.agiledeveloper.mobtime.domain.session.Session;
 import net.agiledeveloper.mobtime.domain.session.SessionService;
 
@@ -28,6 +29,10 @@ public class StartCommand extends AbstractCommand {
     @Override
     public void execute() {
         mobStart();
+    }
+
+    public boolean isZenModeEnabled() {
+        return has(ZenParameter.class);
     }
 
     public boolean isAutoModeEnabled() {

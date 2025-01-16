@@ -6,6 +6,7 @@ import net.agiledeveloper.mobtime.domain.command.parameters.Parameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.impl.AutoModeParameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.impl.DryRunParameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.impl.DurationParameter;
+import net.agiledeveloper.mobtime.domain.command.parameters.impl.ZenParameter;
 import net.agiledeveloper.mobtime.domain.session.Session;
 import net.agiledeveloper.mobtime.domain.session.SessionService;
 import net.agiledeveloper.mobtime.utils.AppLogger;
@@ -64,6 +65,10 @@ public class CommandLineParser {
 
             else if (argument.hasName("auto")) {
                 parameters.add(new AutoModeParameter());
+            }
+
+            else if (argument.hasName("zen")) {
+                parameters.add(new ZenParameter());
             }
 
             else if (argument.hasName("invalid")) {

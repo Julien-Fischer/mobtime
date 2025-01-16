@@ -5,6 +5,7 @@ import net.agiledeveloper.mobtime.domain.command.parameters.Parameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.impl.AutoModeParameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.impl.DryRunParameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.impl.DurationParameter;
+import net.agiledeveloper.mobtime.domain.command.parameters.impl.ZenParameter;
 import net.agiledeveloper.mobtime.domain.session.Session;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -60,6 +61,20 @@ class StartCommandTest {
     }
 
     @Test
+    void isZenModeEnabled_when_not_enabled_returns_false() {
+        havingParameters(aDurationParameter());
+
+        assertThat(command.isZenModeEnabled()).isFalse();
+    }
+
+    @Test
+    void isZenModeEnabled_when_enabled_returns_true() {
+        havingParameters(aDurationParameter(), new ZenParameter());
+
+        assertThat(command.isZenModeEnabled()).isTrue();
+    }
+
+    @Test
     void getDuration_when_present_returns_specified_duration() {
         havingParameters(
                 new DryRunParameter(),
@@ -111,7 +126,6 @@ class StartCommandTest {
         assertThat(duration.toMillis())
                 .isEqualTo(1);
     }
-
 
     void havingParameters(Parameter... parameter) {
         command = new StartCommand(Set.of(parameter), null);
