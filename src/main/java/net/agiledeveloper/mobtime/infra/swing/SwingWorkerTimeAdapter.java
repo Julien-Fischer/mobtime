@@ -69,7 +69,7 @@ public class SwingWorkerTimeAdapter implements TimerPort {
                 synchronized (this) {
                     wait(tickFrequencyMilliseconds);
                 }
-                if (remainingTime.toMillis() <= Duration.ZERO.toMillis()) {
+                if (remainingTime.toSeconds() <= Duration.ZERO.toSeconds()) {
                     stop();
                 }
             }

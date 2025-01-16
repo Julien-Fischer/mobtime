@@ -1,10 +1,7 @@
 package net.agiledeveloper.mobtime.infra.swing;
 
 import net.agiledeveloper.mobtime.domain.notification.Notification;
-import net.agiledeveloper.mobtime.domain.notification.session.SessionCloseNotification;
-import net.agiledeveloper.mobtime.domain.notification.session.SessionOpenNotification;
-import net.agiledeveloper.mobtime.domain.notification.session.SessionRefreshNotification;
-import net.agiledeveloper.mobtime.domain.notification.session.SessionShutdownNotification;
+import net.agiledeveloper.mobtime.domain.notification.session.*;
 import net.agiledeveloper.mobtime.domain.ports.api.SessionPort;
 import net.agiledeveloper.mobtime.domain.ports.spi.NotificationPort;
 
@@ -27,19 +24,46 @@ public class SwingNotificationAdapter implements NotificationPort {
     @Override
     public void send(Notification notification) {
         if (notification instanceof SessionOpenNotification) {
-            currentColor = Color.YELLOW;
-            showPopup(notification);
-            notifySessionStart(notification);
-        } else if (notification instanceof SessionRefreshNotification) {
-            currentColor = Color.GREEN;
-            displayMessage(notification);
+            handleOpenNotification(notification);
+        } else if (notification instanceof SessionStartNotification) {
+            handleStartNotification(notification);
+        } else if (notification instanceof SessionRefreshNotification refreshNotification) {
+            handleRefreshNotification(refreshNotification);
         } else if (notification instanceof SessionCloseNotification) {
-            currentColor = Color.MAGENTA;
-            notifySessionEnd(notification);
+            handleCloseNotification(notification);
         } else if (notification instanceof SessionShutdownNotification) {
-            currentColor = Color.MAGENTA;
-            shutdown(notification);
+            handleShutdownNotification(notification);
         }
+    }
+
+
+    private void handleOpenNotification(Notification notification) {
+        currentColor = Color.YELLOW;
+        showPopup(notification);
+        notifySessionStart(notification);
+    }
+
+    private void handleStartNotification(Notification notification) {
+        currentColor = Color.GREEN;
+        displayMessage(notification);
+    }
+
+    private void handleRefreshNotification(SessionRefreshNotification notification) {
+        if (notification.hasLittleTimeLeft()) {
+            displayMessage(notification, Color.YELLOW);
+        } else {
+            displayMessage(notification, Color.GREEN);
+        }
+    }
+
+    private void handleCloseNotification(Notification notification) {
+        currentColor = Color.MAGENTA;
+        notifySessionEnd(notification);
+    }
+
+    private void handleShutdownNotification(Notification notification) {
+        currentColor = Color.MAGENTA;
+        shutdown(notification);
     }
 
     private void showPopup(Notification notification) {
@@ -69,8 +93,12 @@ public class SwingNotificationAdapter implements NotificationPort {
     }
 
     private void displayMessage(Notification notification) {
+        displayMessage(notification, currentColor);
+    }
+
+    private void displayMessage(Notification notification, Color color) {
         SwingUtilities.invokeLater(() ->
-                currentFrame.setMessage(notification, currentColor)
+                currentFrame.setMessage(notification, color)
         );
     }
 

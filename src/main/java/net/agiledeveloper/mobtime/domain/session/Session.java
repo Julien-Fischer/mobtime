@@ -6,14 +6,19 @@ import java.time.Instant;
 import static net.agiledeveloper.mobtime.utils.TimeFormatter.formatDuration;
 import static net.agiledeveloper.mobtime.utils.TimeFormatter.formatInstant;
 
-public record Session(Duration duration, boolean isAutoModeEnabled, Instant createdAt) {
+public record Session(
+        Duration duration,
+        boolean isAutoModeEnabled,
+        boolean isZenModeEnabled,
+        Instant createdAt
+) {
 
     public static final double DEFAULT_DURATION_SECONDS = 15 * 60;
     private static final int DEFAULT_GRACE_DURATION_SECONDS = 2;
 
 
-    public Session(Duration duration, boolean isAutoModeEnabled) {
-        this(duration, isAutoModeEnabled, Instant.now());
+    public Session(Duration duration, boolean isAutoModeEnabled, boolean isZenModeEnabled) {
+        this(duration, isAutoModeEnabled, isZenModeEnabled, Instant.now());
     }
 
     public Duration graceDuration() {

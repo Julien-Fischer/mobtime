@@ -53,7 +53,7 @@ public class StartCommand extends AbstractCommand {
 
     private void mobStart() {
         if (!isDryRunEnabled()) {
-            var session = new Session(getDuration(), isAutoModeEnabled());
+            var session = new Session(getDuration(), isAutoModeEnabled(), isZenModeEnabled());
             sessionService.open(session);
         }
     }

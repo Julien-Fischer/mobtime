@@ -32,11 +32,11 @@ public class Builders {
     }
 
     public static Session aSession() {
-        return new Session(aDuration(), false);
+        return new Session(aDuration(), false, false);
     }
 
     public static Session aSession(boolean autoModeEnabled) {
-        return new Session(aDuration(), autoModeEnabled);
+        return new Session(aDuration(), autoModeEnabled, false);
     }
 
 }
