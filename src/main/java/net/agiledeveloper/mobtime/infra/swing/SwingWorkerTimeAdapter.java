@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SwingWorkerTimeAdapter implements TimerPort {
 
@@ -18,9 +19,6 @@ public class SwingWorkerTimeAdapter implements TimerPort {
 
     private OnTick refreshCallback;
     private OnDone expiredCallback;
-    private Instant startedAt;
-    private Instant deadline;
-    private Duration remainingTime;
 
 
     public SwingWorkerTimeAdapter() {
@@ -41,34 +39,61 @@ public class SwingWorkerTimeAdapter implements TimerPort {
 
 
     private void runInBackground(Session session) {
-        SwingWorker<Void, String> worker = new SwingWorker<>() {
-            @Override
-            protected Void doInBackground() throws Exception {
-                startedAt = Instant.now();
-                deadline = startedAt
-                        .plus(session.graceDuration())
-                        .plus(session.duration());
-
-                do {
-                    remainingTime = Duration.between(Instant.now(), deadline);
-                    publish(remainingTime.toString());
-                    Thread.sleep(tickFrequencyMilliseconds);
-                } while (remainingTime.toSeconds() > 0);
-
-                return null;
-            }
-
-            @Override
-            protected void process(List<String> chunks) {
-                refreshCallback.accept(session, remainingTime);
-            }
-
-            @Override
-            protected void done() {
-                expiredCallback.accept(session);
-            }
-        };
+        var worker = new SwingClock(session);
         worker.execute();
+    }
+
+
+    private class SwingClock extends SwingWorker<Void, String> {
+
+        private final Session session;
+        private final AtomicBoolean running = new AtomicBoolean(true);
+        private Duration remainingTime;
+
+
+        public SwingClock(Session session) {
+            this.session = session;
+        }
+
+
+        @Override
+        protected Void doInBackground() throws Exception {
+            Instant startedAt = Instant.now();
+            Instant deadline = startedAt
+                    .plus(session.graceDuration())
+                    .plus(session.duration());
+
+            while (running.get()) {
+                remainingTime = Duration.between(Instant.now(), deadline);
+                publish(remainingTime.toString());
+                synchronized (this) {
+                    wait(tickFrequencyMilliseconds);
+                }
+                if (remainingTime.toMillis() <= Duration.ZERO.toMillis()) {
+                    stop();
+                }
+            }
+
+            return null;
+        }
+
+        private void stop() {
+            running.set(false);
+            synchronized (this) {
+                notifyAll();
+            }
+            cancel(true);
+        }
+
+        @Override
+        protected void process(List<String> chunks) {
+            refreshCallback.accept(session, remainingTime);
+        }
+
+        @Override
+        protected void done() {
+            expiredCallback.accept(session);
+        }
     }
 
 }
