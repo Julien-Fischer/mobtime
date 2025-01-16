@@ -7,6 +7,6 @@ import java.time.Duration;
 @FunctionalInterface
 public interface OnTick {
 
-    void accept(Session session, Duration remainingSeconds);
+    void accept(Session session, Duration remainingTime);
 
 }
