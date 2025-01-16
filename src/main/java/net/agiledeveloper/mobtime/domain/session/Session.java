@@ -13,10 +13,10 @@ public record Session(
         Instant createdAt
 ) {
 
-    private static final double DEFAULT_DURATION_SECONDS = 15 * 60;
+    private static final int DEFAULT_DURATION_SECONDS = 15 * 60;
     private static final int DEFAULT_GRACE_DURATION_SECONDS = 2;
 
-    public static final Duration DEFAULT_DURATION = Duration.ofSeconds((long) DEFAULT_DURATION_SECONDS);
+    public static final Duration DEFAULT_DURATION = Duration.ofSeconds(DEFAULT_DURATION_SECONDS);
 
 
     public Session(Duration duration, boolean isAutoModeEnabled, boolean isZenModeEnabled) {
