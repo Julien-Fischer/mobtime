@@ -126,6 +126,7 @@ public class SwingNotificationAdapter implements NotificationPort {
             default:
                 throw new UnsupportedOperationException("Unsupported UI event: " + event);
         }
+        handleShutdownNotification(new SessionShutdownNotification("Command executed", ""));
     }
 
     private static void setWindowLocation(JFrame frame) {
