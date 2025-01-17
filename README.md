@@ -33,7 +33,8 @@ mobstart
 
 Special thanks to Dr. Simmon Harrer & Josen Christ for their outstanding work on mob.sh.
 
-Deep gratitude to my colleagues at Datanumia for our exciting mob programming sessions: Josian Chevalier, Thierry Lam, Elie Guedj, Amine Chaari, Rym Ben-Ali, and Sébastien Lamps.
+Deep gratitude to my colleagues at Datanumia for our exciting mob programming sessions: 
+Josian Chevalier, Thierry Lam, Elie Guedj, Amine Chaari, Rym Ben-Ali, and Sébastien Lamps.
 
 ## License
 
