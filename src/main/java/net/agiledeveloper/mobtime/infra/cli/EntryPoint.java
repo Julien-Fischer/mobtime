@@ -1,4 +1,6 @@
-package net.agiledeveloper.mobtime;
+package net.agiledeveloper.mobtime.infra.cli;
+
+import net.agiledeveloper.mobtime.Application;
 
 public class EntryPoint {
 

@@ -1,7 +1,7 @@
 package net.agiledeveloper.mobtime.e2e;
 
-import net.agiledeveloper.mobtime.EntryPoint;
 import net.agiledeveloper.mobtime.domain.session.Session;
+import net.agiledeveloper.mobtime.infra.cli.EntryPoint;
 import org.assertj.core.api.AbstractStringAssert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -102,14 +102,15 @@ class EntryPointTest {
 
     @Test
     void app_prints_all_input_parameters() {
-        withParameters("--start", "--duration=42", "--mode=zen");
+        withParameters("--start", "--duration=42", "--mode=zen", "--mini");
 
         runApp();
 
         assertStandardOutput()
                 .contains("--start")
                 .contains("--duration=42")
-                .contains("--mode=zen");
+                .contains("--mode=zen")
+                .contains("--mini");
     }
 
     @Test

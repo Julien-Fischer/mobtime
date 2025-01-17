@@ -1,4 +1,4 @@
-package net.agiledeveloper.mobtime.infra;
+package net.agiledeveloper.mobtime.infra.cli;
 
 import net.agiledeveloper.mobtime.domain.command.commands.Command;
 import net.agiledeveloper.mobtime.domain.command.commands.impl.StartCommand;
@@ -12,41 +12,27 @@ import net.agiledeveloper.mobtime.domain.session.SessionService;
 import net.agiledeveloper.mobtime.utils.AppLogger;
 
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class CommandLineParser {
+public class CommandLineInterpreter {
 
     private final SessionService sessionService;
 
 
-    public CommandLineParser(SessionService sessionService) {
+    public CommandLineInterpreter(SessionService sessionService) {
         this.sessionService = sessionService;
     }
 
 
-    public Command parse(String[] commandLine) {
-        if (commandLine == null) {
-            throw new IllegalArgumentException("No command specified");
-        }
-
-        var parameters = Arrays.stream(commandLine)
-                .map(BashParameter::new)
-                .toList();
-
-        return parseParameters(parameters);
-    }
-
-
-    private Command parseParameters(List<BashParameter> bashParameters) {
+    public Command interpret(List<BashParameter> commandLine) {
         Set<Parameter> parameters = new HashSet<>();
         Command command = null;
 
         AppLogger.logSeparator();
         AppLogger.log("Starting MobTime with parameters:");
-        for (var parameter : bashParameters) {
+        for (var parameter : commandLine) {
             AppLogger.log(" ", parameter.toString());
 
             if (parameter.hasName("start")) {
@@ -110,42 +96,6 @@ public class CommandLineParser {
             message += " parameter: " + argument.value();
         }
         throw new IllegalArgumentException(message, cause);
-    }
-
-
-    private static final class BashParameter implements Parameter {
-
-        private final String[] split;
-
-        BashParameter(String argument) {
-            split = argument.substring(2).split(SEPARATOR);
-        }
-
-        @Override
-        public String name() {
-            return split[0];
-        }
-
-        public String value() {
-            return split[1];
-        }
-
-        public boolean hasName(String name) {
-            return split[0].equals(name);
-        }
-
-        public boolean hasValue() {
-            return split.length == 2;
-        }
-
-        @Override
-        public String toString() {
-            var subject = PREFIX + name();
-            if (hasValue()) {
-                subject += SEPARATOR + value();
-            }
-            return subject;
-        }
     }
 
 }
