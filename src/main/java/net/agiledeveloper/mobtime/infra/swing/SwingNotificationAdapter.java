@@ -40,31 +40,31 @@ public class SwingNotificationAdapter implements NotificationPort {
 
 
     private void handleOpenNotification(Notification notification) {
-        currentColor = Color.YELLOW;
+        currentColor = Palette.MESSAGE_OK;
         showPopup(notification);
         notifySessionStart(notification);
     }
 
     private void handleStartNotification(Notification notification) {
-        currentColor = Color.GREEN;
+        currentColor = Palette.MESSAGE_OK;
         displayMessage(notification);
     }
 
     private void handleRefreshNotification(SessionRefreshNotification notification) {
         if (notification.hasLittleTimeLeft()) {
-            displayMessage(notification, Color.YELLOW);
+            displayMessage(notification, Palette.MESSAGE_INFO);
         } else {
-            displayMessage(notification, Color.GREEN);
+            displayMessage(notification, Palette.MESSAGE_OK);
         }
     }
 
     private void handleCloseNotification(Notification notification) {
-        currentColor = Color.MAGENTA;
+        currentColor = Palette.MESSAGE_WARN;
         notifySessionEnd(notification);
     }
 
     private void handleShutdownNotification(Notification notification) {
-        currentColor = Color.MAGENTA;
+        currentColor = Palette.MESSAGE_WARN;
         shutdown(notification);
     }
 

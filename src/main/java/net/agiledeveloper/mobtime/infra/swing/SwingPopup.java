@@ -10,6 +10,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.function.Consumer;
 
+import static net.agiledeveloper.mobtime.infra.swing.Palette.*;
+
 public class SwingPopup extends JFrame {
 
     public static final Color DEFAUlT_COLOR = Color.GREEN;
@@ -67,7 +69,7 @@ public class SwingPopup extends JFrame {
     private JLabel createLabel(float alignment, int marginRight) {
         var label = new JLabel();
         label.setOpaque(false);
-        label.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, marginRight));
+        label.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, marginRight));
         label.setFont(new Font("Monospaced", Font.BOLD, 14));
         label.setAlignmentX(alignment);
         return label;
@@ -90,7 +92,7 @@ public class SwingPopup extends JFrame {
         notificationPanel.add(valueLabel, BorderLayout.EAST);
         var container = new JPanel(new BorderLayout());
         container.setOpaque(true);
-        container.setBackground(Color.BLACK);
+        container.setBackground(WINDOW_BG);
         container.add(notificationPanel, BorderLayout.CENTER);
         container.add(wrap(mobButtonsContainer, closeButtonContainer), BorderLayout.EAST);
         return container;
@@ -145,12 +147,12 @@ public class SwingPopup extends JFrame {
         return wrapper;
     }
 
-    private class Button extends JButton {
+    private static class Button extends JButton {
 
         public Button(String label) {
             super(label);
-            setBackground(new Color(80, 80, 80));
-            setForeground(new Color(200, 200, 200));
+            setBackground(BUTTON_BG);
+            setForeground(BUTTON_FG);
             setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
         }
 
