@@ -1,4 +1,4 @@
-package net.agiledeveloper.mobtime.infra.cli;
+package net.agiledeveloper.mobtime.domain.command;
 
 import net.agiledeveloper.mobtime.domain.command.commands.Command;
 import net.agiledeveloper.mobtime.domain.command.commands.impl.StartCommand;
@@ -9,6 +9,7 @@ import net.agiledeveloper.mobtime.domain.command.parameters.impl.DurationParamet
 import net.agiledeveloper.mobtime.domain.command.parameters.impl.ZenParameter;
 import net.agiledeveloper.mobtime.domain.session.Session;
 import net.agiledeveloper.mobtime.domain.session.SessionService;
+import net.agiledeveloper.mobtime.infra.cli.BashParameter;
 import net.agiledeveloper.mobtime.utils.AppLogger;
 
 import java.time.Duration;

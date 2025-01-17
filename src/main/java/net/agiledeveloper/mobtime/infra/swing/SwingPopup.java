@@ -4,6 +4,8 @@ import net.agiledeveloper.mobtime.domain.notification.Notification;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.function.Consumer;
 
 public class SwingPopup extends JFrame {
@@ -13,19 +15,29 @@ public class SwingPopup extends JFrame {
     private static final String DEFAULT_TITLE = "MobTime";
 
     private transient Consumer<GUIEvent> onClickCallback;
+    private JComponent mainContainer;
+    private JComponent mobButtonsContainer;
+    private JComponent closeButtonContainer;
     private JLabel messageLabel;
     private JLabel valueLabel;
-    private JComponent buttonsContainer;
+
+    private int mouseX;
+    private int mouseY;
 
 
     public SwingPopup(Notification notification) {
-        this(DEFAULT_TITLE, notification);
+        this(notification, false);
     }
 
-    public SwingPopup(String title, Notification notification) {
-        super(title);
+    public SwingPopup(Notification notification, boolean minimized) {
+        super(DEFAULT_TITLE);
         init(notification);
+        if (minimized) {
+            minimize();
+        }
+        pack();
     }
+
 
     public void setMessage(Notification notification, Color color) {
         messageLabel.setText(notification.message());
@@ -42,7 +54,7 @@ public class SwingPopup extends JFrame {
     }
 
     public void setButtonsVisible(boolean visible) {
-        buttonsContainer.setVisible(visible);
+        mobButtonsContainer.setVisible(visible);
     }
 
     public void onClick(Consumer<GUIEvent> onClickCallback) {
@@ -64,21 +76,25 @@ public class SwingPopup extends JFrame {
     }
 
     private JComponent createButtonsContainer() {
-        var button1 = new Button("Done", GUIEvent.DONE);
-        var button2 = new Button("Next", GUIEvent.NEXT);
+        var button1 = new GUIButton("Done", GUIEvent.DONE);
+        var button2 = new GUIButton("Next", GUIEvent.NEXT);
         return wrap(button1, button2);
     }
 
     private JComponent createContainer() {
-        var container = new JPanel(new BorderLayout());
+        closeButtonContainer = new JPanel(new BorderLayout());
+        closeButtonContainer.setVisible(false);
+        closeButtonContainer.setOpaque(false);
+        closeButtonContainer.add(new Button("X"));
         var notificationPanel = new JPanel(new BorderLayout());
         notificationPanel.setOpaque(false);
         notificationPanel.add(messageLabel, BorderLayout.CENTER);
         notificationPanel.add(valueLabel, BorderLayout.EAST);
+        var container = new JPanel(new BorderLayout());
         container.setOpaque(true);
         container.setBackground(Color.BLACK);
         container.add(notificationPanel, BorderLayout.CENTER);
-        container.add(buttonsContainer, BorderLayout.EAST);
+        container.add(wrap(mobButtonsContainer, closeButtonContainer), BorderLayout.EAST);
         return container;
     }
 
@@ -89,10 +105,31 @@ public class SwingPopup extends JFrame {
         setResizable(false);
         messageLabel = createLabel(Component.LEFT_ALIGNMENT, 20);
         valueLabel = createLabel(Component.RIGHT_ALIGNMENT);
-        buttonsContainer = createButtonsContainer();
-        add(createContainer(), BorderLayout.CENTER);
+        mobButtonsContainer = createButtonsContainer();
+        mainContainer = createContainer();
+        add(mainContainer, BorderLayout.CENTER);
         this.setMessage(notification, DEFAUlT_COLOR);
-        pack();
+    }
+
+    private void minimize() {
+        setUndecorated(true);
+        mainContainer.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                mouseX = e.getX();
+                mouseY = e.getY();
+            }
+        });
+        mainContainer.addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                int x = e.getXOnScreen();
+                int y = e.getYOnScreen();
+                setLocation(x - mouseX, y - mouseY);
+            }
+        });
+        closeButtonContainer.setVisible(true);
+        mobButtonsContainer.setVisible(false);
     }
 
 
@@ -107,12 +144,20 @@ public class SwingPopup extends JFrame {
 
     private class Button extends JButton {
 
-        public Button(String label, GUIEvent event) {
+        public Button(String label) {
             super(label);
             setBackground(new Color(80, 80, 80));
             setForeground(new Color(200, 200, 200));
-            addActionListener(e -> dispatch(event));
             setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        }
+
+    }
+
+    private class GUIButton extends Button {
+
+        public GUIButton(String label, GUIEvent event) {
+            super(label);
+            addActionListener(e -> dispatch(event));
         }
 
         private void dispatch(GUIEvent event) {

@@ -14,10 +14,12 @@ public class SwingNotificationAdapter implements NotificationPort {
 
     private SwingPopup currentFrame;
     private Color currentColor;
+    private final boolean shouldMinimize;
 
 
-    public SwingNotificationAdapter(SessionPort mobPort) {
+    public SwingNotificationAdapter(SessionPort mobPort, boolean shouldMinimize) {
         this.mobPort = mobPort;
+        this.shouldMinimize = shouldMinimize;
     }
 
 
@@ -73,7 +75,7 @@ public class SwingNotificationAdapter implements NotificationPort {
     private void notifySessionEnd(Notification notification) {
         SwingUtilities.invokeLater(() -> {
             currentFrame.dispose();
-            currentFrame = new SwingPopup(notification);
+            currentFrame = new SwingPopup(notification, shouldMinimize);
             currentFrame.setLabelForeground(currentColor);
             currentFrame.setVisible(true);
             currentFrame.pack();
@@ -108,7 +110,7 @@ public class SwingNotificationAdapter implements NotificationPort {
     }
 
     private void createPopupFor(Notification notification) {
-        currentFrame = new SwingPopup(notification);
+        currentFrame = new SwingPopup(notification, shouldMinimize);
         currentFrame.onClick(this::onGuiEvent);
         currentFrame.setVisible(true);
         setWindowLocation(currentFrame);
