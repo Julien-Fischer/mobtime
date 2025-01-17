@@ -16,7 +16,7 @@ import static net.agiledeveloper.mobtime.infra.swing.Palette.*;
 
 public class SwingPopup extends JFrame {
 
-    public static final Color DEFAUlT_COLOR = Color.GREEN;
+    public static final Color DEFAUlT_COLOR = MESSAGE_OK;
     public static final Location DEFAULT_LOCATION = Location.NORTH;
 
     private static final String DEFAULT_TITLE = "MobTime";
