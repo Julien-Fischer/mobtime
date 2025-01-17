@@ -2,12 +2,16 @@ package net.agiledeveloper.mobtime;
 
 import net.agiledeveloper.mobtime.domain.command.CommandLineInterpreter;
 import net.agiledeveloper.mobtime.domain.command.commands.Command;
+import net.agiledeveloper.mobtime.domain.ports.api.SessionPort;
+import net.agiledeveloper.mobtime.domain.ports.spi.NotificationPort;
 import net.agiledeveloper.mobtime.domain.session.MobService;
 import net.agiledeveloper.mobtime.domain.session.SessionService;
 import net.agiledeveloper.mobtime.infra.cli.BashParameter;
 import net.agiledeveloper.mobtime.infra.cli.CommandLineParser;
 import net.agiledeveloper.mobtime.infra.git.ShellAdapter;
+import net.agiledeveloper.mobtime.infra.swing.Location;
 import net.agiledeveloper.mobtime.infra.swing.SwingNotificationAdapter;
+import net.agiledeveloper.mobtime.infra.swing.SwingPopup;
 import net.agiledeveloper.mobtime.infra.swing.SwingWorkerTimeAdapter;
 import net.agiledeveloper.mobtime.utils.AppLogger;
 
@@ -23,7 +27,7 @@ public class Application {
         List<BashParameter> bashParameters = tryGetting(() -> parser.parse(commandLine));
 
         var mobService = new MobService(shellAdapter);
-        var notificationAdapter = new SwingNotificationAdapter(mobService, shouldMinimize(bashParameters));
+        var notificationAdapter = createNotificationAdapter(mobService, bashParameters);
         var sessionService = new SessionService(new SwingWorkerTimeAdapter(), notificationAdapter, shellAdapter);
 
         var handler = new CommandLineInterpreter(sessionService);
@@ -59,6 +63,19 @@ public class Application {
                 .filter(param -> param.hasName("mini"))
                 .toList()
                 .isEmpty();
+    }
+
+    private static Location getLocation(List<BashParameter> bashParameters) {
+        for (BashParameter bashParameter : bashParameters) {
+            if (bashParameter.hasName("location") && bashParameter.hasValue()) {
+                return Location.of(bashParameter.value());
+            }
+        }
+        return SwingPopup.DEFAULT_LOCATION;
+    }
+
+    private static NotificationPort createNotificationAdapter(SessionPort sessionPort, List<BashParameter> bashParameters) {
+        return new SwingNotificationAdapter(sessionPort, shouldMinimize(bashParameters), getLocation(bashParameters));
     }
 
 }

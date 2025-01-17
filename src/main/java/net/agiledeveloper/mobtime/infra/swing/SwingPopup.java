@@ -15,6 +15,7 @@ import static net.agiledeveloper.mobtime.infra.swing.Palette.*;
 public class SwingPopup extends JFrame {
 
     public static final Color DEFAUlT_COLOR = Color.GREEN;
+    public static final Location DEFAULT_LOCATION = Location.NORTH;
 
     private static final String DEFAULT_TITLE = "MobTime";
 
@@ -24,6 +25,8 @@ public class SwingPopup extends JFrame {
     private JComponent closeButtonContainer;
     private JLabel messageLabel;
     private JLabel valueLabel;
+
+    private final transient Locator locator = new Locator();
 
     private int mouseX;
     private int mouseY;
@@ -60,6 +63,13 @@ public class SwingPopup extends JFrame {
     public void onClick(Consumer<GUIEvent> onClickCallback) {
         this.onClickCallback = onClickCallback;
     }
+
+    public void setPosition(Location location) {
+        setLocationRelativeTo(null);
+        setLocation(locator.getLocation(this.getSize(), location));
+    }
+
+
 
 
     private JLabel createLabel(float alignment) {
@@ -174,6 +184,84 @@ public class SwingPopup extends JFrame {
             if (onClickCallback != null) {
                 onClickCallback.accept(event);
             }
+        }
+
+    }
+
+
+    private static class Locator {
+
+        private final Dimension anchor;
+
+        public Locator() {
+            this(Toolkit.getDefaultToolkit().getScreenSize());
+        }
+
+        public Locator(Dimension anchor) {
+            this.anchor = anchor;
+        }
+
+        private Point getLocation(Dimension element, Location location) {
+            return switch (location) {
+                case NORTH       -> getNorthLocation(element);
+                case NORTH_EAST  -> getNorthEastLocation(element);
+                case EAST        -> getEastLocation(element);
+                case SOUTH_EAST  -> getSouthEastLocation(element);
+                case SOUTH       -> getSouthLocation(element);
+                case SOUTH_WEST  -> getSouthWestLocation(element);
+                case WEST        -> getWestLocation(element);
+                case NORTH_WEST  -> getNorthWestLocation(element);
+                case CENTER      -> getCenterLocation(element);
+            };
+        }
+
+        private Point getNorthLocation(Dimension element) {
+            var x = (int) (anchor.width - element.getWidth()) / 2;
+            return new Point(x, 0);
+        }
+
+
+        private Point getNorthEastLocation(Dimension element) {
+            var x = (int) (anchor.width - element.getWidth());
+            return new Point(x, 0);
+        }
+
+        private Point getEastLocation(Dimension element) {
+            var x = (int) (anchor.width - element.getWidth());
+            var y = (int) (anchor.height - element.getHeight()) / 2;
+            return new Point(x, y);
+        }
+
+        private Point getSouthEastLocation(Dimension element) {
+            var x = (int) (anchor.width - element.getWidth());
+            var y = (int) (anchor.height - element.getHeight());
+            return new Point(x, y);
+        }
+
+        private Point getSouthLocation(Dimension element) {
+            var x = (int) (anchor.width - element.getWidth()) / 2;
+            var y = (int) (anchor.height - element.getHeight());
+            return new Point(x, y);
+        }
+
+        private Point getSouthWestLocation(Dimension element) {
+            var y = (int) (anchor.height - element.getHeight());
+            return new Point(0, y);
+        }
+
+        private Point getWestLocation(Dimension element) {
+            var y = (int) (anchor.height - element.getHeight()) / 2;
+            return new Point(0, y);
+        }
+
+        private Point getNorthWestLocation(Dimension ignored) {
+            return new Point(0, 0);
+        }
+
+        private Point getCenterLocation(Dimension element) {
+            var x = (int) (anchor.width - element.getWidth()) / 2;
+            var y = (int) (anchor.height - element.getHeight()) / 2;
+            return new Point(x, y);
         }
 
     }

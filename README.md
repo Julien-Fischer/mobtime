@@ -27,6 +27,7 @@ mobstart
   - `--auto`     [option\] Automatically execute mob next when time runs out
   - `--zen`      [option\] Hide the countdown
 - `--mini`       [global\] Minimize the GUI
+- `--location`   [global\] Set GUI location (north by default) 
 
 ## Acknowledgements
 

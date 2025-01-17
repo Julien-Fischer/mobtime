@@ -15,11 +15,13 @@ public class SwingNotificationAdapter implements NotificationPort {
     private SwingPopup currentFrame;
     private Color currentColor;
     private final boolean shouldMinimize;
+    private final Location location;
 
 
-    public SwingNotificationAdapter(SessionPort mobPort, boolean shouldMinimize) {
+    public SwingNotificationAdapter(SessionPort mobPort, boolean shouldMinimize, Location location) {
         this.mobPort = mobPort;
         this.shouldMinimize = shouldMinimize;
+        this.location = location;
     }
 
 
@@ -80,7 +82,7 @@ public class SwingNotificationAdapter implements NotificationPort {
             currentFrame.setVisible(true);
             currentFrame.pack();
             currentFrame.onClick(this::onGuiEvent);
-            setWindowLocation(currentFrame);
+            currentFrame.setPosition(location);
         });
     }
 
@@ -113,7 +115,7 @@ public class SwingNotificationAdapter implements NotificationPort {
         currentFrame = new SwingPopup(notification, shouldMinimize);
         currentFrame.onClick(this::onGuiEvent);
         currentFrame.setVisible(true);
-        setWindowLocation(currentFrame);
+        currentFrame.setPosition(location);
         currentFrame.setFocusableWindowState(false);
     }
 
@@ -129,14 +131,6 @@ public class SwingNotificationAdapter implements NotificationPort {
                 throw new UnsupportedOperationException("Unsupported UI event: " + event);
         }
         handleShutdownNotification(new SessionShutdownNotification("Command executed", ""));
-    }
-
-    private static void setWindowLocation(JFrame frame) {
-        frame.setLocationRelativeTo(null);
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int x = (screenSize.width - frame.getWidth()) / 2;
-        int y = 0;
-        frame.setLocation(x, y);
     }
 
 }
