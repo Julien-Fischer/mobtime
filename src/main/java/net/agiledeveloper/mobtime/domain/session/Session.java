@@ -9,7 +9,7 @@ import static net.agiledeveloper.mobtime.utils.TimeFormatter.formatInstant;
 public record Session(
         Duration duration,
         boolean isAutoModeEnabled,
-        boolean isZenModeEnabled,
+        FocusMode focusMode,
         Instant createdAt
 ) {
 
@@ -17,14 +17,19 @@ public record Session(
     private static final int DEFAULT_GRACE_DURATION_SECONDS = 2;
 
     public static final Duration DEFAULT_DURATION = Duration.ofSeconds(DEFAULT_DURATION_SECONDS);
+    public static final FocusMode DEFAULT_FOCUS_MODE = FocusMode.NORMAL;
 
 
-    public Session(Duration duration, boolean isAutoModeEnabled, boolean isZenModeEnabled) {
-        this(duration, isAutoModeEnabled, isZenModeEnabled, Instant.now());
+    public Session(Duration duration, boolean isAutoModeEnabled, FocusMode mode) {
+        this(duration, isAutoModeEnabled, mode, Instant.now());
     }
 
     public Duration graceDuration() {
         return Duration.ofSeconds(DEFAULT_GRACE_DURATION_SECONDS);
+    }
+
+    public boolean hasFocus(FocusMode mode) {
+        return (focusMode == mode);
     }
 
     @Override
@@ -32,7 +37,8 @@ public record Session(
         return "[Session]"
                 + " createdAt: " + formatInstant(createdAt) + ","
                 + " duration: " + formatDuration(duration) + ","
-                + " isAutoModeEnabled: " + isAutoModeEnabled;
+                + " isAutoModeEnabled: " + isAutoModeEnabled + ","
+                + " focusMode: " + focusMode;
     }
 
 }

@@ -3,6 +3,8 @@ package net.agiledeveloper.mobtime.infra.swing;
 import java.awt.*;
 import java.util.function.BiFunction;
 
+import static net.agiledeveloper.mobtime.utils.EnumUtils.normalize;
+
 public enum Location {
 
     NORTH        (Location::getNorthLocation),
@@ -28,17 +30,8 @@ public enum Location {
 
 
     public static Location of(String name) {
-        if (name == null || name.isEmpty()) {
-            throw new IllegalArgumentException("Input string cannot be null or empty");
-        }
-
-        var normalizedName = name.toUpperCase()
-                .replace("-", "_")
-                .replace(".", "_")
-                .replaceAll("\\s+", "_");
-
         try {
-            return Location.valueOf(normalizedName);
+            return Location.valueOf(normalize(name));
         } catch (IllegalArgumentException exception) {
             throw new IllegalArgumentException("Invalid location name: " + name, exception);
         }

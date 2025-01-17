@@ -8,6 +8,7 @@ import net.agiledeveloper.mobtime.utils.AppLogger;
 
 import java.time.Duration;
 
+import static net.agiledeveloper.mobtime.domain.session.FocusMode.ZEN;
 import static net.agiledeveloper.mobtime.utils.TimeFormatter.formatDuration;
 
 public class SessionService {
@@ -82,7 +83,7 @@ public class SessionService {
     }
 
     private boolean shouldRefresh(Session session, boolean littleTimeLeft) {
-        return littleTimeLeft || !session.isZenModeEnabled();
+        return littleTimeLeft || !session.hasFocus(ZEN);
     }
 
     private boolean isGracePeriodOver(Session session, Duration remainingTime) {

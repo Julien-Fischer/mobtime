@@ -6,7 +6,8 @@ import net.agiledeveloper.mobtime.domain.command.parameters.Parameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.impl.AutoModeParameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.impl.DryRunParameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.impl.DurationParameter;
-import net.agiledeveloper.mobtime.domain.command.parameters.impl.ZenParameter;
+import net.agiledeveloper.mobtime.domain.command.parameters.impl.FocusModeParameter;
+import net.agiledeveloper.mobtime.domain.session.FocusMode;
 import net.agiledeveloper.mobtime.domain.session.Session;
 import net.agiledeveloper.mobtime.domain.session.SessionService;
 import net.agiledeveloper.mobtime.infra.cli.BashParameter;
@@ -16,6 +17,8 @@ import java.time.Duration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static net.agiledeveloper.mobtime.utils.EnumUtils.printValues;
 
 public class CommandLineInterpreter {
 
@@ -32,7 +35,8 @@ public class CommandLineInterpreter {
         Command command = null;
 
         AppLogger.logSeparator();
-        AppLogger.log("Starting MobTime with parameters:");
+        AppLogger.log("MobTime");
+        AppLogger.log("Input parameters:");
         for (var parameter : commandLine) {
             AppLogger.log(" ", parameter.toString());
 
@@ -52,8 +56,8 @@ public class CommandLineInterpreter {
                 parameters.add(new AutoModeParameter());
             }
 
-            else if (parameter.hasName("zen")) {
-                parameters.add(new ZenParameter());
+            else if (parameter.hasName("focus")) {
+                parameters.add(new FocusModeParameter(readFocus(parameter)));
             }
 
             else if (parameter.hasName("invalid")) {
@@ -75,6 +79,23 @@ public class CommandLineInterpreter {
         return command;
     }
 
+
+    private static FocusMode readFocus(BashParameter argument) {
+        var mode = Session.DEFAULT_FOCUS_MODE;
+        if (argument.hasValue()) {
+            try {
+                mode = FocusMode.of(argument.value());
+                if (mode == null) {
+                    var message = "--focus must be one of (" + printValues(FocusMode.class) + "). "
+                            + "Received: " + mode;
+                    throw new IllegalArgumentException(message);
+                }
+            } catch (Exception cause) {
+                reject(argument, cause);
+            }
+        }
+        return mode;
+    }
 
     private static Duration readDuration(BashParameter argument) {
         var minutes = Session.DEFAULT_DURATION.toMinutes();

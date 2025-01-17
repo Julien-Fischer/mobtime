@@ -5,7 +5,7 @@ import net.agiledeveloper.mobtime.domain.command.parameters.Parameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.impl.AutoModeParameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.impl.DryRunParameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.impl.DurationParameter;
-import net.agiledeveloper.mobtime.domain.command.parameters.impl.ZenParameter;
+import net.agiledeveloper.mobtime.domain.command.parameters.impl.FocusModeParameter;
 import net.agiledeveloper.mobtime.domain.session.Session;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +14,7 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Set;
 
+import static net.agiledeveloper.mobtime.domain.session.FocusMode.*;
 import static net.agiledeveloper.mobtime.test.Builders.aDurationParameter;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -60,17 +61,21 @@ class StartCommandTest {
     }
 
     @Test
-    void isZenModeEnabled_when_not_enabled_returns_false() {
+    void hasFocus_when_not_specified_returns_normal_mode() {
         havingParameters(aDurationParameter());
 
-        assertThat(command.isZenModeEnabled()).isFalse();
+        assertThat(command.hasFocus(ZEN)).isFalse();
+        assertThat(command.hasFocus(CHILL)).isFalse();
+        assertThat(command.hasFocus(NORMAL)).isTrue();
     }
 
     @Test
-    void isZenModeEnabled_when_enabled_returns_true() {
-        havingParameters(aDurationParameter(), new ZenParameter());
+    void hasFocus_determines_whether_specified_focus_is_set() {
+        havingParameters(aDurationParameter(), new FocusModeParameter(ZEN));
 
-        assertThat(command.isZenModeEnabled()).isTrue();
+        assertThat(command.hasFocus(ZEN)).isTrue();
+        assertThat(command.hasFocus(CHILL)).isFalse();
+        assertThat(command.hasFocus(NORMAL)).isFalse();
     }
 
     @Test
