@@ -241,7 +241,7 @@ public class SwingPopup extends JFrame {
 
     }
 
-    private class GlassLabel extends JLabel {
+    private static class GlassLabel extends JLabel {
 
         private GlassLabel(float alignment) {
             this(alignment, 5);
