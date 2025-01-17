@@ -27,10 +27,6 @@ public class SwingPopup extends JFrame {
     private int mouseY;
 
 
-    public SwingPopup(Notification notification) {
-        this(notification, false);
-    }
-
     public SwingPopup(Notification notification, boolean minimized) {
         super(DEFAULT_TITLE);
         init(notification);
