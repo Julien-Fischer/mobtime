@@ -23,11 +23,11 @@ mobstart
 ## API & Settings
 
 - `--start`      [command\] Start a new driving session
-  - `--duration` [option\] Set session duration in minutes (15 by default)
+  - `--duration` [option\] Set session duration in minutes (15 by default). Accepts: any positive integer
   - `--auto`     [option\] Automatically execute mob next when time runs out
-  - `--focus`    [option\] Set the focus mode (normal by default)
+  - `--focus`    [option\] Set the focus mode (normal by default). Accepts: normal, chill, zen
 - `--mini`       [global\] Minimize the GUI
-- `--location`   [global\] Set GUI location (north by default) 
+- `--location`   [global\] Set GUI location (north by default). Accepts: center, north, north-east, east, south-east, etc...
 
 ## Acknowledgements
 
