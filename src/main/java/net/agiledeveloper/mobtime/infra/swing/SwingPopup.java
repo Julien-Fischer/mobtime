@@ -1,9 +1,11 @@
 package net.agiledeveloper.mobtime.infra.swing;
 
 import net.agiledeveloper.mobtime.domain.notification.Notification;
+import net.agiledeveloper.mobtime.utils.AppLogger;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.function.Consumer;
@@ -85,7 +87,7 @@ public class SwingPopup extends JFrame {
         closeButtonContainer = new JPanel(new BorderLayout());
         closeButtonContainer.setVisible(false);
         closeButtonContainer.setOpaque(false);
-        closeButtonContainer.add(new Button("X"));
+        closeButtonContainer.add(new Button("X").onClick(e -> close()));
         var notificationPanel = new JPanel(new BorderLayout());
         notificationPanel.setOpaque(false);
         notificationPanel.add(messageLabel, BorderLayout.CENTER);
@@ -96,6 +98,11 @@ public class SwingPopup extends JFrame {
         container.add(notificationPanel, BorderLayout.CENTER);
         container.add(wrap(mobButtonsContainer, closeButtonContainer), BorderLayout.EAST);
         return container;
+    }
+
+    private void close() {
+        AppLogger.log("Closing popup");
+        System.exit(0);
     }
 
     private void init(Notification notification) {
@@ -149,6 +156,11 @@ public class SwingPopup extends JFrame {
             setBackground(new Color(80, 80, 80));
             setForeground(new Color(200, 200, 200));
             setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        }
+
+        public Button onClick(ActionListener listener) {
+            addActionListener(listener);
+            return this;
         }
 
     }
