@@ -8,6 +8,9 @@ import net.agiledeveloper.mobtime.domain.ports.spi.NotificationPort;
 import javax.swing.*;
 import java.awt.*;
 
+import static net.agiledeveloper.mobtime.infra.swing.Palette.MESSAGE_INFO;
+import static net.agiledeveloper.mobtime.infra.swing.Palette.MESSAGE_OK;
+
 public class SwingNotificationAdapter implements NotificationPort {
 
     private final SessionPort mobPort;
@@ -42,22 +45,19 @@ public class SwingNotificationAdapter implements NotificationPort {
 
 
     private void handleOpenNotification(Notification notification) {
-        currentColor = Palette.MESSAGE_INFO;
+        currentColor = MESSAGE_INFO;
         showPopup(notification);
         notifySessionStart(notification);
     }
 
     private void handleStartNotification(Notification notification) {
-        currentColor = Palette.MESSAGE_OK;
+        currentColor = MESSAGE_OK;
         displayMessage(notification);
     }
 
     private void handleRefreshNotification(SessionRefreshNotification notification) {
-        if (notification.hasLittleTimeLeft()) {
-            displayMessage(notification, Palette.MESSAGE_INFO);
-        } else {
-            displayMessage(notification, Palette.MESSAGE_OK);
-        }
+        var color = notification.hasLittleTimeLeft() ? MESSAGE_INFO : MESSAGE_OK;
+        currentFrame.updateProgress(notification, color);
     }
 
     private void handleCloseNotification(Notification notification) {

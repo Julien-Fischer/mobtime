@@ -1,6 +1,7 @@
 package net.agiledeveloper.mobtime.infra.swing;
 
 import net.agiledeveloper.mobtime.domain.notification.Notification;
+import net.agiledeveloper.mobtime.domain.notification.session.SessionRefreshNotification;
 import net.agiledeveloper.mobtime.utils.AppLogger;
 
 import javax.swing.*;
@@ -27,6 +28,7 @@ public class SwingPopup extends JFrame {
     private JComponent closeButtonContainer;
     private JLabel messageLabel;
     private JLabel valueLabel;
+    private Gauge gauge;
 
     private int mouseX;
     private int mouseY;
@@ -41,6 +43,10 @@ public class SwingPopup extends JFrame {
         pack();
     }
 
+    public void updateProgress(SessionRefreshNotification notification, Color color) {
+        gauge.setProgress(notification.progress());
+        this.setMessage(notification, color);
+    }
 
     public void setMessage(Notification notification, Color color) {
         messageLabel.setText(notification.message());
@@ -49,6 +55,8 @@ public class SwingPopup extends JFrame {
         valueLabel.setText(notification.value());
         valueLabel.setForeground(color);
         valueLabel.repaint();
+        gauge.setBackground(color);
+        gauge.repaint();
     }
 
     public void setLabelForeground(Color color) {
@@ -105,10 +113,13 @@ public class SwingPopup extends JFrame {
         var notificationPanel = new GlassPanel(new BorderLayout());
         notificationPanel.add(messageLabel, BorderLayout.CENTER);
         notificationPanel.add(valueLabel, BorderLayout.EAST);
+        var gaugeContainer = new GlassPanel(null);
+        gaugeContainer.add(gauge);
         var container = new JPanel(new BorderLayout());
         container.setBackground(WINDOW_BG);
         container.add(notificationPanel, BorderLayout.CENTER);
         container.add(wrap(mobButtonsContainer, closeButtonContainer), BorderLayout.EAST);
+        container.add(gaugeContainer, BorderLayout.SOUTH);
         return container;
     }
 
@@ -122,6 +133,7 @@ public class SwingPopup extends JFrame {
         setAlwaysOnTop(true);
         setLayout(new BorderLayout());
         setResizable(false);
+        gauge = new Gauge();
         messageLabel = createLabel(Component.LEFT_ALIGNMENT, 20);
         valueLabel = createLabel(Component.RIGHT_ALIGNMENT);
         mobButtonsContainer = createButtonsContainer();
@@ -210,6 +222,23 @@ public class SwingPopup extends JFrame {
                 onClickCallback.accept(event);
             }
             close();
+        }
+
+    }
+
+    private class Gauge extends JPanel {
+
+        private static final int HEIGHT = 1;
+
+        public Gauge() {
+            setBackground(MESSAGE_INFO);
+            setPreferredSize(new Dimension(0, 0));
+        }
+
+        public void setProgress(double ratio) {
+            var width = (1 - ratio) * mainContainer.getWidth();
+            setSize(new Dimension((int) width, HEIGHT));
+            repaint();
         }
 
     }
