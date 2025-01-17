@@ -2,6 +2,7 @@ package net.agiledeveloper.mobtime.infra.swing;
 
 import net.agiledeveloper.mobtime.domain.notification.Notification;
 import net.agiledeveloper.mobtime.domain.notification.session.SessionRefreshNotification;
+import net.agiledeveloper.mobtime.domain.session.FocusMode;
 import net.agiledeveloper.mobtime.utils.AppLogger;
 
 import javax.swing.*;
@@ -36,7 +37,9 @@ public class SwingPopup extends JFrame {
 
     public SwingPopup(Notification notification, boolean minimized) {
         super(DEFAULT_TITLE);
+        var session = notification.session();
         init(notification);
+        setFocusMode(session.focusMode());
         if (minimized) {
             minimize();
         }
@@ -62,6 +65,31 @@ public class SwingPopup extends JFrame {
     public void setLabelForeground(Color color) {
         messageLabel.setForeground(color);
         valueLabel.setForeground(color);
+    }
+
+    public void setFocusMode(FocusMode mode) {
+        switch (mode) {
+            case ZEN:
+                doneButton.setVisible(false);
+                valueLabel.setVisible(false);
+                setGaugeVisible(false);
+                break;
+            case CHILL:
+                doneButton.setVisible(false);
+                valueLabel.setVisible(false);
+                setGaugeVisible(true);
+                break;
+            case NORMAL:
+                // Fall through
+            default:
+                valueLabel.setVisible(true);
+                setButtonsVisible(true);
+                setGaugeVisible(true);
+        }
+    }
+
+    public void setGaugeVisible(boolean visible) {
+        gauge.setVisible(visible);
     }
 
     public void setButtonsVisible(boolean visible) {

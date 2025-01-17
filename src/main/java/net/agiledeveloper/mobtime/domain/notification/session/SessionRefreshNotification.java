@@ -1,15 +1,20 @@
 package net.agiledeveloper.mobtime.domain.notification.session;
 
 import net.agiledeveloper.mobtime.domain.notification.Notification;
+import net.agiledeveloper.mobtime.domain.session.Session;
 
 import java.time.Duration;
 
 public record SessionRefreshNotification(
-        String message, String value, boolean hasLittleTimeLeft, Duration sessionDuration, Duration remainingTime
+        Session session,
+        String message,
+        String value,
+        boolean hasLittleTimeLeft,
+        Duration remainingTime
 ) implements Notification {
 
     public double progress() {
-        return ((double) remainingTime.toMillis()) / sessionDuration.toMillis();
+        return ((double) remainingTime.toMillis()) / session.duration().toMillis();
     }
 
 }

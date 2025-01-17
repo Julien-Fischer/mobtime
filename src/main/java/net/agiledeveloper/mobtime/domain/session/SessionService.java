@@ -32,7 +32,7 @@ public class SessionService {
         var durationString = formatDuration(session.duration());
         AppLogger.logSeparator();
         AppLogger.log("Opening mob session (duration = " + durationString + ")");
-        notificationPort.send(new SessionOpenNotification("Starting driver session...", ""));
+        notificationPort.send(new SessionOpenNotification(session, "Starting driver session...", ""));
         timerPort.runFor(
                 session,
                 this::refresh,
@@ -42,9 +42,9 @@ public class SessionService {
 
     public void close(Session session) {
         if (session.isAutoModeEnabled()) {
-            mobNext();
+            mobNext(session);
         } else {
-            suggestMobNext();
+            suggestMobNext(session);
         }
     }
 
@@ -57,15 +57,15 @@ public class SessionService {
         }
     }
 
-    private void startSession(Session ignored) {
-        var notification = new SessionStartNotification("Driving", "");
+    private void startSession(Session session) {
+        var notification = new SessionStartNotification(session, "Driving", "");
         notificationPort.send(notification);
         AppLogger.log("  Driving ");
     }
 
     private void refreshSession(Session session, Duration remainingTime, boolean littleTimeLeft) {
         var durationString = formatDuration(remainingTime);
-        var notification = new SessionRefreshNotification("Driving", durationString, littleTimeLeft, session.duration(), remainingTime);
+        var notification = new SessionRefreshNotification(session, "Driving", durationString, littleTimeLeft, remainingTime);
         notificationPort.send(notification);
         AppLogger.log("  Session ending in " + durationString);
     }
@@ -95,15 +95,15 @@ public class SessionService {
         return ((float) remainingTime.toMillis() / session.duration().toMillis()) < LOW_TIME_THRESHOLD;
     }
 
-    private void suggestMobNext() {
-        var notification = new SessionCloseNotification("Pass keyboard", "");
+    private void suggestMobNext(Session session) {
+        var notification = new SessionCloseNotification(session, "Pass keyboard", "");
         notificationPort.send(notification);
         AppLogger.logSeparator();
         AppLogger.log("Pass keyboard Use mob next to switch driver or mob done to end the mob session");
     }
 
-    private void mobNext() {
-        var notification = new SessionShutdownNotification("Pass keyboard", "Next to drive.");
+    private void mobNext(Session session) {
+        var notification = new SessionShutdownNotification(session, "Pass keyboard", "Next to drive.");
         notificationPort.send(notification);
         AppLogger.logSeparator();
         AppLogger.log("Pass keyboard! Next to drive.");
