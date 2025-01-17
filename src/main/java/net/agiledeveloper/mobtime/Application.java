@@ -22,7 +22,8 @@ public class Application {
         try {
             command = parser.parse(commandLine);
         } catch (Exception exception) {
-            logError(exception.getMessage(), shellAdapter);
+            logError(exception.getMessage());
+            shellAdapter.execute("mob done");
             throw exception;
         }
 
@@ -32,14 +33,13 @@ public class Application {
     }
 
 
-    private static void logError(String message, ShellAdapter shellAdapter) {
+    private static void logError(String message) {
         var SEPARATOR = "/!\\ ".repeat(20);
         AppLogger.logSeparator(SEPARATOR);
         AppLogger.err("Error parsing command");
         AppLogger.err("E: " + message);
         AppLogger.err("Closing mob session...");
         AppLogger.logSeparator(SEPARATOR);
-        shellAdapter.execute("mob done");
     }
 
 }
