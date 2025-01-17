@@ -21,6 +21,8 @@ public class SwingPopup extends JFrame {
 
     private transient Consumer<GUIEvent> onClickCallback;
     private JComponent mainContainer;
+    private JComponent doneButton;
+    private JComponent nextButton;
     private JComponent mobButtonsContainer;
     private JComponent closeButtonContainer;
     private JLabel messageLabel;
@@ -76,29 +78,34 @@ public class SwingPopup extends JFrame {
     private JLabel createLabel(float alignment, int marginRight) {
         var label = new JLabel();
         label.setOpaque(false);
-        label.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, marginRight));
+        label.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, marginRight));
         label.setFont(new Font("Monospaced", Font.BOLD, 14));
         label.setAlignmentX(alignment);
         return label;
     }
 
     private JComponent createButtonsContainer() {
-        var button1 = new GUIButton("Done", GUIEvent.DONE);
-        var button2 = new GUIButton("Next", GUIEvent.NEXT);
-        return wrap(button1, button2);
+        doneButton = new GUIButton("Done", GUIEvent.DONE);
+        nextButton = new GUIButton("Next", GUIEvent.NEXT);
+        var separator = new JSeparator(SwingConstants.VERTICAL);
+        separator.setForeground(WINDOW_BG);
+        separator.setBackground(WINDOW_BG);
+        var container = borderWrap(
+                borderWrap(doneButton, separator),
+                nextButton
+        );
+        container.setBackground(Color.RED);
+        return container;
     }
 
     private JComponent createContainer() {
-        closeButtonContainer = new JPanel(new BorderLayout());
+        closeButtonContainer = new GlassPanel(new BorderLayout());
         closeButtonContainer.setVisible(false);
-        closeButtonContainer.setOpaque(false);
         closeButtonContainer.add(new Button("X").onClick(e -> close()));
-        var notificationPanel = new JPanel(new BorderLayout());
-        notificationPanel.setOpaque(false);
+        var notificationPanel = new GlassPanel(new BorderLayout());
         notificationPanel.add(messageLabel, BorderLayout.CENTER);
         notificationPanel.add(valueLabel, BorderLayout.EAST);
         var container = new JPanel(new BorderLayout());
-        container.setOpaque(true);
         container.setBackground(WINDOW_BG);
         container.add(notificationPanel, BorderLayout.CENTER);
         container.add(wrap(mobButtonsContainer, closeButtonContainer), BorderLayout.EAST);
@@ -140,18 +147,38 @@ public class SwingPopup extends JFrame {
                 setLocation(x - mouseX, y - mouseY);
             }
         });
-        closeButtonContainer.setVisible(true);
-        mobButtonsContainer.setVisible(false);
+        closeButtonContainer.setVisible(false);
+        doneButton.setVisible(false);
     }
 
 
     private JPanel wrap(Component... components) {
-        var wrapper = new JPanel();
-        wrapper.setOpaque(false);
+        var wrapper = new GlassPanel();
         for (Component component : components) {
             wrapper.add(component);
         }
         return wrapper;
+    }
+
+    private JComponent borderWrap(JComponent center, JComponent east) {
+        var container = new GlassPanel(new BorderLayout());
+        container.add(center, BorderLayout.CENTER);
+        container.add(east, BorderLayout.EAST);
+        container.setBackground(Color.RED);
+        return container;
+    }
+
+    private static class GlassPanel extends JPanel {
+
+        public GlassPanel() {
+            this(new FlowLayout(FlowLayout.LEFT));
+        }
+
+        public GlassPanel(LayoutManager layout) {
+            super(layout);
+            this.setOpaque(false);
+        }
+
     }
 
     private static class Button extends JButton {
@@ -175,12 +202,14 @@ public class SwingPopup extends JFrame {
         public GUIButton(String label, GUIEvent event) {
             super(label);
             addActionListener(e -> dispatch(event));
+            setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
         }
 
         private void dispatch(GUIEvent event) {
             if (onClickCallback != null) {
                 onClickCallback.accept(event);
             }
+            close();
         }
 
     }

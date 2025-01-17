@@ -31,7 +31,7 @@ public class SessionService {
         var durationString = formatDuration(session.duration());
         AppLogger.logSeparator();
         AppLogger.log("Opening mob session (duration = " + durationString + ")");
-        notificationPort.send(new SessionOpenNotification("Starting driver session", "..."));
+        notificationPort.send(new SessionOpenNotification("Starting driver session...", ""));
         timerPort.runFor(
                 session,
                 this::refresh,
@@ -95,17 +95,17 @@ public class SessionService {
     }
 
     private void suggestMobNext() {
-        var notification = new SessionCloseNotification("Time out!", "Click Next or Done to switch driver");
+        var notification = new SessionCloseNotification("Pass keyboard", "");
         notificationPort.send(notification);
         AppLogger.logSeparator();
-        AppLogger.log("Time out! Use mob next or mob done to switch driver");
+        AppLogger.log("Pass keyboard Use mob next to switch driver or mob done to end the mob session");
     }
 
     private void mobNext() {
-        var notification = new SessionShutdownNotification("Time out!", "Next to drive.");
+        var notification = new SessionShutdownNotification("Pass keyboard", "Next to drive.");
         notificationPort.send(notification);
         AppLogger.logSeparator();
-        AppLogger.log("Time out! Next to drive.");
+        AppLogger.log("Pass keyboard! Next to drive.");
         mobPort.next();
     }
 

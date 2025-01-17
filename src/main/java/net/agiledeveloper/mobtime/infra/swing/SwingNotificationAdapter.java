@@ -42,7 +42,7 @@ public class SwingNotificationAdapter implements NotificationPort {
 
 
     private void handleOpenNotification(Notification notification) {
-        currentColor = Palette.MESSAGE_OK;
+        currentColor = Palette.MESSAGE_INFO;
         showPopup(notification);
         notifySessionStart(notification);
     }
