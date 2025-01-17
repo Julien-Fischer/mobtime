@@ -107,19 +107,6 @@ public class SwingPopup extends JFrame {
     }
 
 
-    private JLabel createLabel(float alignment) {
-        return createLabel(alignment, 5);
-    }
-
-    private JLabel createLabel(float alignment, int marginRight) {
-        var label = new JLabel();
-        label.setOpaque(false);
-        label.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, marginRight));
-        label.setFont(new Font("Monospaced", Font.BOLD, 14));
-        label.setAlignmentX(alignment);
-        return label;
-    }
-
     private JComponent createButtonsContainer() {
         doneButton = new GUIButton("Done", GUIEvent.DONE);
         nextButton = new GUIButton("Next", GUIEvent.NEXT);
@@ -162,8 +149,8 @@ public class SwingPopup extends JFrame {
         setLayout(new BorderLayout());
         setResizable(false);
         gauge = new Gauge();
-        messageLabel = createLabel(Component.LEFT_ALIGNMENT, 20);
-        valueLabel = createLabel(Component.RIGHT_ALIGNMENT);
+        messageLabel = new GlassLabel(Component.LEFT_ALIGNMENT, 20);
+        valueLabel = new GlassLabel(Component.RIGHT_ALIGNMENT);
         mobButtonsContainer = createButtonsContainer();
         mainContainer = createContainer();
         add(mainContainer, BorderLayout.CENTER);
@@ -252,6 +239,20 @@ public class SwingPopup extends JFrame {
             close();
         }
 
+    }
+
+    private class GlassLabel extends JLabel {
+
+        private GlassLabel(float alignment) {
+            this(alignment, 5);
+        }
+
+        private GlassLabel(float alignment, int marginRight) {
+            setOpaque(false);
+            setBorder(BorderFactory.createEmptyBorder(0, 10, 0, marginRight));
+            setFont(new Font("Monospaced", Font.BOLD, 14));
+            setAlignmentX(alignment);
+        }
     }
 
     private class Gauge extends JPanel {
