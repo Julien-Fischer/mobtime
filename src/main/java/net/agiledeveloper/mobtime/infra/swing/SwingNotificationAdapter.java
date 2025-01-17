@@ -120,17 +120,19 @@ public class SwingNotificationAdapter implements NotificationPort {
     }
 
     private void onGuiEvent(GUIEvent event) {
-        switch (event) {
-            case NEXT:
-                mobPort.next();
-                break;
-            case DONE:
-                mobPort.done();
-                break;
-            default:
-                throw new UnsupportedOperationException("Unsupported UI event: " + event);
-        }
-        handleShutdownNotification(new SessionShutdownNotification(null, "Command executed", ""));
+        SwingUtilities.invokeLater(() -> {
+            switch (event) {
+                case NEXT:
+                    mobPort.next();
+                    break;
+                case DONE:
+                    mobPort.done();
+                    break;
+                default:
+                    throw new UnsupportedOperationException("Unsupported UI event: " + event);
+            }
+            handleShutdownNotification(new SessionShutdownNotification(null, "Command executed", ""));
+        });
     }
 
 }
