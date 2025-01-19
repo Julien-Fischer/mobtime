@@ -31,7 +31,7 @@ public class SwingPopup extends JFrame {
     private JComponent mobButtonsContainer;
     private JComponent closeButtonContainer;
     private JLabel messageLabel;
-    private JLabel valueLabel;
+    private JLabel counterLabel;
     private Gauge gauge;
 
     private int mouseX;
@@ -58,34 +58,34 @@ public class SwingPopup extends JFrame {
         messageLabel.setText(notification.message());
         messageLabel.setForeground(color);
         messageLabel.repaint();
-        valueLabel.setText(notification.value());
-        valueLabel.setForeground(color);
-        valueLabel.repaint();
+        counterLabel.setText(notification.value());
+        counterLabel.setForeground(color);
+        counterLabel.repaint();
         gauge.setBackground(color);
         gauge.repaint();
     }
 
     public void setLabelForeground(Color color) {
         messageLabel.setForeground(color);
-        valueLabel.setForeground(color);
+        counterLabel.setForeground(color);
     }
 
     public void setFocusMode(FocusMode mode) {
         switch (mode) {
             case ZEN:
                 doneButton.setVisible(false);
-                valueLabel.setVisible(false);
+                counterLabel.setVisible(false);
                 setGaugeVisible(false);
                 break;
             case CHILL:
                 doneButton.setVisible(false);
-                valueLabel.setVisible(false);
+                counterLabel.setVisible(false);
                 setGaugeVisible(true);
                 break;
             case NORMAL:
                 // Fall through
             default:
-                valueLabel.setVisible(true);
+                counterLabel.setVisible(true);
                 setButtonsVisible(true);
                 setGaugeVisible(true);
         }
@@ -135,7 +135,7 @@ public class SwingPopup extends JFrame {
         closeButtonContainer.add(new Button("X").onClick(e -> close()));
         var notificationPanel = new GlassPanel(new BorderLayout());
         notificationPanel.add(messageLabel, BorderLayout.CENTER);
-        notificationPanel.add(valueLabel, BorderLayout.EAST);
+        notificationPanel.add(counterLabel, BorderLayout.EAST);
         var gaugeContainer = new GlassPanel(null);
         gaugeContainer.add(gauge);
         var container = new JPanel(new BorderLayout());
@@ -158,7 +158,7 @@ public class SwingPopup extends JFrame {
         setResizable(false);
         gauge = new Gauge();
         messageLabel = new GlassLabel(Component.LEFT_ALIGNMENT, 20);
-        valueLabel = new GlassLabel(Component.RIGHT_ALIGNMENT);
+        counterLabel = new GlassLabel(Component.RIGHT_ALIGNMENT);
         mobButtonsContainer = createButtonsContainer();
         mainContainer = createContainer();
         add(mainContainer, BorderLayout.CENTER);
@@ -190,12 +190,12 @@ public class SwingPopup extends JFrame {
         return new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                valueLabel.setVisible(true);
+                counterLabel.setVisible(true);
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                valueLabel.setVisible(false);
+                counterLabel.setVisible(false);
             }
         };
     }
