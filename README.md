@@ -52,12 +52,12 @@ This software was primarily tested on Linux, on Debian 12 and Kubuntu 24.
 
 ## Misc commands
 
-| Command        | Description                       |
-|----------------|-----------------------------------|
-| `mobupdate`    | Update MobTime                    |
-| `moblog`       | View MobTime logs for debugging   |
-| `mobuninstall` | Uninstall MobTime                 |
-| `mobinfo`      | Print MobTime version and authors |
+| Command        | Description                         |
+|----------------|-------------------------------------|
+| `moblog`       | View MobTime logs for debugging     |
+| `mobuninstall` | Uninstall MobTime                   |
+| `mobinfo`      | Print MobTime version and authors   |
+| `mobupdate`    | Update MobTime from the source code |
 
 ## Acknowledgements
 
