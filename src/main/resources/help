@@ -1,0 +1,21 @@
+Mob Commands:
+
+  mobdone          Ends the current mob programming session
+  mobnext          Pass the keyboard to someone else
+  mobstart         Start a new driving session
+    --duration     (Option) Set session duration in minutes (15 by default). Accepts: any positive integer
+    --auto         (Option) Automatically execute mob next when time runs out
+    --focus        (Option) Set the focus mode (normal by default). Accepts: normal, chill, zen
+    --mini         (Option) Minimize the GUI
+    --location     (Option) Set GUI location (north by default). Accepts: center, north, north-east, east, south-east, etc...
+
+Config commands:
+
+  mobhelp          Print this help message and exit
+  mobconfig        To define your local preferences
+  mobstatus        View the status of the current mob session
+  moblog           View MobTime logs for debugging
+  mobuninstall     Uninstall MobTime
+  mobinfo          Print MobTime version and authors
+  mobupdate        Update MobTime from the source code
+  mobps            List all mobtime running instances

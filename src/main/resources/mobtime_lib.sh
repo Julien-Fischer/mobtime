@@ -8,12 +8,14 @@ MOBTIME_LIB_FILE="${MOBTIME_RUNTIME_DIR}/mobtime_lib.sh"
 MOBTIME_LIFECYCLE_COMMANDS_FILE="${MOBTIME_RUNTIME_DIR}/lifecycle_commands.sh"
 MOBTIME_INFO_FILE="${MOBTIME_RUNTIME_DIR}/info"
 MOBTIME_CONFIG_FILE="${MOBTIME_RUNTIME_DIR}/preferences"
+MOBTIME_HELP_FILE="${MOBTIME_RUNTIME_DIR}/help"
 
 LOCAL_DIR="$(pwd)/src/main/resources"
 LOCAL_ALIASES_FILE="${LOCAL_DIR}/lifecycle_commands.sh"
 LOCAL_MOBTIME_LIB_FILE="${LOCAL_DIR}/mobtime_lib.sh"
 LOCAL_INFO_FILE="${LOCAL_DIR}/info"
 LOCAL_CONFIG_FILE="${LOCAL_DIR}/preferences"
+LOCAL_HELP_FILE="${LOCAL_DIR}/help"
 
 TARGET_COMPILED_JAR_FILE="$(pwd)/target/mobtime.jar"
 
@@ -61,6 +63,7 @@ mobinstall() {
     touch "${MOBTIME_PID_FILE}"
     touch "${MOBTIME_LOG_FILE}"
     cp "${LOCAL_INFO_FILE}" "${MOBTIME_INFO_FILE}"
+    cp "${LOCAL_HELP_FILE}" "${MOBTIME_HELP_FILE}"
     if [[ ! -f "${MOBTIME_CONFIG_FILE}" ]]; then
         cp "${LOCAL_CONFIG_FILE}" "${MOBTIME_CONFIG_FILE}"
     fi
@@ -170,6 +173,10 @@ mobstatus() {
 
 mobconfig() {
     vim "${MOBTIME_CONFIG_FILE}"
+}
+
+mobhelp() {
+    cat "${MOBTIME_HELP_FILE}"
 }
 
 mobps() {

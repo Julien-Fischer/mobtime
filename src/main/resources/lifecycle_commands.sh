@@ -77,4 +77,3 @@ mobdone() {
     mobtime_kill_instances
     mob done
 }
-
