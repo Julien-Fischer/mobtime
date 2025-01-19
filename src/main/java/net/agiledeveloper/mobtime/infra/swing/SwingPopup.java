@@ -119,8 +119,8 @@ public class SwingPopup extends JFrame {
 
 
     private JComponent createButtonsContainer() {
-        doneButton = new GUIButton("Done", GUIEvent.DONE);
-        nextButton = new GUIButton("Next", GUIEvent.NEXT);
+        doneButton = new MobButton("Done", GUIEvent.DONE);
+        nextButton = new MobButton("Next", GUIEvent.NEXT);
         var separator = new JSeparator(SwingConstants.VERTICAL);
         separator.setForeground(WINDOW_BG);
         separator.setBackground(WINDOW_BG);
@@ -249,9 +249,9 @@ public class SwingPopup extends JFrame {
 
     }
 
-    private class GUIButton extends Button {
+    private class MobButton extends Button {
 
-        public GUIButton(String label, GUIEvent event) {
+        public MobButton(String label, GUIEvent event) {
             super(label);
             addActionListener(e -> dispatch(event));
             setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
