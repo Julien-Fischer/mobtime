@@ -55,12 +55,8 @@ public class SwingPopup extends JFrame {
     }
 
     public void setMessage(Notification notification, Color color) {
-        messageLabel.setText(notification.message());
-        messageLabel.setForeground(color);
-        messageLabel.repaint();
-        counterLabel.setText(notification.value());
-        counterLabel.setForeground(color);
-        counterLabel.repaint();
+        style(messageLabel, notification.message(), color);
+        style(counterLabel, notification.value(), color);
         gauge.setBackground(color);
         gauge.repaint();
     }
@@ -144,6 +140,12 @@ public class SwingPopup extends JFrame {
         container.add(wrap(mobButtonsContainer, closeButtonContainer), BorderLayout.EAST);
         container.add(gaugeContainer, BorderLayout.SOUTH);
         return container;
+    }
+
+    private void style(JLabel label, String message, Color color) {
+        label.setText(message);
+        label.setForeground(color);
+        label.repaint();
     }
 
     private void close() {
