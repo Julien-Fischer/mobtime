@@ -1,4 +1,4 @@
-package net.agiledeveloper.mobtime.infra.swing;
+package net.agiledeveloper.mobtime.infra.swing.theme;
 
 import java.awt.*;
 

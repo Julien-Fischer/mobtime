@@ -1,4 +1,4 @@
-package net.agiledeveloper.mobtime.infra.swing;
+package net.agiledeveloper.mobtime.infra.swing.gui;
 
 import net.agiledeveloper.mobtime.domain.notification.Notification;
 import net.agiledeveloper.mobtime.domain.notification.session.SessionRefreshNotification;
@@ -13,7 +13,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.function.Consumer;
 
-import static net.agiledeveloper.mobtime.infra.swing.Theme.*;
+import static net.agiledeveloper.mobtime.infra.swing.theme.Theme.*;
 
 public class SwingPopup extends JFrame {
 

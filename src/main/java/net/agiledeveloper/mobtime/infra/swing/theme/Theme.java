@@ -1,8 +1,8 @@
-package net.agiledeveloper.mobtime.infra.swing;
+package net.agiledeveloper.mobtime.infra.swing.theme;
 
 import java.awt.*;
 
-import static net.agiledeveloper.mobtime.infra.swing.Palette.*;
+import static net.agiledeveloper.mobtime.infra.swing.theme.Palette.*;
 
 public class Theme {
 

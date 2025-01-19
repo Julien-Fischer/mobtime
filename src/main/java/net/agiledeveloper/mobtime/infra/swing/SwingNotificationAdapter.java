@@ -4,12 +4,16 @@ import net.agiledeveloper.mobtime.domain.notification.Notification;
 import net.agiledeveloper.mobtime.domain.notification.session.*;
 import net.agiledeveloper.mobtime.domain.ports.api.SessionPort;
 import net.agiledeveloper.mobtime.domain.ports.spi.NotificationPort;
+import net.agiledeveloper.mobtime.infra.swing.gui.GUIEvent;
+import net.agiledeveloper.mobtime.infra.swing.gui.Location;
+import net.agiledeveloper.mobtime.infra.swing.gui.SwingPopup;
+import net.agiledeveloper.mobtime.infra.swing.theme.Theme;
 
 import javax.swing.*;
 import java.awt.*;
 
-import static net.agiledeveloper.mobtime.infra.swing.Theme.MESSAGE_INFO;
-import static net.agiledeveloper.mobtime.infra.swing.Theme.MESSAGE_OK;
+import static net.agiledeveloper.mobtime.infra.swing.theme.Theme.MESSAGE_INFO;
+import static net.agiledeveloper.mobtime.infra.swing.theme.Theme.MESSAGE_OK;
 
 public class SwingNotificationAdapter implements NotificationPort {
 

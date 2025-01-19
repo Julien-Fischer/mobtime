@@ -9,10 +9,10 @@ import net.agiledeveloper.mobtime.domain.session.SessionService;
 import net.agiledeveloper.mobtime.infra.cli.BashParameter;
 import net.agiledeveloper.mobtime.infra.cli.CommandLineParser;
 import net.agiledeveloper.mobtime.infra.git.ShellAdapter;
-import net.agiledeveloper.mobtime.infra.swing.Location;
 import net.agiledeveloper.mobtime.infra.swing.SwingNotificationAdapter;
-import net.agiledeveloper.mobtime.infra.swing.SwingPopup;
 import net.agiledeveloper.mobtime.infra.swing.SwingWorkerTimeAdapter;
+import net.agiledeveloper.mobtime.infra.swing.gui.Location;
+import net.agiledeveloper.mobtime.infra.swing.gui.SwingPopup;
 import net.agiledeveloper.mobtime.utils.AppLogger;
 
 import java.util.List;
