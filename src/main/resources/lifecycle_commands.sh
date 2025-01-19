@@ -8,11 +8,40 @@ source "$(pwd)/src/main/resources/mobtime_lib.sh"
 
 mobstart() {
     local parameters=()
+    local -A defaults
+
+    local preference_file="${MOBTIME_CONFIG_FILE}"
+
+    if [[ -f "${preference_file}" ]]; then
+        while IFS= read -r line; do
+            [[ "$line" =~ ^#.*$ || -z "$line" ]] && continue
+            if [[ "$line" =~ ^--(.+) ]]; then
+                key="${BASH_REMATCH[1]}"
+                defaults["$key"]="${line}"
+            fi
+        done < "${preference_file}"
+    else
+        mobtime_log "W: Preference file not found at ${preference_file}"
+    fi
+
     if [[ $1 =~ ^[0-9]+$ ]]; then
         parameters+=("--duration=$1")
         shift
     fi
-    parameters+=("$@")
+
+    for param in "$@"; do
+        if [[ "$param" =~ ^--(.+) ]]; then
+            key="${BASH_REMATCH[1]}"
+            unset "defaults[$key]"
+        fi
+        parameters+=("$param")
+        mobtime_log "[override] override parameter ${defaults[$key]}"
+    done
+
+    for key in "${!defaults[@]}"; do
+        parameters+=("${defaults[$key]}")
+        mobtime_log "[default] adding missing default ${defaults[$key]}"
+    done
 
     mobtime_log_lifecycle_hook "mobstart"
     mobtime_kill_instances

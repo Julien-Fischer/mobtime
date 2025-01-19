@@ -54,6 +54,7 @@ This software was primarily tested on Linux, on Debian 12 and Kubuntu 24.
 
 | Command        | Description                                |
 |----------------|--------------------------------------------|
+| `mobconfig`    | To define your local preferences           |
 | `mobstatus`    | View the status of the current mob session |
 | `moblog`       | View MobTime logs for debugging            |
 | `mobuninstall` | Uninstall MobTime                          |
