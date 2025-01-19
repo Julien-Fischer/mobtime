@@ -22,7 +22,7 @@ public class SwingPopup extends JFrame {
 
     private static final String DEFAULT_TITLE = "MobTime";
 
-    private MouseListener mouseListener;
+    private MouseListener onHover;
 
     private Consumer<GUIEvent> onClickCallback;
     private JComponent mainContainer;
@@ -90,9 +90,9 @@ public class SwingPopup extends JFrame {
                 setGaugeVisible(true);
         }
         if (mode != FocusMode.NORMAL) {
-            mainContainer.removeMouseListener(mouseListener);
-            mouseListener = createMouseListener();
-            mainContainer.addMouseListener(mouseListener);
+            mainContainer.removeMouseListener(onHover);
+            onHover = createMouseListener();
+            mainContainer.addMouseListener(onHover);
         }
     }
 
