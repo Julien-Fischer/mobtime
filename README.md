@@ -52,13 +52,14 @@ This software was primarily tested on Linux, on Debian 12 and Kubuntu 24.
 
 ## Misc commands
 
-| Command        | Description                         |
-|----------------|-------------------------------------|
-| `moblog`       | View MobTime logs for debugging     |
-| `mobuninstall` | Uninstall MobTime                   |
-| `mobinfo`      | Print MobTime version and authors   |
-| `mobupdate`    | Update MobTime from the source code |
-| `mobps`        | List all mobtime running instances  |
+| Command        | Description                                |
+|----------------|--------------------------------------------|
+| `mobstatus`    | View the status of the current mob session |
+| `moblog`       | View MobTime logs for debugging            |
+| `mobuninstall` | Uninstall MobTime                          |
+| `mobinfo`      | Print MobTime version and authors          |
+| `mobupdate`    | Update MobTime from the source code        |
+| `mobps`        | List all mobtime running instances         |
 
 ## Acknowledgements
 

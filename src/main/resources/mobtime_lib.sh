@@ -157,6 +157,12 @@ mobinfo() {
     cat "${MOBTIME_INFO_FILE}"
 }
 
+mobstatus() {
+    mob status
+    echo ""
+    mobps
+}
+
 mobps() {
     local count
     count=$(ps aux | grep "[m]obtime" | wc -l)
