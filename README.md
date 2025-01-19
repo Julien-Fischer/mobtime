@@ -1,4 +1,4 @@
-# MobTime
+# mobtime
 
 An interactive timer built on top of mob.sh that automates keyboard switching during mob programming sessions.
 
@@ -10,7 +10,7 @@ An interactive timer built on top of mob.sh that automates keyboard switching du
 git clone https://github.com/Julien-Fischer/mobtime.git
 ```
 
-2. Run the installation script
+2. Run the installation wizard
 
 ```
 ./install.sh
@@ -18,7 +18,7 @@ git clone https://github.com/Julien-Fischer/mobtime.git
 
 ## How to use
 
-A MobTime session typically involves two steps:
+A mobtime session typically involves two steps:
 
 1. `mobstart` to start driving:
 2. Stop driving. You can either type:
@@ -36,12 +36,12 @@ This software was primarily tested on Linux, on Debian 12 and Kubuntu 24.
 
 ## API & Settings
 
-- `--start`      [command\] Start a new driving session
-  - `--duration` [option\] Set session duration in minutes (15 by default). Accepts: any positive integer
-  - `--auto`     [option\] Automatically execute mob next when time runs out
-  - `--focus`    [option\] Set the focus mode (normal by default). Accepts: normal, chill, zen
-- `--mini`       [global\] Minimize the GUI
-- `--location`   [global\] Set GUI location (north by default). Accepts: center, north, north-east, east, south-east, etc...
+- `--start`      (command) Start a new driving session
+  - `--duration` (option)  Set session duration in minutes (15 by default). Accepts: any positive integer
+  - `--auto`     (option)  Automatically execute mob next when time runs out
+  - `--focus`    (option)  Set the focus mode (normal by default). Accepts: normal, chill, zen
+- `--mini`       (option)  Minimize the GUI
+- `--location`   (option)  Set GUI location (north by default). Accepts: center, north, north-east, east, south-east, etc...
 
 ### Examples
 
@@ -57,13 +57,13 @@ This software was primarily tested on Linux, on Debian 12 and Kubuntu 24.
 | `mobhelp`      | Print an help message and exit             |
 | `mobstatus`    | View the status of the current mob session |
 | `mobconfig`    | Define your personal preferences           |
-| `mobinfo`      | Print MobTime version and authors          |
-| `mobupdate`    | Update MobTime from the source code        |
+| `mobinfo`      | Print mobtime version and authors          |
+| `mobupdate`    | Update mobtime from the source code        |
 | `mobdir`       | Navigate to mobtime runtime directory      |
-| `moblog`       | View MobTime logs for debugging            |
+| `moblog`       | View mobtime logs for debugging            |
 | `mobps`        | List all mobtime running instances         |
 | `mobkill`      | Kill all instances of mobtime              |
-| `mobuninstall` | Uninstall MobTime                          |
+| `mobuninstall` | Uninstall mobtime                          |
 
 ## Acknowledgements
 
@@ -74,4 +74,4 @@ Josian Chevalier, Thierry Lam, Elie Guedj, Amine Chaari, Rym Ben-Ali, and Sébas
 
 ## License
 
-MobTime is available under the [MIT License](https://opensource.org/licenses/MIT).
+mobtime is available under the [MIT License](https://opensource.org/licenses/MIT).
