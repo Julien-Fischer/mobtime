@@ -160,20 +160,21 @@ mobinfo() {
 mobps() {
     local count
     count=$(ps aux | grep "[m]obtime" | wc -l)
-    echo "There are currently ${count} mobtime instances running:"
-    echo ""
+    echo "mobtime instances currently running: ${count}"
 
     content=$(tr -d '[:space:]' < "${MOBTIME_PID_FILE}")
-    if [[ -z "$content" ]]; then
-        echo "PID file is empty"
-    else
+    if [[ -n "$content" ]]; then
+        echo ""
         echo "PID file contains:"
         echo "$content"
+        echo ""
+        echo "Running processes:"
     fi
 
-    echo ""
-    echo "Running processes:"
-    ps aux | grep "[m]obtime"
+    if [[ $count -gt 0 ]]; then
+        echo ""
+        ps aux | grep "[m]obtime"
+    fi
 }
 
 #########################################################################################
