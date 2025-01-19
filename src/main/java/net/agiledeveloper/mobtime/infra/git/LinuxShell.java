@@ -15,4 +15,9 @@ public enum LinuxShell implements Shell {
         return shellName;
     }
 
+    @Override
+    public String[] formatCommand(String commandName) {
+        return new String[] {shellName, "-c", commandName};
+    }
+
 }

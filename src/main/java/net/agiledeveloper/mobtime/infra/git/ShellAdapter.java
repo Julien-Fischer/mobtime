@@ -4,11 +4,11 @@ import net.agiledeveloper.mobtime.domain.ports.spi.MobPort;
 import net.agiledeveloper.mobtime.infra.InfraException;
 import net.agiledeveloper.mobtime.utils.AppLogger;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
 public class ShellAdapter implements MobPort {
+
+    private static final String COMMAND_ROOT_DIR = "/usr/local/bin";
+    private static final Shell PREFERRED_SHELL = LinuxShell.SH;
+
 
     @Override
     public void next() {
@@ -22,33 +22,12 @@ public class ShellAdapter implements MobPort {
 
 
     public int execute(String command) throws InfraException {
-        return execute(command, LinuxShell.SH);
+        return ShellExecutor.execute(command, PREFERRED_SHELL);
     }
-
-    public int execute(String command, Shell shell) throws InfraException {
-        var commandLine = new String[] {shell.getName(), "-c", command};
-        try {
-            Process process = Runtime.getRuntime().exec(commandLine);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                AppLogger.log(line);
-            }
-            int exitCode = process.waitFor();
-            AppLogger.log("Infra - mob exited with code " + exitCode);
-            return exitCode;
-        } catch (IOException e) {
-            throw new InfraException(e);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new InfraException(e);
-        }
-    }
-
 
     private void tryExecuting(String command) {
         try {
-            execute(command, LinuxShell.BASH);
+            execute(COMMAND_ROOT_DIR + "/" + command);
         } catch (InfraException cause) {
             AppLogger.log("Infra - " + command);
             throw new InfraException(cause);
