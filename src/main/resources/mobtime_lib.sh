@@ -213,11 +213,7 @@ mobdir() {
     ls --color=auto -AF --group-directories-first
 }
 
-#########################################################################################
-# Helper
-#########################################################################################
-
-mobtime_kill_instances() {
+mobkill() {
     local pid_list
     mapfile -t pid_list < <(ps aux | grep '[m]obtime' | awk '{print $2}')
 
@@ -230,14 +226,18 @@ mobtime_kill_instances() {
             echo "Failed to kill mobtime instance with PID: $pid"
             if kill -9 "${pid}" > /dev/null 2>&1; then
                 mobtime_log "Forcefully killed: $pid"
-                echo '' > "${MOBTIME_PID_FILE}"
                 mobtime_log "Cleared pid file: ${MOBTIME_PID_FILE}"
             else
                 mobtime_log "Failed to forcefully kill mobtime instance with PID: $pid"
             fi
         fi
     done
+    echo '' > "${MOBTIME_PID_FILE}"
 }
+
+#########################################################################################
+# Helper
+#########################################################################################
 
 mobtime_log_lifecycle_hook() {
     local hook_name="${1}"

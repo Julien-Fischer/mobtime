@@ -55,14 +55,15 @@ This software was primarily tested on Linux, on Debian 12 and Kubuntu 24.
 | Command        | Description                                |
 |----------------|--------------------------------------------|
 | `mobhelp`      | Print an help message and exit             |
-| `mobconfig`    | To define your local preferences           |
 | `mobstatus`    | View the status of the current mob session |
-| `moblog`       | View MobTime logs for debugging            |
-| `mobuninstall` | Uninstall MobTime                          |
+| `mobconfig`    | Define your personal preferences           |
 | `mobinfo`      | Print MobTime version and authors          |
 | `mobupdate`    | Update MobTime from the source code        |
-| `mobps`        | List all mobtime running instances         |
 | `mobdir`       | Navigate to mobtime runtime directory      |
+| `moblog`       | View MobTime logs for debugging            |
+| `mobps`        | List all mobtime running instances         |
+| `mobkill`      | Kill all instances of mobtime              |
+| `mobuninstall` | Uninstall MobTime                          |
 
 ## Acknowledgements
 

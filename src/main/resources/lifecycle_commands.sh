@@ -44,7 +44,7 @@ mobstart() {
     done
 
     mobtime_log_lifecycle_hook "mobstart"
-    mobtime_kill_instances
+    mobkill
 
     if [[ ! -f "${MOBTIME_JAR_FILE}" ]]; then
         mobtime_log "E: mobtime.jar not found at ${MOBTIME_JAR_FILE}"
@@ -68,12 +68,12 @@ mobstart() {
 
 mobnext() {
     mobtime_log_lifecycle_hook "mobnext"
-    mobtime_kill_instances
+    mobkill
     mob next
 }
 
 mobdone() {
     mobtime_log_lifecycle_hook "mobdone"
-    mobtime_kill_instances
+    mobkill
     mob done
 }
