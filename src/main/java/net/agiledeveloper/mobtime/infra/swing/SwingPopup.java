@@ -3,7 +3,6 @@ package net.agiledeveloper.mobtime.infra.swing;
 import net.agiledeveloper.mobtime.domain.notification.Notification;
 import net.agiledeveloper.mobtime.domain.notification.session.SessionRefreshNotification;
 import net.agiledeveloper.mobtime.domain.session.FocusMode;
-import net.agiledeveloper.mobtime.domain.session.Session;
 import net.agiledeveloper.mobtime.utils.AppLogger;
 
 import javax.swing.*;
@@ -23,7 +22,6 @@ public class SwingPopup extends JFrame {
 
     private static final String DEFAULT_TITLE = "MobTime";
 
-    private FocusMode focusMode = Session.DEFAULT_FOCUS_MODE;
     private MouseListener mouseListener;
 
     private Consumer<GUIEvent> onClickCallback;
@@ -73,7 +71,6 @@ public class SwingPopup extends JFrame {
     }
 
     public void setFocusMode(FocusMode mode) {
-        this.focusMode = mode;
         switch (mode) {
             case ZEN:
                 doneButton.setVisible(false);
@@ -92,7 +89,7 @@ public class SwingPopup extends JFrame {
                 setButtonsVisible(true);
                 setGaugeVisible(true);
         }
-        if (focusMode != FocusMode.NORMAL) {
+        if (mode != FocusMode.NORMAL) {
             mainContainer.removeMouseListener(mouseListener);
             mouseListener = createMouseListener();
             mainContainer.addMouseListener(mouseListener);
