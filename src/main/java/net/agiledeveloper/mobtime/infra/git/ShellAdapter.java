@@ -12,22 +12,12 @@ public class ShellAdapter implements MobPort {
 
     @Override
     public void next() {
-        try {
-            execute("mob next");
-        } catch (InfraException cause) {
-            throw new InfraException(cause);
-        }
-        AppLogger.log("Infra - mob next");
+        tryExecuting("mobnext");
     }
 
     @Override
     public void done() {
-        try {
-            execute("mob done");
-        } catch (InfraException cause) {
-            throw new InfraException(cause);
-        }
-        AppLogger.log("Infra - mob done");
+        tryExecuting("mobdone");
     }
 
 
@@ -48,6 +38,16 @@ public class ShellAdapter implements MobPort {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new InfraException(e);
+        }
+    }
+
+
+    private void tryExecuting(String command) {
+        try {
+            execute(command);
+        } catch (InfraException cause) {
+            AppLogger.log("Infra - " + command);
+            throw new InfraException(cause);
         }
     }
 

@@ -44,7 +44,7 @@ public class Application {
             return procedure.get();
         } catch (Exception exception) {
             logError(exception.getMessage());
-            shellAdapter.execute("mob done");
+            shellAdapter.execute("mobdone");
             throw exception;
         }
     }
