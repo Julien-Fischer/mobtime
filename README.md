@@ -36,12 +36,13 @@ This software was primarily tested on Linux, on Debian 12 and Kubuntu 24.
 
 ## API & Settings
 
-- `--start`      (command) Start a new driving session
-  - `--duration` (option)  Set session duration in minutes (15 by default). Accepts: any positive integer
-  - `--auto`     (option)  Automatically execute mob next when time runs out
-  - `--focus`    (option)  Set the focus mode (normal by default). Accepts: normal, chill, zen
-- `--mini`       (option)  Minimize the GUI
-- `--location`   (option)  Set GUI location (north by default). Accepts: center, north, north-east, east, south-east, etc...
+- `--start`      (Command) Start a new driving session
+  - `--duration` (Option)  Set session duration in minutes (15 by default). Accepts: any positive integer
+  - `--auto`     (Option)  Automatically execute mob next when time runs out
+  - `--focus`    (Option)  Set the focus mode (normal by default). Accepts: normal, chill, zen
+- `--mini`       (Option)  Minimize the GUI
+- `--location`   (Option)  Set GUI location (north by default). Accepts: center, north, north-east, east, south-east, etc...
+- `--user-name`  (Option)  Set a username for this session (Driver by default)
 
 ### Examples
 

@@ -6,6 +6,7 @@
 #
 # To enable a setting, simply remove the leading # character.
 # *************************************************************************************************
+# --user-name=Driver
 # --duration=15
 # --focus=chill
 # --location=north-east
