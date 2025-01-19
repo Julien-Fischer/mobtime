@@ -13,7 +13,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.function.Consumer;
 
-import static net.agiledeveloper.mobtime.infra.swing.Palette.*;
+import static net.agiledeveloper.mobtime.infra.swing.Theme.*;
 
 public class SwingPopup extends JFrame {
 
@@ -56,7 +56,7 @@ public class SwingPopup extends JFrame {
 
     public void setMessage(Notification notification, Color color) {
         messageLabel.setText(notification.message());
-        messageLabel.setForeground(color.darker());
+        messageLabel.setForeground(color);
         messageLabel.repaint();
         valueLabel.setText(notification.value());
         valueLabel.setForeground(color);

@@ -8,8 +8,8 @@ import net.agiledeveloper.mobtime.domain.ports.spi.NotificationPort;
 import javax.swing.*;
 import java.awt.*;
 
-import static net.agiledeveloper.mobtime.infra.swing.Palette.MESSAGE_INFO;
-import static net.agiledeveloper.mobtime.infra.swing.Palette.MESSAGE_OK;
+import static net.agiledeveloper.mobtime.infra.swing.Theme.MESSAGE_INFO;
+import static net.agiledeveloper.mobtime.infra.swing.Theme.MESSAGE_OK;
 
 public class SwingNotificationAdapter implements NotificationPort {
 
@@ -61,12 +61,12 @@ public class SwingNotificationAdapter implements NotificationPort {
     }
 
     private void handleCloseNotification(Notification notification) {
-        currentColor = Palette.MESSAGE_WARN;
+        currentColor = Theme.MESSAGE_WARN;
         notifySessionEnd(notification);
     }
 
     private void handleShutdownNotification(Notification notification) {
-        currentColor = Palette.MESSAGE_WARN;
+        currentColor = Theme.MESSAGE_WARN;
         shutdown(notification);
     }
 

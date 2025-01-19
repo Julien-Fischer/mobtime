@@ -4,14 +4,16 @@ import java.awt.*;
 
 public class Palette {
 
-    public static final Color WINDOW_BG       = new Color(25, 25, 25);
-    public static final Color BUTTON_BG       = new Color(50, 50, 50);
-    public static final Color BUTTON_FG       = new Color(200, 200, 200);
+    public static final Color LIGHTGRAY    = new Color(200, 200, 200);
+    public static final Color GRAY         = new Color(180, 180, 180);
+    public static final Color DARK_GRAY    = new Color(50, 50, 50);
+    public static final Color DARKER_GRAY  = new Color(43, 45, 48);
 
-    public static final Color MESSAGE_OK      = Color.GREEN;
-    public static final Color MESSAGE_INFO    = Color.YELLOW;
-    public static final Color MESSAGE_WARN    = Color.MAGENTA;
-    public static final Color MESSAGE_NEUTRAL = new Color(180, 180, 180);
+    public static final Color GREEN        = new Color(87, 150, 92).brighter();
+    public static final Color YELLOW       = new Color(194, 158, 74);
+    public static final Color MAGENTA      = Color.MAGENTA;
+    public static final Color ORANGE       = new Color(207, 142, 109);
+    public static final Color BLUE         = new Color(54, 117, 240);
 
     private Palette() {}
 
