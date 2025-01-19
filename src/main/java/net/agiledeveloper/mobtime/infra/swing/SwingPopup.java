@@ -3,6 +3,7 @@ package net.agiledeveloper.mobtime.infra.swing;
 import net.agiledeveloper.mobtime.domain.notification.Notification;
 import net.agiledeveloper.mobtime.domain.notification.session.SessionRefreshNotification;
 import net.agiledeveloper.mobtime.domain.session.FocusMode;
+import net.agiledeveloper.mobtime.domain.session.Session;
 import net.agiledeveloper.mobtime.utils.AppLogger;
 
 import javax.swing.*;
@@ -10,6 +11,7 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.function.Consumer;
 
 import static net.agiledeveloper.mobtime.infra.swing.Palette.*;
@@ -21,7 +23,10 @@ public class SwingPopup extends JFrame {
 
     private static final String DEFAULT_TITLE = "MobTime";
 
-    private transient Consumer<GUIEvent> onClickCallback;
+    private FocusMode focusMode = Session.DEFAULT_FOCUS_MODE;
+    private MouseListener mouseListener;
+
+    private Consumer<GUIEvent> onClickCallback;
     private JComponent mainContainer;
     private JComponent doneButton;
     private JComponent nextButton;
@@ -68,6 +73,7 @@ public class SwingPopup extends JFrame {
     }
 
     public void setFocusMode(FocusMode mode) {
+        this.focusMode = mode;
         switch (mode) {
             case ZEN:
                 doneButton.setVisible(false);
@@ -85,6 +91,11 @@ public class SwingPopup extends JFrame {
                 valueLabel.setVisible(true);
                 setButtonsVisible(true);
                 setGaugeVisible(true);
+        }
+        if (focusMode != FocusMode.NORMAL) {
+            mainContainer.removeMouseListener(mouseListener);
+            mouseListener = createMouseListener();
+            mainContainer.addMouseListener(mouseListener);
         }
     }
 
@@ -178,6 +189,19 @@ public class SwingPopup extends JFrame {
         doneButton.setVisible(false);
     }
 
+    private MouseListener createMouseListener() {
+        return new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                valueLabel.setVisible(true);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                valueLabel.setVisible(false);
+            }
+        };
+    }
 
     private JPanel wrap(Component... components) {
         var wrapper = new GlassPanel();
@@ -194,6 +218,7 @@ public class SwingPopup extends JFrame {
         container.setBackground(Color.RED);
         return container;
     }
+
 
     private static class GlassPanel extends JPanel {
 
