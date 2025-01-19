@@ -1,14 +1,18 @@
 #!/usr/bin/env bash
 
 MOBTIME_RUNTIME_DIR="${HOME}/mobtime"
-MOBTIME_JAR_FILE="${MOBTIME_RUNTIME_DIR}/mobtime.jar"
-MOBTIME_PID_FILE="${MOBTIME_RUNTIME_DIR}/pids.log"
-MOBTIME_LOG_FILE="${MOBTIME_RUNTIME_DIR}/logs.log"
-MOBTIME_LIB_FILE="${MOBTIME_RUNTIME_DIR}/mobtime_lib.sh"
-MOBTIME_LIFECYCLE_COMMANDS_FILE="${MOBTIME_RUNTIME_DIR}/lifecycle_commands.sh"
-MOBTIME_INFO_FILE="${MOBTIME_RUNTIME_DIR}/info"
+MOBTIME_SRC_DIR="${HOME}/mobtime/src"
+MOBTIME_HELP_DIR="${HOME}/mobtime/help"
+MOBTIME_LOGS_DIR="${HOME}/mobtime/logs"
+
+MOBTIME_JAR_FILE="${MOBTIME_SRC_DIR}/mobtime.jar"
+MOBTIME_LIB_FILE="${MOBTIME_SRC_DIR}/mobtime_lib.sh"
+MOBTIME_LIFECYCLE_COMMANDS_FILE="${MOBTIME_SRC_DIR}/lifecycle_commands.sh"
+MOBTIME_PID_FILE="${MOBTIME_LOGS_DIR}/pids.log"
+MOBTIME_LOG_FILE="${MOBTIME_LOGS_DIR}/commands.log"
+MOBTIME_INFO_FILE="${MOBTIME_HELP_DIR}/info"
+MOBTIME_HELP_FILE="${MOBTIME_HELP_DIR}/help"
 MOBTIME_CONFIG_FILE="${MOBTIME_RUNTIME_DIR}/preferences"
-MOBTIME_HELP_FILE="${MOBTIME_RUNTIME_DIR}/help"
 
 LOCAL_DIR="$(pwd)/src/main/resources"
 LOCAL_ALIASES_FILE="${LOCAL_DIR}/lifecycle_commands.sh"
@@ -49,9 +53,14 @@ mobinstall() {
         return 1
     fi
 
-    wizard_log "> Installing executable..."
-    mkdir -p "${MOBTIME_RUNTIME_DIR}"
+    wizard_log "> Creating runtime directories..."
+    mkdir -p "${MOBTIME_RUNTIME_DIR}" || return 1
+    mkdir -p "${MOBTIME_SRC_DIR}"     || return 1
+    mkdir -p "${MOBTIME_HELP_DIR}"    || return 1
+    mkdir -p "${MOBTIME_LOGS_DIR}"    || return 1
+    wizard_log "  OK - Runtime directories created"
 
+    wizard_log "> Installing executable..."
     if cp "${TARGET_COMPILED_JAR_FILE}" "${MOBTIME_JAR_FILE}" && chmod +x "${MOBTIME_JAR_FILE}"; then
         wizard_log "  OK - Executable installed"
     else
@@ -69,7 +78,7 @@ mobinstall() {
     fi
     wizard_log "  OK - system files initialized"
 
-    wizard_log "> Installing MobTime shared functions..."
+    wizard_log "> Installing mobtime shared functions..."
     if cp "${LOCAL_MOBTIME_LIB_FILE}" "${MOBTIME_LIB_FILE}"; then
         wizard_log "  OK - Shared functions installed"
     else
