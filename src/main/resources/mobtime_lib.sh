@@ -6,10 +6,12 @@ MOBTIME_PID_FILE="${MOBTIME_RUNTIME_DIR}/pids.log"
 MOBTIME_LOG_FILE="${MOBTIME_RUNTIME_DIR}/logs.log"
 MOBTIME_LIB_FILE="${MOBTIME_RUNTIME_DIR}/mobtime_lib.sh"
 MOBTIME_LIFECYCLE_COMMANDS_FILE="${MOBTIME_RUNTIME_DIR}/lifecycle_commands.sh"
+MOBTIME_INFO_FILE="${MOBTIME_RUNTIME_DIR}/info"
 
 LOCAL_DIR="$(pwd)/src/main/resources"
 LOCAL_ALIASES_FILE="${LOCAL_DIR}/lifecycle_commands.sh"
 LOCAL_MOBTIME_LIB_FILE="${LOCAL_DIR}/mobtime_lib.sh"
+LOCAL_INFO_FILE="${LOCAL_DIR}/info"
 
 TARGET_COMPILED_JAR_FILE="$(pwd)/target/mobtime.jar"
 
@@ -56,6 +58,7 @@ mobinstall() {
     wizard_log "> Initializing log files..."
     touch "${MOBTIME_PID_FILE}"
     touch "${MOBTIME_LOG_FILE}"
+    cp "${LOCAL_INFO_FILE}" "${MOBTIME_INFO_FILE}"
     wizard_log "  OK - Log files initialized"
 
     wizard_log "> Installing MobTime shared functions..."
@@ -144,6 +147,14 @@ mobuninstall() {
         wizard_log "  OK - rc files updated successfully."
     fi
     wizard_log "DONE - MobTime installed successfully."
+}
+
+mobupdate() {
+    mobinstall
+}
+
+mobinfo() {
+    cat "${MOBTIME_INFO_FILE}"
 }
 
 #########################################################################################

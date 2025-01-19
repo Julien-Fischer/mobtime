@@ -50,6 +50,15 @@ This software was primarily tested on Linux, on Debian 12 and Kubuntu 24.
 - `mobstart --auto` Automatically execute `mobnext` when time runs out
 - `mobstart --duration=7 --focus=zen --location=north-east --mini` Start a 7-minute driving session in Zen mode with a minimalist UI. The timer will be displayed in the top-right corner of the screen.
 
+## Misc commands
+
+| Command        | Description                       |
+|----------------|-----------------------------------|
+| `mobupdate`    | Update MobTime                    |
+| `moblog`       | View MobTime logs for debugging   |
+| `mobuninstall` | Uninstall MobTime                 |
+| `mobinfo`      | Print MobTime version and authors |
+
 ## Acknowledgements
 
 Special thanks to Dr. Simmon Harrer & Josen Christ for their outstanding work on mob.sh.
