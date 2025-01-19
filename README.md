@@ -62,6 +62,7 @@ This software was primarily tested on Linux, on Debian 12 and Kubuntu 24.
 | `mobinfo`      | Print MobTime version and authors          |
 | `mobupdate`    | Update MobTime from the source code        |
 | `mobps`        | List all mobtime running instances         |
+| `mobdir`       | Navigate to mobtime runtime directory      |
 
 ## Acknowledgements
 
