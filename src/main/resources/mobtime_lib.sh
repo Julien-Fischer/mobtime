@@ -24,13 +24,13 @@ MOBTIME_WATERMARK="# Created by \`MobTime\` on"
 
 # shellcheck disable=SC2120
 mobinstall() {
-    local quiet=false
-    [[ "${1}" == "-q" ]] && quiet=true
+    local first_install=false
+    [[ "${1}" == "--first" ]] && first_install=true
 
     wizard_log "> Compiling MobTime..."
     wizard_log "  (This might take up to a few minutes depending on your setup)"
 
-    if $quiet; then
+    if $first_install; then
         mvn clean package > /dev/null
     else
         mvn clean package
@@ -103,7 +103,11 @@ mobinstall() {
     fi
     wizard_log "DONE - MobTime installed successfully."
 
-    mobtime_log_lifecycle_hook "installed"
+    if $first_install; then
+        mobtime_log_lifecycle_hook "installed"
+    else
+        mobtime_log_lifecycle_hook "updated"
+    fi
 }
 
 mobuninstall() {
@@ -183,6 +187,10 @@ mobtime_log() {
 wizard_log() {
     local message="${1}"
     echo "[mobtime] ${message}"
+}
+
+moblog() {
+    cat "${MOBTIME_LOG_FILE}"
 }
 
 #########################################################################################
