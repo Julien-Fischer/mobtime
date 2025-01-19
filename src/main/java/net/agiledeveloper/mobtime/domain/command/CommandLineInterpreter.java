@@ -3,10 +3,7 @@ package net.agiledeveloper.mobtime.domain.command;
 import net.agiledeveloper.mobtime.domain.command.commands.Command;
 import net.agiledeveloper.mobtime.domain.command.commands.impl.StartCommand;
 import net.agiledeveloper.mobtime.domain.command.parameters.Parameter;
-import net.agiledeveloper.mobtime.domain.command.parameters.impl.AutoModeParameter;
-import net.agiledeveloper.mobtime.domain.command.parameters.impl.DryRunParameter;
-import net.agiledeveloper.mobtime.domain.command.parameters.impl.DurationParameter;
-import net.agiledeveloper.mobtime.domain.command.parameters.impl.FocusModeParameter;
+import net.agiledeveloper.mobtime.domain.command.parameters.impl.*;
 import net.agiledeveloper.mobtime.domain.session.FocusMode;
 import net.agiledeveloper.mobtime.domain.session.Session;
 import net.agiledeveloper.mobtime.domain.session.SessionService;
@@ -60,6 +57,10 @@ public class CommandLineInterpreter {
                 parameters.add(new FocusModeParameter(readFocus(parameter)));
             }
 
+            else if (parameter.hasName("user-name")) {
+                parameters.add(new UserNameParameter(readUserName(parameter)));
+            }
+
             else if (parameter.hasName("invalid")) {
                 var msg = "Error: --invalid is not a valid argument";
                 AppLogger.log(msg);
@@ -79,6 +80,10 @@ public class CommandLineInterpreter {
         return command;
     }
 
+
+    private static String readUserName(BashParameter argument) {
+        return argument.hasValue() ? argument.value() : Session.DEFAULT_USERNAME;
+    }
 
     private static FocusMode readFocus(BashParameter argument) {
         var mode = Session.DEFAULT_FOCUS_MODE;

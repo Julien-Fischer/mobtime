@@ -33,11 +33,11 @@ public class Builders {
     }
 
     public static Session aSession() {
-        return new Session(aDuration(), false, FocusMode.NORMAL);
+        return new Session(aDuration(), false, FocusMode.NORMAL, Session.DEFAULT_USERNAME);
     }
 
     public static Session aSession(boolean autoModeEnabled) {
-        return new Session(aDuration(), autoModeEnabled, FocusMode.NORMAL);
+        return new Session(aDuration(), autoModeEnabled, FocusMode.NORMAL, Session.DEFAULT_USERNAME);
     }
 
 }

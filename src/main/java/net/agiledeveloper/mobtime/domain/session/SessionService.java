@@ -65,7 +65,7 @@ public class SessionService {
 
     private void refreshSession(Session session, Duration remainingTime, boolean littleTimeLeft) {
         var durationString = formatDuration(remainingTime);
-        var notification = new SessionRefreshNotification(session, "Driving", durationString, littleTimeLeft, remainingTime);
+        var notification = new SessionRefreshNotification(session, session.username(), durationString, littleTimeLeft, remainingTime);
         notificationPort.send(notification);
         AppLogger.log("  Session ending in " + durationString);
     }

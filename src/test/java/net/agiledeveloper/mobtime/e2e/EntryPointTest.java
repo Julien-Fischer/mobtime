@@ -101,8 +101,18 @@ class EntryPointTest {
     }
 
     @Test
+    void app_when_missing_username_uses_default_username() {
+        withParameters("--start", "--user-name=");
+
+        runApp();
+
+        assertStandardOutput()
+                .contains("--user-name=" + Session.DEFAULT_USERNAME);
+    }
+
+    @Test
     void app_prints_all_input_parameters() {
-        withParameters("--start", "--duration=42", "--mode=zen", "--mini");
+        withParameters("--start", "--duration=42", "--mode=zen", "--mini", "--user-name=John");
 
         runApp();
 
@@ -110,7 +120,8 @@ class EntryPointTest {
                 .contains("--start")
                 .contains("--duration=42")
                 .contains("--mode=zen")
-                .contains("--mini");
+                .contains("--mini")
+                .contains("--user-name=John");
     }
 
     @Test

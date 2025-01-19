@@ -10,18 +10,20 @@ public record Session(
         Duration duration,
         boolean isAutoModeEnabled,
         FocusMode focusMode,
+        String username,
         Instant createdAt
 ) {
 
     private static final int DEFAULT_DURATION_SECONDS = 15 * 60;
     private static final int DEFAULT_GRACE_DURATION_SECONDS = 2;
 
+    public static final String DEFAULT_USERNAME = "Driver";
     public static final Duration DEFAULT_DURATION = Duration.ofSeconds(DEFAULT_DURATION_SECONDS);
     public static final FocusMode DEFAULT_FOCUS_MODE = FocusMode.NORMAL;
 
 
-    public Session(Duration duration, boolean isAutoModeEnabled, FocusMode mode) {
-        this(duration, isAutoModeEnabled, mode, Instant.now());
+    public Session(Duration duration, boolean isAutoModeEnabled, FocusMode mode, String username) {
+        this(duration, isAutoModeEnabled, mode, username, Instant.now());
     }
 
     public Duration graceDuration() {

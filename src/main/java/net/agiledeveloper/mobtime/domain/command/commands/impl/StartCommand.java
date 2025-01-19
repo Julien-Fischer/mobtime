@@ -2,10 +2,7 @@ package net.agiledeveloper.mobtime.domain.command.commands.impl;
 
 import net.agiledeveloper.mobtime.domain.command.commands.AbstractCommand;
 import net.agiledeveloper.mobtime.domain.command.parameters.Parameter;
-import net.agiledeveloper.mobtime.domain.command.parameters.impl.AutoModeParameter;
-import net.agiledeveloper.mobtime.domain.command.parameters.impl.DryRunParameter;
-import net.agiledeveloper.mobtime.domain.command.parameters.impl.DurationParameter;
-import net.agiledeveloper.mobtime.domain.command.parameters.impl.FocusModeParameter;
+import net.agiledeveloper.mobtime.domain.command.parameters.impl.*;
 import net.agiledeveloper.mobtime.domain.session.FocusMode;
 import net.agiledeveloper.mobtime.domain.session.Session;
 import net.agiledeveloper.mobtime.domain.session.SessionService;
@@ -62,7 +59,7 @@ public class StartCommand extends AbstractCommand {
 
     private void mobStart() {
         if (!isDryRunEnabled()) {
-            var session = new Session(getDuration(), isAutoModeEnabled(), findFocusMode());
+            var session = new Session(getDuration(), isAutoModeEnabled(), findFocusMode(), findUserName());
             sessionService.open(session);
         }
     }
@@ -84,6 +81,16 @@ public class StartCommand extends AbstractCommand {
             return focusParameter.value();
         } else {
             return Session.DEFAULT_FOCUS_MODE;
+        }
+    }
+
+    private String findUserName() {
+        Optional<Parameter> userName = get(UserNameParameter.class);
+        if (userName.isPresent()) {
+            var parameter = (UserNameParameter) userName.get();
+            return parameter.value();
+        } else {
+            return Session.DEFAULT_USERNAME;
         }
     }
 
