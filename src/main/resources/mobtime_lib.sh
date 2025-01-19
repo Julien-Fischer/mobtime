@@ -157,6 +157,25 @@ mobinfo() {
     cat "${MOBTIME_INFO_FILE}"
 }
 
+mobps() {
+    local count
+    count=$(ps aux | grep "[m]obtime" | wc -l)
+    echo "There are currently ${count} mobtime instances running:"
+    echo ""
+
+    content=$(tr -d '[:space:]' < "${MOBTIME_PID_FILE}")
+    if [[ -z "$content" ]]; then
+        echo "PID file is empty"
+    else
+        echo "PID file contains:"
+        echo "$content"
+    fi
+
+    echo ""
+    echo "Running processes:"
+    ps aux | grep "[m]obtime"
+}
+
 #########################################################################################
 # Helper
 #########################################################################################
