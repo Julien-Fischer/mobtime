@@ -22,7 +22,11 @@ public class ShellAdapter implements MobPort {
 
 
     public int execute(String command) throws InfraException {
-        String[] commandLine = new String[] {"sh", "-c", command};
+        return execute(command, LinuxShell.SH);
+    }
+
+    public int execute(String command, Shell shell) throws InfraException {
+        var commandLine = new String[] {shell.getName(), "-c", command};
         try {
             Process process = Runtime.getRuntime().exec(commandLine);
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -44,7 +48,7 @@ public class ShellAdapter implements MobPort {
 
     private void tryExecuting(String command) {
         try {
-            execute(command);
+            execute(command, LinuxShell.BASH);
         } catch (InfraException cause) {
             AppLogger.log("Infra - " + command);
             throw new InfraException(cause);
