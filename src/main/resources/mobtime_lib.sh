@@ -192,17 +192,3 @@ wizard_log() {
 moblog() {
     cat "${MOBTIME_LOG_FILE}"
 }
-
-#########################################################################################
-# For MobTime contributors
-#########################################################################################
-
-mobcompile() {
-    mvn clean package
-    return $?
-}
-
-mobupdate() {
-    mobcompile && mobinstall
-    return $?
-}
