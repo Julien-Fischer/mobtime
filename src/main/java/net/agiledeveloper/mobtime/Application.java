@@ -50,12 +50,12 @@ public class Application {
     }
 
     private static void logError(String message) {
-        var SEPARATOR = "/!\\ ".repeat(20);
-        AppLogger.logSeparator(SEPARATOR);
+        var errorSeparator = "/!\\ ".repeat(20);
+        AppLogger.logSeparator(errorSeparator);
         AppLogger.err("Error parsing command");
         AppLogger.err("E: " + message);
         AppLogger.err("Closing mob session...");
-        AppLogger.logSeparator(SEPARATOR);
+        AppLogger.logSeparator(errorSeparator);
     }
 
     private static boolean shouldMinimize(List<BashParameter> bashParameters) {
