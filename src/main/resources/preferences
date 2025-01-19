@@ -1,10 +1,11 @@
-# This file lets you define the default configuration to apply when using mobstart
-# You can edit this file at any time
-# You can override this configuration on a per-session basis by providing parameters after mobstart
-# Example:
-# mobstart --focus=normal will temporarily override the focus defined in this file
-# To uncomment a setting, delete the leading # character
+# This file lets you set default configurations for the `mobstart` command.
+# You can temporarily override these settings by providing different values when you run the command.
 #
+# Example:
+# Running mobstart --focus=normal will temporarily change the focus from what is defined in this file.
+#
+# To enable a setting, simply remove the leading # character.
+# *************************************************************************************************
 # --duration=15
 # --focus=chill
 # --location=north-east
