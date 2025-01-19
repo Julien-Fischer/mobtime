@@ -1,6 +1,7 @@
 package net.agiledeveloper.mobtime.infra.swing.gui;
 
 import net.agiledeveloper.mobtime.domain.notification.Notification;
+import net.agiledeveloper.mobtime.domain.notification.session.SessionCloseNotification;
 import net.agiledeveloper.mobtime.domain.notification.session.SessionRefreshNotification;
 import net.agiledeveloper.mobtime.domain.session.FocusMode;
 import net.agiledeveloper.mobtime.utils.AppLogger;
@@ -42,7 +43,9 @@ public class SwingPopup extends JFrame {
         super(DEFAULT_TITLE);
         var session = notification.session();
         init(notification);
-        setFocusMode(session.focusMode());
+        if (!(notification instanceof SessionCloseNotification)) {
+            setFocusMode(session.focusMode());
+        }
         if (minimized) {
             minimize();
         }
@@ -86,9 +89,8 @@ public class SwingPopup extends JFrame {
                 setGaugeVisible(true);
         }
         if (mode != FocusMode.NORMAL) {
-            mainContainer.removeMouseListener(onHover);
-            onHover = createMouseListener();
-            mainContainer.addMouseListener(onHover);
+            ignoreHover();
+            acceptHover();
         }
     }
 
@@ -188,7 +190,7 @@ public class SwingPopup extends JFrame {
         doneButton.setVisible(false);
     }
 
-    private MouseListener createMouseListener() {
+    private MouseListener createHoverListener() {
         return new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -200,6 +202,16 @@ public class SwingPopup extends JFrame {
                 counterLabel.setVisible(false);
             }
         };
+    }
+
+    private void ignoreHover() {
+        mainContainer.removeMouseListener(onHover);
+        onHover = null;
+    }
+
+    private void acceptHover() {
+        onHover = createHoverListener();
+        mainContainer.addMouseListener(onHover);
     }
 
     private JPanel wrap(Component... components) {
