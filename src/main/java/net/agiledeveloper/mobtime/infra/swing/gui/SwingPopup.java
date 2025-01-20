@@ -72,12 +72,10 @@ public class SwingPopup extends JFrame {
     public void setFocusMode(FocusMode mode) {
         switch (mode) {
             case ZEN:
-                doneButton.setVisible(false);
                 counterLabel.setVisible(false);
                 setGaugeVisible(false);
                 break;
             case CHILL:
-                doneButton.setVisible(false);
                 counterLabel.setVisible(false);
                 setGaugeVisible(true);
                 break;
@@ -186,7 +184,6 @@ public class SwingPopup extends JFrame {
             }
         });
         closeButtonContainer.setVisible(false);
-        doneButton.setVisible(false);
     }
 
     private MouseListener createHoverListener() {
