@@ -139,13 +139,14 @@ mobinstall() {
     else
         wizard_log "  OK - rc files updated successfully."
     fi
-    wizard_log "DONE - mobtime installed successfully."
 
     if $first_install; then
         mobtime_log_lifecycle_hook "installed"
     else
         mobtime_log_lifecycle_hook "updated"
     fi
+
+    wizard_log "DONE - mobtime installed successfully."
 }
 
 mobuninstall() {
