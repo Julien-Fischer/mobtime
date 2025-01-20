@@ -27,7 +27,7 @@ TARGET_COMPILED_JAR_FILE="$(pwd)/target/mobtime.jar"
 
 USER_RC_FILES=("${HOME}/.bashrc" "${HOME}/.zshrc")
 USER_RC_MOBTIME_LIB_SOURCE_LINE="source ${MOBTIME_LIB_FILE}"
-MOBTIME_WATERMARK="# Created by \`MobTime\` on"
+MOBTIME_WATERMARK="# Created by \`mobtime\` on"
 
 #########################################################################################
 # Install & uninstall
@@ -38,7 +38,7 @@ mobinstall() {
     local first_install=false
     [[ "${1}" == "--first" ]] && first_install=true
 
-    echo "You are about to install mobtime."
+    wizard_log "You are about to install mobtime."
     if ! sudo -v; then
         echo "E: This script requires sudo privileges. Please provide valid credentials."
         exit 1
@@ -47,7 +47,7 @@ mobinstall() {
     mobtime_require_dependency mvn "Maven" "sudo apt update && sudo apt install maven -y"
     mobtime_require_dependency mob "mob.sh" "curl -sL install.mob.sh | sh -s - --user"
 
-    wizard_log "> Compiling MobTime..."
+    wizard_log "> Compiling mobtime..."
     wizard_log "  (This might take up to a few minutes depending on your setup)"
 
     if $first_install; then
@@ -58,17 +58,27 @@ mobinstall() {
     fi
 
     if [[ $? -eq 0 ]]; then
-        wizard_log "  OK - Compilation"
+        wizard_log "  OK - mobtime compiled successfully"
     else
-        wizard_log "  E: Could not compile MobTime"
+        wizard_log "  E: Could not compile mobtime"
         return 1
     fi
 
     wizard_log "> Creating runtime directories..."
-    mkdir -p "${MOBTIME_RUNTIME_DIR}" || return 1
-    mkdir -p "${MOBTIME_SRC_DIR}"     || return 1
-    mkdir -p "${MOBTIME_HELP_DIR}"    || return 1
-    mkdir -p "${MOBTIME_LOGS_DIR}"    || return 1
+    local runtime_directories=(
+        "${MOBTIME_RUNTIME_DIR}"
+        "${MOBTIME_SRC_DIR}"
+        "${MOBTIME_HELP_DIR}"
+        "${MOBTIME_LOGS_DIR}"
+    )
+    for dir in "${runtime_directories[@]}"; do
+        if mkdir -p "${dir}"; then
+            wizard_log "  -> Created: '${dir}'"
+        else
+            wizard_log "E: Failed to create directory '${dir}'" >&2
+            return 1
+        fi
+    done
     wizard_log "  OK - Runtime directories created"
 
     wizard_log "> Installing Java executable..."
@@ -97,7 +107,7 @@ mobinstall() {
         return 1
     fi
 
-    wizard_log "> Installing MobTime commands..."
+    wizard_log "> Installing mobtime commands..."
     if chmod +x "${LOCAL_COMMANDS_DIR}"/* && sudo cp "${LOCAL_COMMANDS_DIR}"/* "${MOBTIME_COMMANDS_DIR}"; then
         wizard_log "  OK - Commands installed"
     else
@@ -126,12 +136,12 @@ mobinstall() {
     done
     if [[ ${#failed_updates[@]} -eq ${#USER_RC_FILES[@]} ]]; then
         wizard_log "  E: Could not update any rc file"
-        wizard_log "FAILED: Could not install MobTime on your system"
+        wizard_log "FAILED: Could not install mobtime on your system"
         return 1
     else
         wizard_log "  OK - rc files updated successfully."
     fi
-    wizard_log "DONE - MobTime installed successfully."
+    wizard_log "DONE - mobtime installed successfully."
 
     if $first_install; then
         mobtime_log_lifecycle_hook "installed"
@@ -194,12 +204,12 @@ mobuninstall() {
 
     if [[ ${#missing_files[@]} -eq ${#USER_RC_FILES[@]} || $failed_removals -gt 0 ]]; then
         wizard_log "  E: Could not update any rc file"
-        wizard_log "FAILED: Could not completely remove MobTime from your system"
+        wizard_log "FAILED: Could not completely remove mobtime from your system"
         return 1
     else
         wizard_log "  OK - rc files updated successfully."
     fi
-    wizard_log "DONE - MobTime installed successfully."
+    wizard_log "DONE - mobtime installed successfully."
 }
 
 #########################################################################################
