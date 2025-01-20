@@ -1,4 +1,4 @@
-package net.agiledeveloper.mobtime.infra.git;
+package net.agiledeveloper.mobtime.infra.shell;
 
 public enum LinuxShell implements Shell {
 

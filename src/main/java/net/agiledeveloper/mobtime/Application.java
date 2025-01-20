@@ -8,7 +8,7 @@ import net.agiledeveloper.mobtime.domain.session.MobService;
 import net.agiledeveloper.mobtime.domain.session.SessionService;
 import net.agiledeveloper.mobtime.infra.cli.BashParameter;
 import net.agiledeveloper.mobtime.infra.cli.CommandLineParser;
-import net.agiledeveloper.mobtime.infra.git.ShellAdapter;
+import net.agiledeveloper.mobtime.infra.shell.ShellAdapter;
 import net.agiledeveloper.mobtime.infra.swing.SwingNotificationAdapter;
 import net.agiledeveloper.mobtime.infra.swing.SwingWorkerTimeAdapter;
 import net.agiledeveloper.mobtime.infra.swing.gui.Location;

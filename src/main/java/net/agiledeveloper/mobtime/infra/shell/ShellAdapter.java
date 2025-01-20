@@ -1,4 +1,4 @@
-package net.agiledeveloper.mobtime.infra.git;
+package net.agiledeveloper.mobtime.infra.shell;
 
 import net.agiledeveloper.mobtime.domain.ports.spi.MobPort;
 import net.agiledeveloper.mobtime.infra.InfraException;

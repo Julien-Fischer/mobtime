@@ -1,4 +1,4 @@
-package net.agiledeveloper.mobtime.infra.git;
+package net.agiledeveloper.mobtime.infra.shell;
 
 public interface Shell {
 
