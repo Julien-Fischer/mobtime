@@ -38,11 +38,7 @@ mobinstall() {
     local first_install=false
     [[ "${1}" == "--first" ]] && first_install=true
 
-    wizard_log "You are about to install mobtime."
-    if ! sudo -v; then
-        echo "E: This script requires sudo privileges. Please provide valid credentials."
-        exit 1
-    fi
+    mobtime_require_sudo "install"
 
     mobtime_require_dependency git "git" "sudo apt update && sudo apt install git -y"
     mobtime_require_dependency mvn "Maven" "sudo apt update && sudo apt install maven -y"
@@ -152,11 +148,7 @@ mobinstall() {
 }
 
 mobuninstall() {
-    echo "You are about to uninstall mobtime."
-    if ! sudo -v; then
-        echo "E: This script requires sudo privileges. Please provide valid credentials."
-        exit 1
-    fi
+    mobtime_require_sudo "uninstall"
 
     wizard_log "> Deleting mobtime commands..."
     local commands=("mobstart" "mobnext" "mobdone")
@@ -293,6 +285,15 @@ moblog() {
 #########################################################################################
 # Lib helpers
 #########################################################################################
+
+mobtime_require_sudo() {
+    local action="${1}"
+    wizard_log "You are about to ${action} mobtime."
+    if ! sudo -v; then
+        echo "E: This script requires sudo privileges. Please provide valid credentials."
+        exit 1
+    fi
+}
 
 mobtime_require_dependency() {
     local command_name="${1}"
