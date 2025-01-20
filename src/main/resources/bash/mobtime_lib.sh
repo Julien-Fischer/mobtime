@@ -44,6 +44,7 @@ mobinstall() {
         exit 1
     fi
 
+    mobtime_require_dependency git "git" "sudo apt update && sudo apt install git -y"
     mobtime_require_dependency mvn "Maven" "sudo apt update && sudo apt install maven -y"
     mobtime_require_dependency mob "mob.sh" "curl -sL install.mob.sh | sh -s - --user"
 
