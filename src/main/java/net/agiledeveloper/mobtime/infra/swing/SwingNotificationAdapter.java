@@ -4,13 +4,16 @@ import net.agiledeveloper.mobtime.domain.notification.Notification;
 import net.agiledeveloper.mobtime.domain.notification.session.*;
 import net.agiledeveloper.mobtime.domain.ports.api.SessionPort;
 import net.agiledeveloper.mobtime.domain.ports.spi.NotificationPort;
+import net.agiledeveloper.mobtime.infra.InfraException;
 import net.agiledeveloper.mobtime.infra.swing.gui.GUIEvent;
 import net.agiledeveloper.mobtime.infra.swing.gui.Location;
 import net.agiledeveloper.mobtime.infra.swing.gui.SwingPopup;
 import net.agiledeveloper.mobtime.infra.swing.theme.Theme;
+import net.agiledeveloper.mobtime.utils.AppLogger;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.concurrent.ExecutionException;
 
 import static net.agiledeveloper.mobtime.infra.swing.theme.Theme.MESSAGE_INFO;
 import static net.agiledeveloper.mobtime.infra.swing.theme.Theme.MESSAGE_OK;
@@ -23,6 +26,8 @@ public class SwingNotificationAdapter implements NotificationPort {
     private Color currentColor;
     private final boolean shouldMinimize;
     private final Location location;
+
+    private boolean awaitingKillSignal = false;
 
 
     public SwingNotificationAdapter(SessionPort mobPort, boolean shouldMinimize, Location location) {
@@ -60,6 +65,10 @@ public class SwingNotificationAdapter implements NotificationPort {
     }
 
     private void handleRefreshNotification(SessionRefreshNotification notification) {
+        if (awaitingKillSignal) {
+            AppLogger.log("App will shutdown soon...");
+            return;
+        }
         var color = notification.hasLittleTimeLeft() ? MESSAGE_INFO : MESSAGE_OK;
         currentFrame.updateProgress(notification, color);
     }
@@ -124,19 +133,44 @@ public class SwingNotificationAdapter implements NotificationPort {
     }
 
     private void onGuiEvent(GUIEvent event) {
-        SwingUtilities.invokeLater(() -> {
-            switch (event) {
-                case NEXT:
-                    mobPort.next();
-                    break;
-                case DONE:
-                    mobPort.done();
-                    break;
-                default:
-                    throw new UnsupportedOperationException("Unsupported UI event: " + event);
+        switch (event) {
+            case NEXT:
+                executeInBackground(mobPort::next);
+                break;
+            case DONE:
+                executeInBackground(mobPort::done);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unsupported UI event: " + event);
+        }
+        awaitingKillSignal = true;
+        var message = "Executing " + event.commandName() + "...";
+        SwingUtilities.invokeLater(() ->
+            handleShutdownNotification(new SessionShutdownNotification(null, message, ""))
+        );
+    }
+
+    private void executeInBackground(Runnable task) {
+        SwingWorker<Void, Void> worker = new SwingWorker<>() {
+            @Override
+            protected Void doInBackground() {
+                task.run();
+                return null;
             }
-            handleShutdownNotification(new SessionShutdownNotification(null, "Command executed", ""));
-        });
+
+            @Override
+            protected void done() {
+                try {
+                    get();
+                } catch (ExecutionException cause) {
+                    throw new InfraException(cause);
+                } catch (InterruptedException cause) {
+                    Thread.currentThread().interrupt();
+                    throw new InfraException(cause);
+                }
+            }
+        };
+        worker.execute();
     }
 
 }
