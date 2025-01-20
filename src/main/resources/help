@@ -12,7 +12,6 @@ Mob Commands:
 
 Config commands:
 
-  Command          Description
   mobhelp          Print this help message and exit
   mobstatus        View the status of the current mob session
   mobconfig        Define your personal preferences
