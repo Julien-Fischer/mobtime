@@ -6,8 +6,7 @@ import net.agiledeveloper.mobtime.utils.AppLogger;
 
 public class ShellAdapter implements MobPort {
 
-    private static final String COMMAND_ROOT_DIR = "/usr/local/bin";
-    private static final Shell PREFERRED_SHELL = LinuxShell.SH;
+    private static final Shell PREFERRED_SHELL = LinuxShell.BASH;
 
 
     @Override
@@ -27,7 +26,7 @@ public class ShellAdapter implements MobPort {
 
     private void tryExecuting(String command) {
         try {
-            execute(COMMAND_ROOT_DIR + "/" + command);
+            execute(command);
         } catch (InfraException cause) {
             AppLogger.log("Infra - " + command);
             throw new InfraException(cause);

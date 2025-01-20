@@ -152,7 +152,6 @@ public class SwingPopup extends JFrame {
 
     private void close() {
         AppLogger.log("Closing popup");
-        System.exit(0);
     }
 
     private void init(Notification notification) {
