@@ -213,6 +213,10 @@ mobuninstall() {
     wizard_log "DONE - MobTime installed successfully."
 }
 
+#########################################################################################
+# Misc commands
+#########################################################################################
+
 mobupdate() {
     mobinstall
 }
@@ -282,8 +286,12 @@ mobkill() {
     echo '' > "${MOBTIME_PID_FILE}"
 }
 
+moblog() {
+    cat "${MOBTIME_LOG_FILE}"
+}
+
 #########################################################################################
-# Helper
+# Lib helpers
 #########################################################################################
 
 mobtime_log_lifecycle_hook() {
@@ -301,8 +309,4 @@ mobtime_log() {
 wizard_log() {
     local message="${1}"
     echo "[mobtime] ${message}"
-}
-
-moblog() {
-    cat "${MOBTIME_LOG_FILE}"
 }
