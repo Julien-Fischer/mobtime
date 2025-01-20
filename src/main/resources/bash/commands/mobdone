@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+source "$(pwd)/src/main/resources/bash/mobtime_lib.sh"
+
+mobdone() {
+    mobtime_log_lifecycle_hook "mobdone"
+    mobkill
+    mob done
+}
+
+mobdone

@@ -1,10 +1,6 @@
 #!/usr/bin/env bash
 
-source "$(pwd)/src/main/resources/mobtime_lib.sh"
-
-#########################################################################################
-# MobTime lifecycle commands
-#########################################################################################
+source "$(pwd)/src/main/resources/bash/mobtime_lib.sh"
 
 mobstart() {
     local parameters=()
@@ -66,14 +62,4 @@ mobstart() {
     fi
 }
 
-mobnext() {
-    mobtime_log_lifecycle_hook "mobnext"
-    mobkill
-    mob next
-}
-
-mobdone() {
-    mobtime_log_lifecycle_hook "mobdone"
-    mobkill
-    mob done
-}
+mobstart "$@"
