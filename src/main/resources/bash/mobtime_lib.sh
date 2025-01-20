@@ -51,6 +51,13 @@ mobinstall() {
         exit 1
     fi
 
+    if ! command -v mob &> /dev/null; then
+        echo "E: mob.sh is not installed" >&2
+        echo "   You can install mob.sh using:"
+        echo "       curl -sL install.mob.sh | sh -s - --user"
+        exit 1
+    fi
+
     wizard_log "> Compiling MobTime..."
     wizard_log "  (This might take up to a few minutes depending on your setup)"
 
