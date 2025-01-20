@@ -44,19 +44,8 @@ mobinstall() {
         exit 1
     fi
 
-    if ! command -v mvn &> /dev/null; then
-        echo "E: Maven (mvn) is not installed" >&2
-        echo "   You can install maven using:"
-        echo "       sudo apt update && sudo apt install maven -y"
-        exit 1
-    fi
-
-    if ! command -v mob &> /dev/null; then
-        echo "E: mob.sh is not installed" >&2
-        echo "   You can install mob.sh using:"
-        echo "       curl -sL install.mob.sh | sh -s - --user"
-        exit 1
-    fi
+    mobtime_require_dependency mvn "Maven" "sudo apt update && sudo apt install maven -y"
+    mobtime_require_dependency mob "mob.sh" "curl -sL install.mob.sh | sh -s - --user"
 
     wizard_log "> Compiling MobTime..."
     wizard_log "  (This might take up to a few minutes depending on your setup)"
@@ -293,6 +282,18 @@ moblog() {
 #########################################################################################
 # Lib helpers
 #########################################################################################
+
+mobtime_require_dependency() {
+    local command_name="${1}"
+    local command_display_name="${2}"
+    local installation_instructions="${3}"
+    if ! command -v "${command_name}" &> /dev/null; then
+        echo "E: ${command_name} is not installed" >&2
+        echo "   You can install ${command_display_name} using:"
+        echo "       ${installation_instructions}"
+        exit 1
+    fi
+}
 
 mobtime_log_lifecycle_hook() {
     local hook_name="${1}"
