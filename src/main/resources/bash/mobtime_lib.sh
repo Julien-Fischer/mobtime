@@ -78,13 +78,30 @@ mobinstall() {
     done
     wizard_log "  OK - Runtime directories created"
 
-    wizard_log "> Installing Java executable..."
-    if cp "${TARGET_COMPILED_JAR_FILE}" "${MOBTIME_JAR_FILE}" && chmod +x "${MOBTIME_JAR_FILE}"; then
-        wizard_log "  OK - Executable installed"
-    else
-        wizard_log "  E: Could not install ${TARGET_COMPILED_JAR_FILE} executable to ${MOBTIME_JAR_FILE}"
-        return 1
-    fi
+    mobtime_install "Java executable" "${TARGET_COMPILED_JAR_FILE}" "${MOBTIME_JAR_FILE}" -x
+    mobtime_install "mobtime shared functions" "${LOCAL_MOBTIME_LIB_FILE}" "${MOBTIME_LIB_FILE}"
+
+    wizard_log "> Installing mobtime commands..."
+    local mobtime_commands=("${LOCAL_COMMANDS_DIR}/"*)
+    local i=0
+    local length=${#mobtime_commands[@]}
+    for file in "${mobtime_commands[@]}"; do
+        ((i++))
+        wizard_log "  -> $(basename "${file}") (${i}/${length})"
+        if chmod +x "${file}"; then
+            wizard_log "     Granted execute permission"
+        else
+            wizard_log "  E: Failed to grant execute permission" >&2
+            return 1
+        fi
+        if sudo cp "${file}" "${MOBTIME_COMMANDS_DIR}"; then
+            wizard_log "     Installed"
+        else
+            wizard_log "  E: Could not install ${file} to ${dest}"
+            return 1
+        fi
+    done
+    wizard_log "  OK - mobtime commands installed"
 
     wizard_log "> Initializing system files..."
     touch "${MOBTIME_PID_FILE}"
@@ -95,22 +112,6 @@ mobinstall() {
         cp "${LOCAL_CONFIG_FILE}" "${MOBTIME_CONFIG_FILE}"
     fi
     wizard_log "  OK - system files initialized"
-
-    wizard_log "> Installing mobtime shared functions..."
-    if cp "${LOCAL_MOBTIME_LIB_FILE}" "${MOBTIME_LIB_FILE}"; then
-        wizard_log "  OK - Shared functions installed"
-    else
-        wizard_log "  E: Could not update ${MOBTIME_LIB_FILE} with contents from ${LOCAL_MOBTIME_LIB_FILE}"
-        return 1
-    fi
-
-    wizard_log "> Installing mobtime commands..."
-    if chmod +x "${LOCAL_COMMANDS_DIR}"/* && sudo cp "${LOCAL_COMMANDS_DIR}"/* "${MOBTIME_COMMANDS_DIR}"; then
-        wizard_log "  OK - Commands installed"
-    else
-        wizard_log "  E: Could not install commands from ${LOCAL_COMMANDS_DIR} to ${MOBTIME_COMMANDS_DIR}"
-        return 1
-    fi
 
     wizard_log "> Updating rc files..."
     local failed_updates=()
@@ -322,4 +323,25 @@ mobtime_log() {
 wizard_log() {
     local message="${1}"
     echo "[mobtime] ${message}"
+}
+
+mobtime_install() {
+    local display_name="${1}"
+    local src="${2}"
+    local dest="${3}"
+    local executable=false
+    if [[ "${4}" == "-x" ]]; then
+        executable=true
+    fi
+
+    wizard_log "> Installing ${display_name}..."
+    if $executable && chmod +x "${src}"; then
+        wizard_log "  -> Granted execute permission"
+    fi
+    if sudo cp "${src}" "${dest}"; then
+        wizard_log "  OK - ${display_name} installed"
+    else
+        wizard_log "  E: Could not install ${display_name} to ${dest}"
+        exit 1
+    fi
 }
