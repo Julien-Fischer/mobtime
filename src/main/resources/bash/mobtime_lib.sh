@@ -44,24 +44,7 @@ mobinstall() {
     mobtime_require_dependency mvn "Maven" "sudo apt update && sudo apt install maven -y"
     mobtime_require_dependency mob "mob.sh" "curl -sL install.mob.sh | sh -s - --user"
 
-    wizard_log "> Compiling mobtime..."
-    wizard_log "  (This might take up to a few minutes depending on your setup)"
-
-    if $first_install; then
-#        mvn clean package > /dev/null
-        mvn clean package
-    else
-        mvn clean package
-    fi
-
-    if [[ $? -eq 0 ]]; then
-        wizard_log "  OK - mobtime compiled successfully"
-    else
-        wizard_log "  E: Could not compile mobtime"
-        return 1
-    fi
-
-    wizard_log "> Creating runtime directories..."
+    wizard_log -t "> Creating runtime directories..."
     local runtime_directories=(
         "${MOBTIME_RUNTIME_DIR}"
         "${MOBTIME_SRC_DIR}"
@@ -69,41 +52,61 @@ mobinstall() {
         "${MOBTIME_LOGS_DIR}"
     )
     for dir in "${runtime_directories[@]}"; do
-        if mkdir -p "${dir}"; then
-            wizard_log "  -> Created: '${dir}'"
-        else
-            wizard_log "E: Failed to create directory '${dir}'" >&2
+        if ! mkdir -p "${dir}"; then
+            wizard_log -t "E: Failed to create directory '${dir}'" >&2
             return 1
         fi
     done
-    wizard_log "  OK - Runtime directories created"
+    wizard_log -t "  OK - Runtime directories created"
+
+    if $first_install; then
+        mobtime_log_lifecycle_hook "install"
+    else
+        mobtime_log_lifecycle_hook "update"
+    fi
+
+    wizard_log -a "> Compiling mobtime..."
+    wizard_log -t "  (This might take up to a few minutes depending on your setup)"
+
+    if $first_install; then
+        mvn clean package >> "${MOBTIME_LOG_FILE}"
+    else
+        mvn clean package | tee -a "${MOBTIME_LOG_FILE}"
+    fi
+
+    if [[ $? -eq 0 ]]; then
+        wizard_log -a "  OK - mobtime compiled successfully"
+    else
+        wizard_log -a "  E: Could not compile mobtime"
+        return 1
+    fi
 
     mobtime_install "Java executable" "${TARGET_COMPILED_JAR_FILE}" "${MOBTIME_JAR_FILE}" -x
     mobtime_install "mobtime shared functions" "${LOCAL_MOBTIME_LIB_FILE}" "${MOBTIME_LIB_FILE}"
 
-    wizard_log "> Installing mobtime commands..."
+    wizard_log -a "> Installing mobtime commands..."
     local mobtime_commands=("${LOCAL_COMMANDS_DIR}/"*)
     local i=0
     local length=${#mobtime_commands[@]}
     for file in "${mobtime_commands[@]}"; do
         ((i++))
-        wizard_log "  -> $(basename "${file}") (${i}/${length})"
+        wizard_log -f "  -> $(basename "${file}") (${i}/${length})"
         if chmod +x "${file}"; then
-            wizard_log "     Granted execute permission"
+            wizard_log -f "     Granted execute permission"
         else
-            wizard_log "  E: Failed to grant execute permission" >&2
+            wizard_log -a "  E: Failed to grant execute permission" >&2
             return 1
         fi
         if sudo cp "${file}" "${MOBTIME_COMMANDS_DIR}"; then
-            wizard_log "     Installed"
+            wizard_log -f "     Installed"
         else
-            wizard_log "  E: Could not install ${file} to ${dest}"
+            wizard_log -a "  E: Could not install ${file} to ${dest}"
             return 1
         fi
     done
-    wizard_log "  OK - mobtime commands installed"
+    wizard_log -a "  OK - mobtime commands installed"
 
-    wizard_log "> Initializing system files..."
+    wizard_log -a "> Initializing system files..."
     touch "${MOBTIME_PID_FILE}"
     touch "${MOBTIME_LOG_FILE}"
     cp "${LOCAL_INFO_FILE}" "${MOBTIME_INFO_FILE}"
@@ -111,9 +114,9 @@ mobinstall() {
     if [[ ! -f "${MOBTIME_CONFIG_FILE}" ]]; then
         cp "${LOCAL_CONFIG_FILE}" "${MOBTIME_CONFIG_FILE}"
     fi
-    wizard_log "  OK - system files initialized"
+    wizard_log -a "  OK - system files initialized"
 
-    wizard_log "> Updating rc files..."
+    wizard_log -a "> Updating rc files..."
     local failed_updates=()
     for rc_file in "${USER_RC_FILES[@]}"; do
         if [[ -f "${rc_file}" ]]; then
@@ -125,34 +128,28 @@ mobinstall() {
                     echo "${MOBTIME_WATERMARK} ${current_time}"
                     echo "${USER_RC_MOBTIME_LIB_SOURCE_LINE}"
                 } >> "${rc_file}"
-                wizard_log "  -> Sourced ${USER_RC_MOBTIME_LIB_SOURCE_LINE} in ${rc_file}"
-                wizard_log "  -> ${rc_file} updated"
+                wizard_log -f "  -> Sourced ${USER_RC_MOBTIME_LIB_SOURCE_LINE} in ${rc_file}"
+                wizard_log -f "  -> ${rc_file} updated"
             fi
         else
             failed_updates+=("${rc_file}")
         fi
     done
     if [[ ${#failed_updates[@]} -eq ${#USER_RC_FILES[@]} ]]; then
-        wizard_log "  E: Could not update any rc file"
-        wizard_log "FAILED: Could not install mobtime on your system"
+        wizard_log -a "  E: Could not update any rc file"
+        wizard_log -a "FAILED: Could not install mobtime on your system"
         return 1
     else
-        wizard_log "  OK - rc files updated successfully."
+        wizard_log -a "  OK - rc files updated successfully."
     fi
 
-    if $first_install; then
-        mobtime_log_lifecycle_hook "installed"
-    else
-        mobtime_log_lifecycle_hook "updated"
-    fi
-
-    wizard_log "DONE - mobtime installed successfully."
+    wizard_log -a "DONE - mobtime installed successfully."
 }
 
 mobuninstall() {
     mobtime_require_sudo "uninstall"
 
-    wizard_log "> Deleting mobtime commands..."
+    wizard_log -t "> Deleting mobtime commands..."
     local commands=("mobstart" "mobnext" "mobdone")
     local command_count=${#commands[@]}
     local deleted=0
@@ -160,36 +157,36 @@ mobuninstall() {
         file_path="${MOBTIME_COMMANDS_DIR}/${file}"
         if [[ -f "${file_path}" ]]; then
             sudo rm "${file_path}"
-            wizard_log "  -> Deleted: ${file_path}"
+            wizard_log -t "  -> Deleted: ${file_path}"
             ((deleted++))
         else
-            wizard_log "  E: Could not find command ${file_path}"
+            wizard_log -t "  E: Could not find command ${file_path}"
         fi
     done
     if [[ $deleted -eq $command_count ]]; then
-        wizard_log "  OK - mobtime commands deleted."
+        wizard_log -t "  OK - mobtime commands deleted."
     else
         local missing=$((command_count-deleted))
-        wizard_log "  E: Failed to delete ${missing} out of ${command_count}."
+        wizard_log -t "  E: Failed to delete ${missing} out of ${command_count}."
     fi
 
-    wizard_log "> Deleting mobtime runtime directory..."
+    wizard_log -t "> Deleting mobtime runtime directory..."
     if rm -rf "${MOBTIME_RUNTIME_DIR}"; then
-        wizard_log "  OK - mobtime directory deleted."
+        wizard_log -t "  OK - mobtime directory deleted."
     else
-        wizard_log "  E: Could not delete runtime directory at: ${MOBTIME_RUNTIME_DIR}"
+        wizard_log -t "  E: Could not delete runtime directory at: ${MOBTIME_RUNTIME_DIR}"
     fi
 
-    wizard_log "> Cleaning rc files..."
+    wizard_log -t "> Cleaning rc files..."
     local failed_removals=0
     local missing_files=()
     for rc_file in "${USER_RC_FILES[@]}"; do
         if [[ -f "${rc_file}" ]]; then
             if sed -i "/^${MOBTIME_WATERMARK}.*$/d" "${rc_file}" && \
                sed -i "\|^${USER_RC_MOBTIME_LIB_SOURCE_LINE}|d" "${rc_file}"; then
-                wizard_log "  -> Removed source line for ${USER_RC_MOBTIME_LIB_SOURCE_LINE} from ${rc_file}"
+                wizard_log -t "  -> Removed source line for ${USER_RC_MOBTIME_LIB_SOURCE_LINE} from ${rc_file}"
             else
-                wizard_log "  E: Failed to remove source line for ${USER_RC_MOBTIME_LIB_SOURCE_LINE} from ${rc_file}"
+                wizard_log -t "  E: Failed to remove source line for ${USER_RC_MOBTIME_LIB_SOURCE_LINE} from ${rc_file}"
                 ((failed_removals++))
             fi
         else
@@ -198,13 +195,13 @@ mobuninstall() {
     done
 
     if [[ ${#missing_files[@]} -eq ${#USER_RC_FILES[@]} || $failed_removals -gt 0 ]]; then
-        wizard_log "  E: Could not update any rc file"
-        wizard_log "FAILED: Could not completely remove mobtime from your system"
+        wizard_log -t "  E: Could not update any rc file"
+        wizard_log -t "FAILED: Could not completely remove mobtime from your system"
         return 1
     else
-        wizard_log "  OK - rc files updated successfully."
+        wizard_log -t "  OK - rc files updated successfully."
     fi
-    wizard_log "DONE - mobtime installed successfully."
+    wizard_log -t "DONE - mobtime installed successfully."
 }
 
 #########################################################################################
@@ -290,7 +287,7 @@ moblog() {
 
 mobtime_require_sudo() {
     local action="${1}"
-    wizard_log "You are about to ${action} mobtime."
+    echo "You are about to ${action} mobtime."
     if ! sudo -v; then
         echo "E: This script requires sudo privileges. Please provide valid credentials."
         exit 1
@@ -311,7 +308,8 @@ mobtime_require_dependency() {
 
 mobtime_log_lifecycle_hook() {
     local hook_name="${1}"
-    mobtime_log "---------- ${hook_name} ----------"
+    local separator="------------------------------"
+    mobtime_log "${separator} ${hook_name} ${separator}"
 }
 
 mobtime_log() {
@@ -322,8 +320,14 @@ mobtime_log() {
 }
 
 wizard_log() {
-    local message="${1}"
-    echo "[mobtime] ${message}"
+    local flag="${1}"
+    local message="${2}"
+    if [[ "${flag}" = -f || "${flag}" = -a ]]; then
+        mobtime_log "${message}"
+    fi
+    if [[ "${flag}" = -t || "${flag}" = -a ]]; then
+        echo "[mobtime] ${message}"
+    fi
 }
 
 mobtime_install() {
@@ -335,14 +339,14 @@ mobtime_install() {
         executable=true
     fi
 
-    wizard_log "> Installing ${display_name}..."
+    wizard_log -a "> Installing ${display_name}..."
     if $executable && chmod +x "${src}"; then
-        wizard_log "  -> Granted execute permission"
+        wizard_log -f "  -> Granted execute permission"
     fi
     if sudo cp "${src}" "${dest}"; then
-        wizard_log "  OK - ${display_name} installed"
+        wizard_log -a "  OK - ${display_name} installed"
     else
-        wizard_log "  E: Could not install ${display_name} to ${dest}"
+        wizard_log -a "  E: Could not install ${display_name} to ${dest}"
         exit 1
     fi
 }
