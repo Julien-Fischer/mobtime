@@ -31,6 +31,7 @@ A mobtime session typically involves two steps:
 - Git
 - mob.sh
 - Java Runtime Environment (JRE) 21
+- Maven (when installing mobtime for the first time)
 
 This software was primarily tested on Linux, on Debian 12 and Kubuntu 24. 
 
