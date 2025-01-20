@@ -44,6 +44,13 @@ mobinstall() {
         exit 1
     fi
 
+    if ! command -v mvn &> /dev/null; then
+        echo "E: Maven (mvn) is not installed" >&2
+        echo "   You can install maven using:"
+        echo "       sudo apt update && sudo apt install maven -y"
+        exit 1
+    fi
+
     wizard_log "> Compiling MobTime..."
     wizard_log "  (This might take up to a few minutes depending on your setup)"
 
