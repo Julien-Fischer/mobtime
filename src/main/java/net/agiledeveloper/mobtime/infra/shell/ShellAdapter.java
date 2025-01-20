@@ -6,7 +6,12 @@ import net.agiledeveloper.mobtime.utils.AppLogger;
 
 public class ShellAdapter implements MobPort {
 
-    private static final Shell PREFERRED_SHELL = LinuxShell.BASH;
+    private final Shell preferredShell;
+
+
+    public ShellAdapter(Shell preferredShell) {
+        this.preferredShell = preferredShell;
+    }
 
 
     @Override
@@ -21,7 +26,7 @@ public class ShellAdapter implements MobPort {
 
 
     public int execute(String command) throws InfraException {
-        return ShellExecutor.execute(command, PREFERRED_SHELL);
+        return ShellExecutor.execute(command, preferredShell);
     }
 
     private void tryExecuting(String command) {

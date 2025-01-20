@@ -8,6 +8,7 @@ import net.agiledeveloper.mobtime.domain.session.MobService;
 import net.agiledeveloper.mobtime.domain.session.SessionService;
 import net.agiledeveloper.mobtime.infra.cli.BashParameter;
 import net.agiledeveloper.mobtime.infra.cli.CommandLineParser;
+import net.agiledeveloper.mobtime.infra.shell.LinuxShell;
 import net.agiledeveloper.mobtime.infra.shell.ShellAdapter;
 import net.agiledeveloper.mobtime.infra.swing.SwingNotificationAdapter;
 import net.agiledeveloper.mobtime.infra.swing.SwingWorkerTimeAdapter;
@@ -20,7 +21,7 @@ import java.util.function.Supplier;
 
 public class Application {
 
-    private static final ShellAdapter shellAdapter = new ShellAdapter();
+    private static final ShellAdapter shellAdapter = new ShellAdapter(LinuxShell.BASH);
 
     public Application(String[] commandLine) {
         var parser = new CommandLineParser();

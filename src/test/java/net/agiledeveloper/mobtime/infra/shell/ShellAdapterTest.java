@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ShellAdapterTest {
 
-    private final ShellAdapter shellAdapter = new ShellAdapter();
+    private final ShellAdapter shellAdapter = new ShellAdapter(LinuxShell.BASH);
     private ByteArrayOutputStream outputStream;
     private int statusCode;
 
