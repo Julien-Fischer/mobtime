@@ -64,18 +64,19 @@ This software was designed for Linux, and was primarily tested on Debian 12 and 
 
 ### Low-level
 
-| Command        | Description                                   |
-|----------------|-----------------------------------------------|
-| `mobhelp`      | Print an help message and exit                |
-| `mobstatus`    | View the status of the current mob session    |
-| `mobconfig`    | Define your personal preferences              |
-| `mobinfo`      | Print mobtime version and authors             |
-| `mobupdate`    | Update mobtime from the source code           |
-| `mobdir`       | Navigate to mobtime runtime directory         |
-| `moblog`       | View mobtime logs for debugging               |
-| `mobps`        | List all mobtime running instances            |
-| `mobkill`      | Kill all instances of mobtime                 |
-| `mobuninstall` | Uninstall mobtime                             |
+| Command        | Description                                  |
+|----------------|----------------------------------------------|
+| `mobhelp`      | Print an help message and exit               |
+| `mobstatus`    | View the status of the current mob session   |
+| `mobconfig`    | Define your personal preferences             |
+| `mobinfo`      | Print mobtime version and authors            |
+| `mobupdate`    | Update mobtime from the source code          |
+| `mobdir`       | Print the path to mobtime runtime directory  |
+| `mobnav`       | Navigate to mobtime runtime directory        |
+| `moblog`       | View mobtime logs for debugging              |
+| `mobps`        | List all mobtime running instances           |
+| `mobkill`      | Kill all instances of mobtime                |
+| `mobuninstall` | Uninstall mobtime                            |
 
 ## Acknowledgements
 

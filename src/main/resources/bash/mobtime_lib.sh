@@ -257,7 +257,11 @@ mobps() {
 }
 
 mobdir() {
-    cd "${MOBTIME_RUNTIME_DIR}" || exit 1
+    echo "${MOBTIME_RUNTIME_DIR}"
+}
+
+mobnav() {
+    cd "$(mobdir)" || exit 1
     ls --color=auto -AF --group-directories-first
 }
 
