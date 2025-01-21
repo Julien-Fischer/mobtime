@@ -33,6 +33,8 @@ MOBTIME_WATERMARK="# Created by \`mobtime\` on"
 # Install & uninstall
 #########################################################################################
 
+mobtime_spinner_pid=
+
 # shellcheck disable=SC2120
 mobinstall() {
     local first_install=false
@@ -68,11 +70,15 @@ mobinstall() {
     wizard_log -a "> Compiling mobtime..."
     wizard_log -t "  (This might take up to a few minutes depending on your setup)"
 
+    mobtime_loader_start '[mobtime]  '
+
     if $first_install; then
         mvn clean package >> "${MOBTIME_LOG_FILE}"
     else
         mvn clean package | tee -a "${MOBTIME_LOG_FILE}"
     fi
+
+    mobtime_loader_stop
 
     if [[ $? -eq 0 ]]; then
         wizard_log -a "  OK - mobtime compiled successfully"
@@ -349,4 +355,38 @@ mobtime_install() {
         wizard_log -a "  E: Could not install ${display_name} to ${dest}"
         exit 1
     fi
+}
+
+mobtime_loader_start() {
+    set +m
+    echo -n "$1 "
+    { while : ; do
+        for i in {1..8}; do
+            printf "\r%s[%${i}s•%$((9-i))s]" "$1 " "" ""
+            sleep 0.1
+        done
+    done & } 2>/dev/null
+    mobtime_spinner_pid=$!
+}
+
+mobtime_loader_stop() {
+    { kill -9 $mobtime_spinner_pid && wait; } 2>/dev/null
+    set -m
+    echo -en "\033[2K\r"
+}
+
+mobtime_spinner_start() {
+    set +m
+    echo -n "$1 "
+    { while : ; do for X in ' • ' ' • ' ' • ' ; do
+        echo -en "\b\b\b\b\b\b\b\b$X"
+        sleep 0.1
+    done ; done & } 2>/dev/null
+    mobtime_spinner_pid=$!
+}
+
+mobtime_spinner_stop() {
+    { kill -9 $mobtime_spinner_pid && wait; } 2>/dev/null
+    set -m
+    echo -en "\033[2K\r"
 }
