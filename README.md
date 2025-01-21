@@ -82,7 +82,7 @@ This software was designed for Linux, and was primarily tested on Debian 12 and 
 Special thanks to Dr. Simmon Harrer & Josen Christ for their outstanding work on mob.sh.
 
 Deep gratitude to my colleagues at Datanumia for our exciting mob programming sessions: 
-Josian Chevalier, Thierry Lam, Elie Guedj, Amine Chaari, Rym Ben-Ali, and Sébastien Lamps.
+Josian Chevalier, Thierry Lav, Elie Guedj, Amine Chaari, Rym Ben-Ali, and Sébastien Lamps.
 
 ## License
 
