@@ -33,7 +33,7 @@ A mobtime session typically involves two steps:
 - Java Runtime Environment (JRE) 21
 - Maven (when installing mobtime for the first time)
 
-This software was primarily tested on Linux, on Debian 12 and Kubuntu 24. 
+This software was designed for Linux, and was primarily tested on Debian 12 and Kubuntu 24. 
 
 ## API & Settings
 
@@ -52,20 +52,30 @@ This software was primarily tested on Linux, on Debian 12 and Kubuntu 24.
 - `mobstart --auto` Automatically execute `mobnext` when time runs out
 - `mobstart --duration=7 --focus=zen --location=north-east --mini` Start a 7-minute driving session in Zen mode with a minimalist UI. The timer will be displayed in the top-right corner of the screen.
 
-## Misc commands
+## Bash commands
 
-| Command        | Description                                |
-|----------------|--------------------------------------------|
-| `mobhelp`      | Print an help message and exit             |
-| `mobstatus`    | View the status of the current mob session |
-| `mobconfig`    | Define your personal preferences           |
-| `mobinfo`      | Print mobtime version and authors          |
-| `mobupdate`    | Update mobtime from the source code        |
-| `mobdir`       | Navigate to mobtime runtime directory      |
-| `moblog`       | View mobtime logs for debugging            |
-| `mobps`        | List all mobtime running instances         |
-| `mobkill`      | Kill all instances of mobtime              |
-| `mobuninstall` | Uninstall mobtime                          |
+### High-level
+
+| Command        | Description                                   |
+|----------------|-----------------------------------------------|
+| `mobstart`     | Start a new driving session                   |
+| `mobnext`      | End the driving session and pass the keyboard |
+| `mobdone`      | End the mob session                           |
+
+### Low-level
+
+| Command        | Description                                   |
+|----------------|-----------------------------------------------|
+| `mobhelp`      | Print an help message and exit                |
+| `mobstatus`    | View the status of the current mob session    |
+| `mobconfig`    | Define your personal preferences              |
+| `mobinfo`      | Print mobtime version and authors             |
+| `mobupdate`    | Update mobtime from the source code           |
+| `mobdir`       | Navigate to mobtime runtime directory         |
+| `moblog`       | View mobtime logs for debugging               |
+| `mobps`        | List all mobtime running instances            |
+| `mobkill`      | Kill all instances of mobtime                 |
+| `mobuninstall` | Uninstall mobtime                             |
 
 ## Acknowledgements
 
