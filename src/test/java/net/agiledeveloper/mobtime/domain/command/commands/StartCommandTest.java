@@ -7,15 +7,17 @@ import net.agiledeveloper.mobtime.domain.command.parameters.impl.DryRunParameter
 import net.agiledeveloper.mobtime.domain.command.parameters.impl.DurationParameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.impl.FocusModeParameter;
 import net.agiledeveloper.mobtime.domain.session.Session;
+import net.agiledeveloper.mobtime.test.builders.DurationParameterBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static net.agiledeveloper.mobtime.domain.session.FocusMode.*;
-import static net.agiledeveloper.mobtime.test.builders.Builders.aDurationParameter;
+import static net.agiledeveloper.mobtime.test.builders.DurationParameterBuilder.aDurationParameter;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 class StartCommandTest {
@@ -34,7 +36,7 @@ class StartCommandTest {
 
     @Test
     void isDryRunEnabled_when_enabled_returns_true() {
-        havingParameters(new DryRunParameter(), aDurationParameter());
+        havingParameters(new DryRunParameter(), aDurationParameter().build());
 
         assertThat(command.isDryRunEnabled()).isTrue();
     }
@@ -55,7 +57,7 @@ class StartCommandTest {
 
     @Test
     void isAutoModeEnabled_when_enabled_returns_true() {
-        havingParameters(aDurationParameter(), new AutoModeParameter());
+        havingParameters(aDurationParameter().build(), new AutoModeParameter());
 
         assertThat(command.isAutoModeEnabled()).isTrue();
     }
@@ -71,7 +73,7 @@ class StartCommandTest {
 
     @Test
     void hasFocus_determines_whether_specified_focus_is_set() {
-        havingParameters(aDurationParameter(), new FocusModeParameter(ZEN));
+        havingParameters(aDurationParameter().build(), new FocusModeParameter(ZEN));
 
         assertThat(command.hasFocus(ZEN)).isTrue();
         assertThat(command.hasFocus(CHILL)).isFalse();
@@ -133,6 +135,12 @@ class StartCommandTest {
 
     void havingParameters(Parameter... parameter) {
         command = new StartCommand(Set.of(parameter), null);
+    }
+
+    void havingParameters(DurationParameterBuilder... parameters) {
+        havingParameters(Stream.of(parameters)
+                .map(DurationParameterBuilder::build)
+                .toArray(DurationParameter[]::new));
     }
 
 }

@@ -1,9 +1,6 @@
 package net.agiledeveloper.mobtime.test.builders;
 
 import net.agiledeveloper.mobtime.domain.command.commands.impl.StartCommand;
-import net.agiledeveloper.mobtime.domain.command.parameters.Parameter;
-import net.agiledeveloper.mobtime.domain.command.parameters.impl.DryRunParameter;
-import net.agiledeveloper.mobtime.domain.command.parameters.impl.DurationParameter;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -16,14 +13,6 @@ public class Builders {
 
     public static StartCommand aStartCommand() {
         return new StartCommand(Collections.emptySet(), null);
-    }
-
-    public static Parameter aDurationParameter() {
-        return new DurationParameter(aDuration());
-    }
-
-    public static Parameter aParameter() {
-        return new DryRunParameter();
     }
 
     public static Duration aDuration() {

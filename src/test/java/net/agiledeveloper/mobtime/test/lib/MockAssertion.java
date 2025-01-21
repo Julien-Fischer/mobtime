@@ -1,4 +1,4 @@
-package net.agiledeveloper.mobtime.test.mock;
+package net.agiledeveloper.mobtime.test.lib;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 

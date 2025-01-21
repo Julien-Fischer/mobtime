@@ -1,4 +1,4 @@
-package net.agiledeveloper.mobtime.test.builders;
+package net.agiledeveloper.mobtime.test.lib;
 
 public interface Builder<T> {
 

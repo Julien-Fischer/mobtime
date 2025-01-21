@@ -1,4 +1,4 @@
-package net.agiledeveloper.mobtime.test.mock;
+package net.agiledeveloper.mobtime.test.lib;
 
 public abstract class Mock {
 

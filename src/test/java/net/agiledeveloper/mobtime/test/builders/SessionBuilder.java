@@ -2,6 +2,7 @@ package net.agiledeveloper.mobtime.test.builders;
 
 import net.agiledeveloper.mobtime.domain.session.FocusMode;
 import net.agiledeveloper.mobtime.domain.session.Session;
+import net.agiledeveloper.mobtime.test.lib.Builder;
 
 import java.time.Duration;
 

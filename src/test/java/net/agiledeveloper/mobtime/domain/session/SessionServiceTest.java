@@ -6,12 +6,12 @@ import net.agiledeveloper.mobtime.domain.ports.api.OnTick;
 import net.agiledeveloper.mobtime.domain.ports.spi.MobPort;
 import net.agiledeveloper.mobtime.domain.ports.spi.NotificationPort;
 import net.agiledeveloper.mobtime.domain.ports.spi.TimerPort;
-import net.agiledeveloper.mobtime.test.mock.Mock;
+import net.agiledeveloper.mobtime.test.lib.Mock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static net.agiledeveloper.mobtime.test.builders.SessionBuilder.aSession;
-import static net.agiledeveloper.mobtime.test.mock.MockAssertion.expectThat;
+import static net.agiledeveloper.mobtime.test.lib.MockAssertion.expectThat;
 
 class SessionServiceTest {
 

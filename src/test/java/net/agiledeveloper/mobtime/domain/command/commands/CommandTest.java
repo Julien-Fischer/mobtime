@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Test;
 import java.util.Collections;
 import java.util.Set;
 
-import static net.agiledeveloper.mobtime.test.builders.Builders.aDurationParameter;
 import static net.agiledeveloper.mobtime.test.builders.Builders.aStartCommand;
+import static net.agiledeveloper.mobtime.test.builders.DurationParameterBuilder.aDurationParameter;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 class CommandTest {
@@ -52,7 +52,7 @@ class CommandTest {
 
     @Test
     void get_when_parameter_present_returns_optional() {
-        havingParameters(aDurationParameter(), new DryRunParameter());
+        havingParameters(aDurationParameter().build(), new DryRunParameter());
 
         var optionalParameter = command.get(DryRunParameter.class);
 
