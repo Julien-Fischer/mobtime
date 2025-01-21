@@ -1,7 +1,10 @@
 package net.agiledeveloper.mobtime.e2e;
 
+import net.agiledeveloper.mobtime.Application;
+import net.agiledeveloper.mobtime.domain.ports.spi.MobPort;
 import net.agiledeveloper.mobtime.domain.session.Session;
-import net.agiledeveloper.mobtime.infra.cli.EntryPoint;
+import net.agiledeveloper.mobtime.test.lib.Mock;
+import net.agiledeveloper.mobtime.utils.AppLogger;
 import org.assertj.core.api.AbstractStringAssert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,6 +57,7 @@ class EntryPointTest {
 
         assertStandardOutput()
                 .contains("No command specified")
+                .contains("mobdone")
                 .doesNotContain("Done");
     }
 
@@ -67,6 +71,7 @@ class EntryPointTest {
 
         assertStandardOutput()
                 .contains("No command specified")
+                .contains("mobdone")
                 .doesNotContain("Done");
     }
 
@@ -134,6 +139,7 @@ class EntryPointTest {
 
         assertStandardOutput()
                 .contains("Error:")
+                .contains("mobdone")
                 .doesNotContain("Done");
     }
 
@@ -149,7 +155,8 @@ class EntryPointTest {
 
 
     private void runApp() {
-        EntryPoint.main(args);
+        var application = new Application(new ShellMock());
+        application.process(args);
     }
 
     private AbstractStringAssert<?> assertStandardOutput() {
@@ -164,6 +171,19 @@ class EntryPointTest {
 
     private void havingNoParameters() {
         withParameters();
+    }
+
+
+
+    private static class ShellMock extends Mock implements MobPort {
+        @Override
+        public void next() {
+            AppLogger.log("mobnext");
+        }
+        @Override
+        public void done() {
+            AppLogger.log("mobdone");
+        }
     }
 
 }

@@ -3,13 +3,12 @@ package net.agiledeveloper.mobtime;
 import net.agiledeveloper.mobtime.domain.command.CommandLineInterpreter;
 import net.agiledeveloper.mobtime.domain.command.commands.Command;
 import net.agiledeveloper.mobtime.domain.ports.api.SessionPort;
+import net.agiledeveloper.mobtime.domain.ports.spi.MobPort;
 import net.agiledeveloper.mobtime.domain.ports.spi.NotificationPort;
 import net.agiledeveloper.mobtime.domain.session.MobService;
 import net.agiledeveloper.mobtime.domain.session.SessionService;
 import net.agiledeveloper.mobtime.infra.cli.BashParameter;
 import net.agiledeveloper.mobtime.infra.cli.CommandLineParser;
-import net.agiledeveloper.mobtime.infra.shell.LinuxShell;
-import net.agiledeveloper.mobtime.infra.shell.ShellAdapter;
 import net.agiledeveloper.mobtime.infra.swing.SwingNotificationAdapter;
 import net.agiledeveloper.mobtime.infra.swing.SwingWorkerTimeAdapter;
 import net.agiledeveloper.mobtime.infra.swing.gui.Location;
@@ -21,18 +20,22 @@ import java.util.function.Supplier;
 
 public class Application {
 
-    private static final ShellAdapter shellAdapter = new ShellAdapter(LinuxShell.BASH);
+    private final MobPort mobPort;
 
-    public Application(String[] commandLine) {
+    public Application(MobPort mobPort) {
+        this.mobPort = mobPort;
+    }
+
+    public void process(String[] commandLine) {
         var parser = new CommandLineParser();
-        List<BashParameter> bashParameters = tryGetting(() -> parser.parse(commandLine));
+        List<BashParameter> bashParameters = getOrThrow(() -> parser.parse(commandLine));
 
-        var mobService = new MobService(shellAdapter);
+        var mobService = new MobService(mobPort);
         var notificationAdapter = createNotificationAdapter(mobService, bashParameters);
-        var sessionService = new SessionService(new SwingWorkerTimeAdapter(), notificationAdapter, shellAdapter);
+        var sessionService = new SessionService(new SwingWorkerTimeAdapter(), notificationAdapter, mobPort);
 
         var handler = new CommandLineInterpreter(sessionService);
-        Command command = tryGetting(() -> handler.interpret(bashParameters));
+        Command command = getOrThrow(() -> handler.interpret(bashParameters));
 
         command.execute();
 
@@ -40,12 +43,12 @@ public class Application {
     }
 
 
-    private static <T> T tryGetting(Supplier<T> procedure) {
+    private <T> T getOrThrow(Supplier<T> procedure) {
         try {
             return procedure.get();
         } catch (Exception exception) {
             logError(exception.getMessage());
-            shellAdapter.execute("mobdone");
+            mobPort.done();
             throw exception;
         }
     }
