@@ -17,8 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ShellAdapterTest {
 
-    private final CommandFormatter commandFormatter = new CommandFormatterMock();
-    private final ShellAdapter shellAdapter = new ShellAdapter(commandFormatter);
+    private final ShellAdapter shellAdapter = new ShellAdapter(new CommandFormatterMock());
     private ByteArrayOutputStream outputStream;
     private int statusCode;
 
