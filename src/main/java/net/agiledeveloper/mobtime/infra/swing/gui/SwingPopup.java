@@ -112,14 +112,14 @@ public class SwingPopup extends JFrame {
 
 
     private JComponent createButtonsContainer() {
-        doneButton = new MobButton("Done", GUIEvent.DONE);
         nextButton = new MobButton("Next", GUIEvent.NEXT);
+        doneButton = new MobButton("Done", GUIEvent.DONE);
         var separator = new JSeparator(SwingConstants.VERTICAL);
         separator.setForeground(WINDOW_BG);
         separator.setBackground(WINDOW_BG);
         var container = borderWrap(
-                borderWrap(doneButton, separator),
-                nextButton
+                borderWrap(nextButton, separator),
+                doneButton
         );
         container.setBackground(Color.RED);
         return container;
