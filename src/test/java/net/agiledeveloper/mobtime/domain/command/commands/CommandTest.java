@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Test;
 import java.util.Collections;
 import java.util.Set;
 
-import static net.agiledeveloper.mobtime.test.builders.Builders.aStartCommand;
 import static net.agiledeveloper.mobtime.test.builders.DurationParameterBuilder.aDurationParameter;
+import static net.agiledeveloper.mobtime.test.builders.StartCommandBuilder.aStartCommand;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 class CommandTest {
@@ -24,12 +24,17 @@ class CommandTest {
 
     @Test
     void is_when_same_class_returns_true() {
-        assertThat(aStartCommand().is(StartCommand.class)).isTrue();
+        var startCommand = aStartCommand().build();
+
+        assertThat(startCommand.is(StartCommand.class)).isTrue();
     }
 
     @Test
     void is_when_different_class_returns_false() {
-        assertThat(aStartCommand().is(Command.class)).isFalse();
+        var startCommand = aStartCommand().build();
+
+        assertThat(startCommand.is(Command.class)).isFalse();
+        assertThat(startCommand.is(MockCommand.class)).isFalse();
     }
 
     @Test
@@ -75,6 +80,18 @@ class CommandTest {
 
     void havingNoParameters() {
         command = new StartCommand(Collections.emptySet(), null);
+    }
+
+
+    private static class MockCommand implements Command {
+        @Override
+        public void execute() {
+        }
+
+        @Override
+        public Set<Parameter> parameters() {
+            return Set.of();
+        }
     }
 
 }
