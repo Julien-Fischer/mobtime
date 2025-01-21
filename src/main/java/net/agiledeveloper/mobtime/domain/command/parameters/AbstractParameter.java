@@ -1,6 +1,4 @@
-package net.agiledeveloper.mobtime.domain.command.commands;
-
-import net.agiledeveloper.mobtime.domain.command.parameters.Parameter;
+package net.agiledeveloper.mobtime.domain.command.parameters;
 
 public class AbstractParameter implements Parameter {
 

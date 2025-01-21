@@ -1,7 +1,5 @@
 package net.agiledeveloper.mobtime.domain.command.parameters;
 
-import net.agiledeveloper.mobtime.domain.command.commands.AbstractParameter;
-
 public abstract class ValueParameter<V> extends AbstractParameter {
 
     private final V val;
