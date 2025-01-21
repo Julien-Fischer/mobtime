@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-source "$(pwd)/src/main/resources/bash/mobtime_lib.sh"
+source "${HOME}/mobtime/src/mobtime_lib.sh"
 
 mobdone() {
     mobtime_log_lifecycle_hook "mobdone"
-    mob done
+    mob 'done'
     mobkill
 }
 

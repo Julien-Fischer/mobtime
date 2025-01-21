@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source "$(pwd)/src/main/resources/bash/mobtime_lib.sh"
+source "${HOME}/mobtime/src/mobtime_lib.sh"
 
 mobnext() {
     mobtime_log_lifecycle_hook "mobnext"
