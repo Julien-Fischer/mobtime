@@ -10,8 +10,8 @@ import net.agiledeveloper.mobtime.test.Mock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static net.agiledeveloper.mobtime.test.Builders.aSession;
 import static net.agiledeveloper.mobtime.test.MockAssertion.expectThat;
+import static net.agiledeveloper.mobtime.test.SessionBuilder.aSession;
 
 class SessionServiceTest {
 
@@ -32,21 +32,25 @@ class SessionServiceTest {
 
     @Test
     void open_triggers_a_timer() {
-        sessionService.open(aSession());
+        var anySession = aSession().build();
+
+        sessionService.open(anySession);
 
         expectThat(timerMock).wasCalledOnce();
     }
 
     @Test
     void close_dispatches_a_notification() {
-        sessionService.close(aSession());
+        var anySession = aSession().build();
+
+        sessionService.close(anySession);
 
         expectThat(notificationMock).wasCalledOnce();
     }
 
     @Test
     void close_when_auto_mode_enabled_calls_mob_port() {
-        var session = aSession(true);
+        var session = aSession().withAutoMode(true).build();
 
         sessionService.close(session);
 
@@ -55,7 +59,7 @@ class SessionServiceTest {
 
     @Test
     void close_when_auto_mode_enabled_does_not_call_mob_port() {
-        var session = aSession(false);
+        var session = aSession().withAutoMode(false).build();
 
         sessionService.close(session);
 

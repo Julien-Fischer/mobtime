@@ -4,8 +4,6 @@ import net.agiledeveloper.mobtime.domain.command.commands.impl.StartCommand;
 import net.agiledeveloper.mobtime.domain.command.parameters.Parameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.impl.DryRunParameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.impl.DurationParameter;
-import net.agiledeveloper.mobtime.domain.session.FocusMode;
-import net.agiledeveloper.mobtime.domain.session.Session;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -30,14 +28,6 @@ public class Builders {
 
     public static Duration aDuration() {
         return Duration.of(3, ChronoUnit.SECONDS);
-    }
-
-    public static Session aSession() {
-        return new Session(aDuration(), false, FocusMode.NORMAL, Session.DEFAULT_USERNAME);
-    }
-
-    public static Session aSession(boolean autoModeEnabled) {
-        return new Session(aDuration(), autoModeEnabled, FocusMode.NORMAL, Session.DEFAULT_USERNAME);
     }
 
 }
