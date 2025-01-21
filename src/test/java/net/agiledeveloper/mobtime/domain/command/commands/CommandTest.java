@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Test;
 import java.util.Collections;
 import java.util.Set;
 
-import static net.agiledeveloper.mobtime.test.Builders.aDurationParameter;
-import static net.agiledeveloper.mobtime.test.Builders.aStartCommand;
+import static net.agiledeveloper.mobtime.test.builders.Builders.aDurationParameter;
+import static net.agiledeveloper.mobtime.test.builders.Builders.aStartCommand;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 class CommandTest {

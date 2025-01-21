@@ -1,4 +1,4 @@
-package net.agiledeveloper.mobtime.test;
+package net.agiledeveloper.mobtime.test.builders;
 
 import net.agiledeveloper.mobtime.domain.command.commands.impl.StartCommand;
 import net.agiledeveloper.mobtime.domain.command.parameters.Parameter;

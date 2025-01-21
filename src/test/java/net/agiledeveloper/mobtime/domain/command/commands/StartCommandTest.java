@@ -15,7 +15,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Set;
 
 import static net.agiledeveloper.mobtime.domain.session.FocusMode.*;
-import static net.agiledeveloper.mobtime.test.Builders.aDurationParameter;
+import static net.agiledeveloper.mobtime.test.builders.Builders.aDurationParameter;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 class StartCommandTest {
