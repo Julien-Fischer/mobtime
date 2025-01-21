@@ -17,7 +17,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ShellAdapterTest {
 
-    private final ShellAdapter shellAdapter = new ShellAdapter(LinuxShell.BASH);
+    private final CommandFormatter commandFormatter = new CommandFormatterMock();
+    private final ShellAdapter shellAdapter = new ShellAdapter(commandFormatter);
     private ByteArrayOutputStream outputStream;
     private int statusCode;
 
@@ -95,6 +96,16 @@ class ShellAdapterTest {
         @Override
         public AbstractStringAssert<?> contains(String expected) {
             return assertThat(outputStream.toString().trim()).contains(expected);
+        }
+
+    }
+
+
+    private static class CommandFormatterMock implements CommandFormatter {
+
+        @Override
+        public ShellCommand format(String commandName) {
+            return new ShellCommand(LinuxShell.SH, commandName);
         }
 
     }

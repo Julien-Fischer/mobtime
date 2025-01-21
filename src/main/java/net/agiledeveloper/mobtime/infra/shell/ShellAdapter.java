@@ -6,11 +6,11 @@ import net.agiledeveloper.mobtime.utils.AppLogger;
 
 public class ShellAdapter implements MobPort {
 
-    private final Shell preferredShell;
+    private final CommandFormatter commandFormatter;
 
 
-    public ShellAdapter(Shell preferredShell) {
-        this.preferredShell = preferredShell;
+    public ShellAdapter(CommandFormatter commandFormatter) {
+        this.commandFormatter = commandFormatter;
     }
 
 
@@ -26,7 +26,8 @@ public class ShellAdapter implements MobPort {
 
 
     public int execute(String command) throws InfraException {
-        return ShellExecutor.execute(command, preferredShell);
+        ShellCommand formattedCommand = commandFormatter.format(command);
+        return ShellExecutor.execute(formattedCommand);
     }
 
     private void tryExecuting(String command) {

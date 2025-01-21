@@ -17,14 +17,13 @@ public class ShellExecutor {
     private ShellExecutor() {}
 
 
-    public static int execute(String command, Shell shell) throws ShellException {
-        return execute(command, shell, DEFAULT_TIMEOUT);
+    public static int execute(ShellCommand shellCommand) throws ShellException {
+        return execute(shellCommand, DEFAULT_TIMEOUT);
     }
 
-    public static int execute(String command, Shell shell, Duration timeout) throws ShellException {
+    public static int execute(ShellCommand shellCommand, Duration timeout) throws ShellException {
         try {
-            String[] commandLine = shell.formatCommand(command);
-            Process process = Runtime.getRuntime().exec(commandLine);
+            Process process = Runtime.getRuntime().exec(shellCommand.toArray());
             try (
                     var reader = buffer(process.getInputStream());
                     var errorReader = buffer(process.getErrorStream());
@@ -34,7 +33,7 @@ public class ShellExecutor {
 
                 if (completesBefore(process, timeout)) {
                     int exitCode = process.exitValue();
-                    AppLogger.log(String.join(" ", commandLine) + " - process exited with code " + exitCode);
+                    AppLogger.log(shellCommand.toString() + " - process exited with code " + exitCode);
                     return exitCode;
                 } else {
                     process.destroyForcibly();

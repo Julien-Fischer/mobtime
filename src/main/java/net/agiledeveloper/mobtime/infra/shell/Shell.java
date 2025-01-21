@@ -4,6 +4,6 @@ public interface Shell {
 
     String getName();
 
-    String[] formatCommand(String commandName);
+    String getOption();
 
 }
