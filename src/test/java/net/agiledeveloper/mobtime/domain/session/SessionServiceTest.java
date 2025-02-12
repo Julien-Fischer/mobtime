@@ -65,7 +65,6 @@ class SessionServiceTest {
 
         expectThat(shellMock).wasNeverCalled();
     }
-
 }
 
 
