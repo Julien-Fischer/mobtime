@@ -40,11 +40,14 @@ mobinstall() {
     local first_install=false
     [[ "${1}" == "--first" ]] && first_install=true
 
-    mobtime_require_sudo "install"
-
     mobtime_require_dependency git "git" "sudo apt update && sudo apt install git -y"
     mobtime_require_dependency mvn "Maven" "sudo apt update && sudo apt install maven -y"
     mobtime_require_dependency mob "mob.sh" "curl -sL install.mob.sh | sh -s - --user"
+    if ! is_java_21_installed; then
+        return 1
+    fi
+
+    mobtime_require_sudo "install"
 
     wizard_log -t "> Creating runtime directories..."
     local runtime_directories=(
@@ -294,6 +297,21 @@ moblog() {
 #########################################################################################
 # Lib helpers
 #########################################################################################
+
+is_java_21_installed() {
+  if command -v java &> /dev/null; then
+      java_version=$(java -version 2>&1 | awk -F '"' '/version/ {print $2}' | cut -d'.' -f1)
+      if [ "$java_version" -lt 21 ]; then
+          echo "E: Java 21+ is required. Current Java version: ${java_version}" >&2
+          return 1
+      else
+          return 0
+      fi
+  else
+      echo "E: Java is not installed" >&2
+      return 1
+  fi
+}
 
 mobtime_require_sudo() {
     local action="${1}"
