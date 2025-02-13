@@ -303,14 +303,22 @@ is_java_21_installed() {
       java_version=$(java -version 2>&1 | awk -F '"' '/version/ {print $2}' | cut -d'.' -f1)
       if [ "$java_version" -lt 21 ]; then
           echo "E: Java 21+ is required. Current Java version: ${java_version}" >&2
+          print_java_instructions
           return 1
       else
           return 0
       fi
   else
       echo "E: Java is not installed" >&2
+      print_java_instructions
       return 1
   fi
+}
+
+print_java_instructions() {
+    echo "   You can install Java 21 using:"
+    echo "      wget https://download.oracle.com/java/21/latest/jdk-21_linux-x64_bin.deb"
+    echo "      sudo dpkg -i jdk-21_linux-x64_bin.deb"
 }
 
 mobtime_require_sudo() {
