@@ -22,11 +22,11 @@ public class AppLogger {
     }
 
     public static void log(String... elements) {
-        print("[" + now() + "]" + " " + String.join(" ", elements));
+        print("[%s] %s".formatted(now(), join(elements)));
     }
 
     public static void err(String... elements) {
-        print("[" + now() + "]" + " " + ERROR_PREFIX + " " + String.join(" ", elements));
+        print("[%s] %s %s".formatted(now(), ERROR_PREFIX, join(elements)));
     }
 
 
@@ -36,6 +36,10 @@ public class AppLogger {
 
     private static String now() {
         return formatInstant(Instant.now());
+    }
+
+    private static String join(String... elements) {
+        return String.join(" ", elements);
     }
 
 }
