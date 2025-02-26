@@ -232,7 +232,7 @@ mobstatus() {
 }
 
 mobconfig() {
-    vim "${MOBTIME_CONFIG_FILE}"
+    "$(get_user_preferred_editor)" "${MOBTIME_CONFIG_FILE}"
 }
 
 mobhelp() {
@@ -297,6 +297,28 @@ moblog() {
 #########################################################################################
 # Lib helpers
 #########################################################################################
+
+get_user_preferred_editor() {
+    if command -v "${EDITOR}" >/dev/null 2>&1; then
+        echo "${EDITOR}"
+    elif command -v "${VISUAL}" >/dev/null 2>&1; then
+        echo "${VISUAL}"
+    elif command -v vim >/dev/null 2>&1; then
+        echo "vim"
+    elif command -v vi >/dev/null 2>&1; then
+        echo "vi"
+    elif command -v nano >/dev/null 2>&1; then
+        echo "nano"
+    elif command -v emacs >/dev/null 2>&1; then
+        echo "emacs"
+    elif command -v ed >/dev/null 2>&1; then
+        echo "ed"
+    else
+        echo "E: No suitable editor found" >&2
+        mobtime_log "E: No suitable editor found"
+        return 1
+    fi
+}
 
 is_java_21_installed() {
   if command -v java &> /dev/null; then
