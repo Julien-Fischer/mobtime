@@ -1,7 +1,6 @@
 package net.agiledeveloper.mobtime.infra.roaming;
 
 import net.agiledeveloper.mobtime.infra.swing.gui.Coordinate;
-import org.assertj.core.api.AbstractStringAssert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
@@ -26,16 +25,14 @@ class RoamingTest {
 
     @Test
     void save_writes_serialized_coordinate_to_roaming() throws IOException {
-        var location = new Coordinate(3, 5);
+        var lastLocation = new Coordinate(3, 5);
 
-        roaming.save(location);
+        roaming.save(lastLocation);
 
-        assertThatCoordinate().isEqualTo("(3, 5)");
-    }
+        Coordinate location = roaming.read();
 
-    private AbstractStringAssert<?> assertThatCoordinate() throws IOException {
-        var coordinate = new String(Files.readAllBytes(ROAMING_FILE));
-        return assertThat(coordinate);
+        assertThat(location)
+                .isEqualTo(lastLocation);
     }
 
 }

@@ -25,4 +25,14 @@ public class Roaming {
         }
     }
 
+    public Coordinate read() throws IOException {
+        try {
+            var serialized = new String(Files.readAllBytes(roamingFile));
+            return Coordinate.of(serialized);
+        } catch (IOException ex) {
+            App.logger.err(ex);
+            throw ex;
+        }
+    }
+
 }
