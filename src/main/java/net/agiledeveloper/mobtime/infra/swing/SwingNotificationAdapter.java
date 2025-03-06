@@ -39,16 +39,13 @@ public class SwingNotificationAdapter implements NotificationPort {
 
     @Override
     public void send(Notification notification) {
-        if (notification instanceof SessionOpenNotification) {
-            handleOpenNotification(notification);
-        } else if (notification instanceof SessionStartNotification) {
-            handleStartNotification(notification);
-        } else if (notification instanceof SessionRefreshNotification refreshNotification) {
-            handleRefreshNotification(refreshNotification);
-        } else if (notification instanceof SessionCloseNotification) {
-            handleCloseNotification(notification);
-        } else if (notification instanceof SessionShutdownNotification) {
-            handleShutdownNotification(notification);
+        switch (notification) {
+            case SessionOpenNotification ignored                -> handleOpenNotification(notification);
+            case SessionStartNotification ignored               -> handleStartNotification(notification);
+            case SessionRefreshNotification refreshNotification -> handleRefreshNotification(refreshNotification);
+            case SessionCloseNotification ignored               -> handleCloseNotification(notification);
+            case SessionShutdownNotification ignored            -> handleShutdownNotification(notification);
+            case null, default -> throw new UnsupportedOperationException("Unknown notification type: " + notification);
         }
     }
 
