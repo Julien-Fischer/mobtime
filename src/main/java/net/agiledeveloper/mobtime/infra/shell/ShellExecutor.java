@@ -1,6 +1,6 @@
 package net.agiledeveloper.mobtime.infra.shell;
 
-import net.agiledeveloper.mobtime.utils.AppLogger;
+import net.agiledeveloper.mobtime.utils.App;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,7 +33,7 @@ public class ShellExecutor {
 
                 if (completesBefore(process, timeout)) {
                     int exitCode = process.exitValue();
-                    AppLogger.log(shellCommand.toString() + " - process exited with code " + exitCode);
+                    App.logger.log(shellCommand + " - process exited with code " + exitCode);
                     return exitCode;
                 } else {
                     process.destroyForcibly();
@@ -59,7 +59,7 @@ public class ShellExecutor {
     private static void read(BufferedReader reader) throws IOException {
         String line;
         while ((line = reader.readLine()) != null) {
-            AppLogger.log(line);
+            App.logger.log(line);
         }
     }
 

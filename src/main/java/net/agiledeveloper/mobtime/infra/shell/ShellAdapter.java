@@ -2,7 +2,7 @@ package net.agiledeveloper.mobtime.infra.shell;
 
 import net.agiledeveloper.mobtime.domain.ports.spi.MobPort;
 import net.agiledeveloper.mobtime.infra.InfraException;
-import net.agiledeveloper.mobtime.utils.AppLogger;
+import net.agiledeveloper.mobtime.utils.App;
 
 public class ShellAdapter implements MobPort {
 
@@ -34,7 +34,7 @@ public class ShellAdapter implements MobPort {
         try {
             execute(command);
         } catch (InfraException cause) {
-            AppLogger.log("Infra - " + command);
+            App.logger.log("Infra - " + command);
             throw new InfraException(cause);
         }
     }

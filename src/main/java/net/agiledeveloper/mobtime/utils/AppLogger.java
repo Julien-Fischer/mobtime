@@ -9,37 +9,51 @@ public class AppLogger {
     public static final String DEFAULT_SEPARATOR = "-".repeat(60);
     public static final String ERROR_PREFIX = "/!\\";
 
+    private final Target target;
+    private final TimeProvider timeProvider;
 
-    private AppLogger() {}
+
+    public AppLogger(Target target, TimeProvider timeProvider) {
+        this.target = target;
+        this.timeProvider = timeProvider;
+    }
 
 
-    public static void logSeparator() {
+    public void print(String message) {
+        target.print(message);
+    }
+
+    public void logSeparator() {
         print(DEFAULT_SEPARATOR);
     }
 
-    public static void logSeparator(String separator) {
+    public void logSeparator(String separator) {
         print(separator);
     }
 
-    public static void log(String... elements) {
+    public void log(String... elements) {
         print("[%s] %s".formatted(now(), join(elements)));
     }
 
-    public static void err(String... elements) {
+    public void err(String... elements) {
         print("[%s] %s %s".formatted(now(), ERROR_PREFIX, join(elements)));
     }
 
-
-    private static void print(String message) {
-        System.out.println(message);
+    private String now() {
+        return formatInstant(timeProvider.now());
     }
 
-    private static String now() {
-        return formatInstant(Instant.now());
-    }
-
-    private static String join(String... elements) {
+    private String join(String... elements) {
         return String.join(" ", elements);
+    }
+
+
+    public interface Target {
+        void print(String message);
+    }
+
+    public interface TimeProvider {
+        Instant now();
     }
 
 }

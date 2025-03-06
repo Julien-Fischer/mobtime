@@ -8,7 +8,7 @@ import net.agiledeveloper.mobtime.domain.session.FocusMode;
 import net.agiledeveloper.mobtime.domain.session.Session;
 import net.agiledeveloper.mobtime.domain.session.SessionService;
 import net.agiledeveloper.mobtime.infra.cli.BashParameter;
-import net.agiledeveloper.mobtime.utils.AppLogger;
+import net.agiledeveloper.mobtime.utils.App;
 
 import java.time.Duration;
 import java.util.HashSet;
@@ -31,11 +31,11 @@ public class CommandLineInterpreter {
         Set<Parameter> parameters = new HashSet<>();
         Command command = null;
 
-        AppLogger.logSeparator();
-        AppLogger.log("MobTime");
-        AppLogger.log("Input parameters:");
+        App.logger.logSeparator();
+        App.logger.log("MobTime");
+        App.logger.log("Input parameters:");
         for (var parameter : commandLine) {
-            AppLogger.log(" ", parameter.toString());
+            App.logger.log(" ", parameter.toString());
 
             if (parameter.hasName("start")) {
                 command = new StartCommand(parameters, sessionService);
@@ -63,7 +63,7 @@ public class CommandLineInterpreter {
 
             else if (parameter.hasName("invalid")) {
                 var msg = "Error: --invalid is not a valid argument";
-                AppLogger.log(msg);
+                App.logger.log(msg);
                 throw new IllegalArgumentException(msg);
             }
         }
@@ -72,10 +72,10 @@ public class CommandLineInterpreter {
             throw new IllegalArgumentException("No command specified");
         }
 
-        AppLogger.logSeparator();
-        AppLogger.log("Command parameters:");
+        App.logger.logSeparator();
+        App.logger.log("Command parameters:");
         for (var parameter : command.parameters()) {
-            AppLogger.log(" ", parameter.toString());
+            App.logger.log(" ", parameter.toString());
         }
         return command;
     }

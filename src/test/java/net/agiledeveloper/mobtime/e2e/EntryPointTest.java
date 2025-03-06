@@ -4,7 +4,7 @@ import net.agiledeveloper.mobtime.Application;
 import net.agiledeveloper.mobtime.domain.ports.spi.MobPort;
 import net.agiledeveloper.mobtime.domain.session.Session;
 import net.agiledeveloper.mobtime.test.lib.Mock;
-import net.agiledeveloper.mobtime.utils.AppLogger;
+import net.agiledeveloper.mobtime.utils.App;
 import org.assertj.core.api.AbstractStringAssert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -178,11 +178,11 @@ class EntryPointTest {
     private static class ShellMock extends Mock implements MobPort {
         @Override
         public void next() {
-            AppLogger.log("mobnext");
+            App.logger.log("mobnext");
         }
         @Override
         public void done() {
-            AppLogger.log("mobdone");
+            App.logger.log("mobdone");
         }
     }
 

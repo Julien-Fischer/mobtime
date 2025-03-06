@@ -9,7 +9,7 @@ import net.agiledeveloper.mobtime.infra.swing.gui.GUIEvent;
 import net.agiledeveloper.mobtime.infra.swing.gui.Location;
 import net.agiledeveloper.mobtime.infra.swing.gui.SwingPopup;
 import net.agiledeveloper.mobtime.infra.swing.theme.Theme;
-import net.agiledeveloper.mobtime.utils.AppLogger;
+import net.agiledeveloper.mobtime.utils.App;
 
 import javax.swing.*;
 import java.awt.*;
@@ -66,7 +66,7 @@ public class SwingNotificationAdapter implements NotificationPort {
 
     private void handleRefreshNotification(SessionRefreshNotification notification) {
         if (awaitingKillSignal) {
-            AppLogger.log("App will shutdown soon...");
+            App.logger.log("App will shutdown soon...");
             return;
         }
         var color = notification.hasLittleTimeLeft() ? MESSAGE_INFO : MESSAGE_OK;

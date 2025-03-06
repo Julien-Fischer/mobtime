@@ -4,7 +4,7 @@ import net.agiledeveloper.mobtime.domain.notification.Notification;
 import net.agiledeveloper.mobtime.domain.notification.session.SessionCloseNotification;
 import net.agiledeveloper.mobtime.domain.notification.session.SessionRefreshNotification;
 import net.agiledeveloper.mobtime.domain.session.FocusMode;
-import net.agiledeveloper.mobtime.utils.AppLogger;
+import net.agiledeveloper.mobtime.utils.App;
 
 import javax.swing.*;
 import java.awt.*;
@@ -149,7 +149,7 @@ public class SwingPopup extends JFrame {
     }
 
     private void close() {
-        AppLogger.log("Closing popup");
+        App.logger.log("Closing popup");
     }
 
     private void init(Notification notification) {

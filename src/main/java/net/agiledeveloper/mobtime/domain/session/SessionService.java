@@ -4,7 +4,7 @@ import net.agiledeveloper.mobtime.domain.notification.session.*;
 import net.agiledeveloper.mobtime.domain.ports.spi.MobPort;
 import net.agiledeveloper.mobtime.domain.ports.spi.NotificationPort;
 import net.agiledeveloper.mobtime.domain.ports.spi.TimerPort;
-import net.agiledeveloper.mobtime.utils.AppLogger;
+import net.agiledeveloper.mobtime.utils.App;
 
 import java.time.Duration;
 
@@ -30,8 +30,8 @@ public class SessionService {
 
     public void open(Session session) {
         var durationString = formatDuration(session.duration());
-        AppLogger.logSeparator();
-        AppLogger.log("Opening mob session (duration = " + durationString + ")");
+        App.logger.logSeparator();
+        App.logger.log("Opening mob session (duration = " + durationString + ")");
         notificationPort.send(new SessionOpenNotification(session, "Starting driver session...", ""));
         timerPort.runFor(
                 session,
@@ -53,21 +53,21 @@ public class SessionService {
         if (isGracePeriodOver(session, remainingTime)) {
             handleGracePeriodOver(session, remainingTime);
         } else {
-            AppLogger.log("  Waiting for driving session to start");
+            App.logger.log("  Waiting for driving session to start");
         }
     }
 
     private void startSession(Session session) {
         var notification = new SessionStartNotification(session, "Driving", "");
         notificationPort.send(notification);
-        AppLogger.log("  Driving ");
+        App.logger.log("  Driving ");
     }
 
     private void refreshSession(Session session, Duration remainingTime, boolean littleTimeLeft) {
         var durationString = formatDuration(remainingTime);
         var notification = new SessionRefreshNotification(session, session.username(), durationString, littleTimeLeft, remainingTime);
         notificationPort.send(notification);
-        AppLogger.log("  Session ending in " + durationString);
+        App.logger.log("  Session ending in " + durationString);
     }
 
     private void handleGracePeriodOver(Session session, Duration remainingTime) {
@@ -98,15 +98,15 @@ public class SessionService {
     private void suggestMobNext(Session session) {
         var notification = new SessionCloseNotification(session, "Pass keyboard", "");
         notificationPort.send(notification);
-        AppLogger.logSeparator();
-        AppLogger.log("Pass keyboard Use mob next to switch driver or mob done to end the mob session");
+        App.logger.logSeparator();
+        App.logger.log("Pass keyboard Use mob next to switch driver or mob done to end the mob session");
     }
 
     private void mobNext(Session session) {
         var notification = new SessionShutdownNotification(session, "Pass keyboard", "Next to drive.");
         notificationPort.send(notification);
-        AppLogger.logSeparator();
-        AppLogger.log("Pass keyboard! Next to drive.");
+        App.logger.logSeparator();
+        App.logger.log("Pass keyboard! Next to drive.");
         mobPort.next();
     }
 

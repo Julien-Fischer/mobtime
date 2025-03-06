@@ -13,7 +13,7 @@ import net.agiledeveloper.mobtime.infra.swing.SwingNotificationAdapter;
 import net.agiledeveloper.mobtime.infra.swing.SwingWorkerTimeAdapter;
 import net.agiledeveloper.mobtime.infra.swing.gui.Location;
 import net.agiledeveloper.mobtime.infra.swing.gui.SwingPopup;
-import net.agiledeveloper.mobtime.utils.AppLogger;
+import net.agiledeveloper.mobtime.utils.App;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -39,7 +39,7 @@ public class Application {
 
         command.execute();
 
-        AppLogger.log("Command processed");
+        App.logger.log("Command processed");
     }
 
 
@@ -55,11 +55,11 @@ public class Application {
 
     private static void logError(String message) {
         var errorSeparator = "/!\\ ".repeat(20);
-        AppLogger.logSeparator(errorSeparator);
-        AppLogger.err("Error parsing command");
-        AppLogger.err("E: " + message);
-        AppLogger.err("Closing mob session...");
-        AppLogger.logSeparator(errorSeparator);
+        App.logger.logSeparator(errorSeparator);
+        App.logger.err("Error parsing command");
+        App.logger.err("E: " + message);
+        App.logger.err("Closing mob session...");
+        App.logger.logSeparator(errorSeparator);
     }
 
     private static boolean shouldMinimize(List<BashParameter> bashParameters) {
