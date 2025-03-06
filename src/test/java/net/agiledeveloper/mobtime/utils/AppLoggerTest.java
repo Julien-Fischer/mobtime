@@ -4,6 +4,7 @@ import net.agiledeveloper.mobtime.test.lib.Mock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.time.Instant;
 
 import static net.agiledeveloper.mobtime.test.lib.BuilderAssertion.expectThat;
@@ -47,6 +48,16 @@ class AppLoggerTest {
 
         expectThat(target.getMessage())
                 .isEqualTo("[%s] /!\\ hello world !".formatted(DATETIME));
+    }
+
+    @Test
+    void err_logs_specified_exception() {
+        var exception = new IOException("hello world !");
+
+        logger.err(exception);
+
+        expectThat(target.getMessage())
+                .isEqualTo("[%s] /!\\ %s".formatted(DATETIME, exception.getMessage()));
     }
 
     @Test

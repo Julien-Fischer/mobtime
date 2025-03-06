@@ -47,6 +47,10 @@ public class AppLogger {
         return String.join(" ", elements);
     }
 
+    public void err(Exception exception) {
+        err(exception.getMessage());
+    }
+
 
     public interface Target {
         void print(String message);
