@@ -22,22 +22,22 @@ public class Roaming {
     }
 
 
-    public void saveCoordinate(Coordinate coordinate) {
+    public void setCoordinate(Coordinate coordinate) {
         write("coordinate", coordinate);
     }
 
-    public void saveDetached(boolean detached) {
+    public void setDetached(boolean detached) {
         write("detach", detached);
     }
 
-    public Optional<Coordinate> readCoordinate() {
+    public Optional<Coordinate> getCoordinate() {
         var serialized = read("coordinate");
         return (serialized == null) ?
                 Optional.empty() :
                 Optional.of(Coordinate.of(serialized));
     }
 
-    public boolean readDetached() {
+    public boolean isDetached() {
         var serialized = read("detach");
         return Boolean.parseBoolean(serialized);
     }
@@ -58,7 +58,7 @@ public class Roaming {
     private String read(String key) {
         try {
             createRoamingIfNotExists();
-            readProperties();
+            loadProperties();
             return properties.getProperty(key);
         } catch (Exception cause) {
             App.logger.err(cause);
@@ -66,7 +66,7 @@ public class Roaming {
         }
     }
 
-    private void readProperties() throws IOException {
+    private void loadProperties() throws IOException {
         if (properties != null) {
             return;
         }

@@ -36,61 +36,61 @@ class RoamingTest {
 
 
     @Test
-    void saveCoordinate_writes_serialized_coordinate_to_roaming() {
+    void setCoordinate_writes_serialized_coordinate_to_roaming() {
         var lastLocation = new Coordinate(3, 5);
 
-        roaming.saveCoordinate(lastLocation);
+        roaming.setCoordinate(lastLocation);
 
-        Optional<Coordinate> location = roaming.readCoordinate();
+        Optional<Coordinate> location = roaming.getCoordinate();
 
         assertThat(location).isPresent();
         assertThat(location.get()).isEqualTo(lastLocation);
     }
 
     @Test
-    void readCoordinate_returns_empty_optional_when_file_does_not_exist() {
+    void getCoordinate_returns_empty_optional_when_file_does_not_exist() {
         var nonExistentRoaming = new Roaming(NON_EXISTENT_FILE);
 
-        Optional<Coordinate> location = nonExistentRoaming.readCoordinate();
+        Optional<Coordinate> location = nonExistentRoaming.getCoordinate();
 
         assertThat(location).isEmpty();
     }
 
 
     @Test
-    void readCoordinate_throws_exception_when_coordinate_could_not_be_parsed() throws IOException {
+    void getCoordinate_throws_exception_when_coordinate_could_not_be_parsed() throws IOException {
         givenThatCoordinateIsMalformed();
 
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(roaming::readCoordinate);
+                .isThrownBy(roaming::getCoordinate);
     }
 
 
     @Test
-    void saveDetached_writes_serialized_coordinate_to_roaming() {
-        roaming.saveDetached(true);
+    void setDetached_writes_serialized_coordinate_to_roaming() {
+        roaming.setDetached(true);
 
-        Boolean detached = roaming.readDetached();
+        Boolean detached = roaming.isDetached();
 
         assertThat(detached).isTrue();
     }
 
     @Test
-    void readDetached_returns_empty_optional_when_file_does_not_exist() {
+    void isDetached_returns_empty_optional_when_file_does_not_exist() {
         var nonExistentRoaming = new Roaming(NON_EXISTENT_FILE);
 
-        Boolean detached = nonExistentRoaming.readDetached();
+        Boolean detached = nonExistentRoaming.isDetached();
 
         assertThat(detached).isFalse();
     }
 
 
     @Test
-    void readDetached_throws_exception_when_coordinate_could_not_be_parsed() throws IOException {
+    void isDetached_throws_exception_when_coordinate_could_not_be_parsed() throws IOException {
         givenThatDetachedIsMalformed();
 
         assertThatNoException()
-                .isThrownBy(roaming::readDetached);
+                .isThrownBy(roaming::isDetached);
     }
 
 

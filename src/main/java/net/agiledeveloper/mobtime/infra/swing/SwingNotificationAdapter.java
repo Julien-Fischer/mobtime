@@ -141,7 +141,7 @@ public class SwingNotificationAdapter implements NotificationPort {
     }
 
     private SwingPopup createPopup(Notification notification) {
-        Optional<Coordinate> offset = roaming.readCoordinate();
+        Optional<Coordinate> offset = roaming.getCoordinate();
         return autosave && offset.isPresent() ?
                 new SwingPopup(notification, shouldMinimize, offset.get()) :
                 new SwingPopup(notification, shouldMinimize);
@@ -192,7 +192,7 @@ public class SwingNotificationAdapter implements NotificationPort {
     private void updateRoaming() {
         var location = currentFrame.getCurrentLocation();
         if (autosave && location != null) {
-            roaming.saveCoordinate(location);
+            roaming.setCoordinate(location);
         }
     }
 
