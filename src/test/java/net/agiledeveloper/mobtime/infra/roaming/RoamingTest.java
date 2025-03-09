@@ -7,10 +7,14 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
+import static java.nio.file.StandardOpenOption.APPEND;
+import static java.nio.file.StandardOpenOption.CREATE;
+import static java.time.temporal.ChronoUnit.MINUTES;
 import static net.agiledeveloper.mobtime.infra.roaming.Roaming.Key.*;
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
@@ -86,7 +90,6 @@ class RoamingTest {
         assertThat(detached).isFalse();
     }
 
-
     @Test
     void isDetached_throws_exception_when_coordinate_could_not_be_parsed() throws IOException {
         givenThatDetachedIsMalformed();
@@ -97,48 +100,95 @@ class RoamingTest {
 
 
     @Test
-    void setLastActivity_writes_serialized_coordinate_to_roaming() {
-        roaming.setLastActivity(Instant.EPOCH);
+    void setActivityStart_writes_serialized_coordinate_to_roaming() {
+        roaming.setActivityStart(Instant.EPOCH);
 
-        Optional<Instant> lastActivity = roaming.getLastActivity();
+        Optional<Instant> lastActivity = roaming.getActivityStart();
 
         assertThat(lastActivity).isPresent();
         assertThat(lastActivity.get()).isEqualTo(Instant.EPOCH);
     }
 
     @Test
-    void getLastActivity_returns_empty_optional_when_file_does_not_exist() {
+    void getActivityStart_returns_empty_optional_when_file_does_not_exist() {
         var nonExistentRoaming = new Roaming(NON_EXISTENT_FILE);
 
-        Optional<Instant> detached = nonExistentRoaming.getLastActivity();
+        Optional<Instant> startInstant = nonExistentRoaming.getActivityStart();
 
-        assertThat(detached).isEmpty();
+        assertThat(startInstant).isEmpty();
+    }
+
+    @Test
+    void getActivityStart_throws_exception_when_coordinate_could_not_be_parsed() throws IOException {
+        givenThatActivityStartIsMalformed();
+
+        assertThatExceptionOfType(RoamingException.class)
+                .isThrownBy(roaming::getActivityStart);
     }
 
 
     @Test
-    void getLastActivity_throws_exception_when_coordinate_could_not_be_parsed() throws IOException {
-        givenThatLastActivityIsMalformed();
+    void setActivityStop_writes_serialized_coordinate_to_roaming() {
+        roaming.setActivityStop(Instant.EPOCH);
 
-        assertThatExceptionOfType(RoamingException.class)
-                .isThrownBy(roaming::getLastActivity);
+        Optional<Instant> lastActivity = roaming.getActivityStop();
+
+        assertThat(lastActivity).isPresent();
+        assertThat(lastActivity.get()).isEqualTo(Instant.EPOCH);
     }
 
+    @Test
+    void getActivityStop_returns_empty_optional_when_file_does_not_exist() {
+        var nonExistentRoaming = new Roaming(NON_EXISTENT_FILE);
+
+        Optional<Instant> stopInstant = nonExistentRoaming.getActivityStop();
+
+        assertThat(stopInstant).isEmpty();
+    }
+
+    @Test
+    void getActivityStop_throws_exception_when_coordinate_could_not_be_parsed() throws IOException {
+        givenThatActivityStopIsMalformed();
+
+        assertThatExceptionOfType(RoamingException.class)
+                .isThrownBy(roaming::getActivityStop);
+    }
+
+    @Test
+    void getLastActivityDuration_returns_duration() throws IOException {
+        var start = Instant.EPOCH;
+        var stop = start.plus(1, MINUTES);
+        givenThatSessionLasted(start, stop);
+
+        Duration duration = roaming.getLastActivityDuration();
+
+        assertThat(duration)
+                .isEqualTo(Duration.between(start, stop));
+    }
+
+    private void givenThatSessionLasted(Instant start, Instant end) throws IOException {
+        setProperty(ACTIVITY_START, start.toEpochMilli());
+        setProperty(ACTIVITY_STOP,  end.toEpochMilli());
+    }
 
     private void givenThatCoordinateIsMalformed() throws IOException {
-        setMalformedProperty(COORDINATE, "malformed coordinate");
+        setProperty(COORDINATE, "malformed coordinate");
     }
 
     private void givenThatDetachedIsMalformed() throws IOException {
-        setMalformedProperty(DETACH, "malformed boolean");
+        setProperty(DETACH, "malformed boolean");
     }
 
-    private void givenThatLastActivityIsMalformed() throws IOException {
-        setMalformedProperty(LAST_ACTIVITY, "malformed timestamp");
+    private void givenThatActivityStartIsMalformed() throws IOException {
+        setProperty(ACTIVITY_START, "malformed timestamp");
     }
 
-    private void setMalformedProperty(Roaming.Key key, String value) throws IOException {
-        Files.writeString(ROAMING_FILE, key + "=" + value);
+    private void givenThatActivityStopIsMalformed() throws IOException {
+        setProperty(ACTIVITY_STOP, "malformed timestamp");
+    }
+
+    private void setProperty(Roaming.Key key, Object value) throws IOException {
+        Files.writeString(ROAMING_FILE, System.lineSeparator() + key + "=" + value.toString(), CREATE, APPEND);
     }
 
 }

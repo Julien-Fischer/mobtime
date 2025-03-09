@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.Properties;
@@ -33,8 +34,22 @@ public class Roaming {
         write(DETACH, detached);
     }
 
-    public void setLastActivity(Instant lastActivity) {
-        write(LAST_ACTIVITY, lastActivity.toEpochMilli());
+    public void setActivityStart(Instant lastActivity) {
+        write(ACTIVITY_START, lastActivity.toEpochMilli());
+    }
+
+    public void setActivityStop(Instant lastActivity) {
+        write(ACTIVITY_STOP, lastActivity.toEpochMilli());
+    }
+
+    public Duration getLastActivityDuration() {
+        var start = this.getActivityStart();
+        var stop = this.getActivityStop();
+        if (start.isPresent() && stop.isPresent()) {
+            return Duration.between(start.get(), stop.get());
+        } else {
+            throw new UnsupportedOperationException("%s, %s".formatted(start, stop));
+        }
     }
 
     public Optional<Coordinate> getCoordinate() {
@@ -49,8 +64,15 @@ public class Roaming {
         return Boolean.parseBoolean(serialized);
     }
 
-    public Optional<Instant> getLastActivity() {
-        var serialized = read(LAST_ACTIVITY);
+    public Optional<Instant> getActivityStart() {
+        var serialized = read(ACTIVITY_START);
+        return (serialized == null) ?
+                Optional.empty() :
+                ofEpochMilli(serialized);
+    }
+
+    public Optional<Instant> getActivityStop() {
+        var serialized = read(ACTIVITY_STOP);
         return (serialized == null) ?
                 Optional.empty() :
                 ofEpochMilli(serialized);
@@ -110,9 +132,10 @@ public class Roaming {
 
     public enum Key {
 
-        COORDINATE    ("coordinate"),
-        DETACH        ("detach"),
-        LAST_ACTIVITY ("last.activity");
+        COORDINATE     ("coordinate"),
+        DETACH         ("detach"),
+        ACTIVITY_START ("activity.start"),
+        ACTIVITY_STOP  ("activity.stop");
 
         private final String nameString;
 
