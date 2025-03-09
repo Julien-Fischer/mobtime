@@ -5,7 +5,6 @@ import net.agiledeveloper.mobtime.utils.App;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.Optional;
 
@@ -29,13 +28,21 @@ public class Roaming {
 
     public Optional<Coordinate> read() {
         try {
+            createRoamingIfNotExists();
             var serialized = new String(Files.readAllBytes(roamingFile));
-            return Optional.of(Coordinate.of(serialized));
-        } catch (NoSuchFileException cause1) {
-            return Optional.empty();
+            return serialized.isEmpty() ?
+                    Optional.empty() :
+                    Optional.of(Coordinate.of(serialized));
         } catch (IOException cause) {
             App.logger.err(cause);
             throw new RoamingException(cause);
+        }
+    }
+
+
+    private void createRoamingIfNotExists() throws IOException {
+        if (!Files.exists(roamingFile)) {
+            Files.createFile(roamingFile);
         }
     }
 

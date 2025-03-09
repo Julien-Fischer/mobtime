@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -14,16 +15,24 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOf
 
 class RoamingTest {
 
-    private static final Path ROAMING_FILE   = Path.of("COORDINATE_FILE_PATH");
+    private static final Path ROAMING_FILE      = Path.of("COORDINATE_FILE_PATH");
+    private static final Path NON_EXISTENT_FILE = Path.of("NON_EXISTENT_FILE");
 
     private final Roaming roaming = new Roaming(ROAMING_FILE);
 
 
     @AfterEach
-    void tearDown() throws IOException {
-        if (Files.exists(ROAMING_FILE)) {
-            Files.delete(ROAMING_FILE);
-        }
+    void tearDown() {
+        List.of(ROAMING_FILE, NON_EXISTENT_FILE)
+                .forEach(path -> {
+                    if (Files.exists(path)) {
+                        try {
+                            Files.delete(path);
+                        } catch (IOException exception) {
+                            throw new RuntimeException(exception);
+                        }
+                    }
+                });
     }
 
 
@@ -41,7 +50,7 @@ class RoamingTest {
 
     @Test
     void read_returns_empty_optional_when_file_does_not_exist() {
-        var nonExistentRoaming = new Roaming(Path.of("NON_EXISTENT_FILE"));
+        var nonExistentRoaming = new Roaming(NON_EXISTENT_FILE);
 
         Optional<Coordinate> location = nonExistentRoaming.read();
 
