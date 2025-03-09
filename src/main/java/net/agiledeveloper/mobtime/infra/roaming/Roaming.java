@@ -5,7 +5,9 @@ import net.agiledeveloper.mobtime.utils.App;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
+import java.util.Optional;
 
 public class Roaming {
 
@@ -25,13 +27,15 @@ public class Roaming {
         }
     }
 
-    public Coordinate read() throws IOException {
+    public Optional<Coordinate> read() {
         try {
             var serialized = new String(Files.readAllBytes(roamingFile));
-            return Coordinate.of(serialized);
-        } catch (IOException ex) {
-            App.logger.err(ex);
-            throw ex;
+            return Optional.of(Coordinate.of(serialized));
+        } catch (NoSuchFileException cause1) {
+            return Optional.empty();
+        } catch (IOException cause) {
+            App.logger.err(cause);
+            throw new RoamingException(cause);
         }
     }
 
