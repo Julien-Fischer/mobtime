@@ -10,8 +10,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
+import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 class RoamingTest {
 
@@ -37,7 +36,7 @@ class RoamingTest {
 
 
     @Test
-    void saveCoordinateCoordinate_writes_serialized_coordinate_to_roaming() {
+    void saveCoordinate_writes_serialized_coordinate_to_roaming() {
         var lastLocation = new Coordinate(3, 5);
 
         roaming.saveCoordinate(lastLocation);
@@ -62,12 +61,44 @@ class RoamingTest {
     void readCoordinate_throws_exception_when_coordinate_could_not_be_parsed() throws IOException {
         givenThatCoordinateIsMalformed();
 
-        assertThatExceptionOfType(RoamingException.class)
+        assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(roaming::readCoordinate);
     }
 
 
+    @Test
+    void saveDetached_writes_serialized_coordinate_to_roaming() {
+        roaming.saveDetached(true);
+
+        Boolean detached = roaming.readDetached();
+
+        assertThat(detached).isTrue();
+    }
+
+    @Test
+    void readDetached_returns_empty_optional_when_file_does_not_exist() {
+        var nonExistentRoaming = new Roaming(NON_EXISTENT_FILE);
+
+        Boolean detached = nonExistentRoaming.readDetached();
+
+        assertThat(detached).isFalse();
+    }
+
+
+    @Test
+    void readDetached_throws_exception_when_coordinate_could_not_be_parsed() throws IOException {
+        givenThatDetachedIsMalformed();
+
+        assertThatNoException()
+                .isThrownBy(roaming::readDetached);
+    }
+
+
     private void givenThatCoordinateIsMalformed() throws IOException {
+        Files.writeString(ROAMING_FILE, "coordinate=malformed coordinate");
+    }
+
+    private void givenThatDetachedIsMalformed() throws IOException {
         Files.writeString(ROAMING_FILE, "coordinate=malformed coordinate");
     }
 

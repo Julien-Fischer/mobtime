@@ -29,15 +29,32 @@ public class Roaming {
         }
     }
 
+    public void saveDetached(boolean detached) {
+        try {
+            Files.writeString(roamingFile, "detach=" + detached);
+        } catch (IOException ex) {
+            App.logger.err(ex);
+        }
+    }
+
     public Optional<Coordinate> readCoordinate() {
+        var serialized = read("coordinate");
+        return (serialized == null) ?
+                Optional.empty() :
+                Optional.of(Coordinate.of(serialized));
+    }
+
+    public boolean readDetached() {
+        var serialized = read("detach");
+        return Boolean.parseBoolean(serialized);
+    }
+
+
+    private String read(String key) {
         try {
             createRoamingIfNotExists();
             readProperties();
-
-            var serialized = properties.getProperty("coordinate");
-            return (serialized == null) ?
-                    Optional.empty() :
-                    Optional.of(Coordinate.of(serialized));
+            return properties.getProperty(key);
         } catch (Exception cause) {
             App.logger.err(cause);
             throw new RoamingException(cause);
