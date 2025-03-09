@@ -8,7 +8,8 @@ Mob Commands:
     --focus        (Option) Set the focus mode (normal by default). Accepts: normal, chill, zen
     --mini         (Option) Minimize the GUI
     --location     (Option) Set GUI location (north by default). Accepts: center, north, north-east, east, south-east, etc...
-    --user-name    (Option)  Set a username for this session
+    --user-name    (Option) Set a username for this session
+    --autosave     (Option) Reuse last window location if set
 
 Config commands:
 

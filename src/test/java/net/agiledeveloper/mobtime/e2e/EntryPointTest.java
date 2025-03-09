@@ -123,7 +123,8 @@ class EntryPointTest {
                 "--mode=zen",
                 "--mini",
                 "--user-name=John",
-                "--location"
+                "--location",
+                "--autosave"
         );
 
         runApp();
@@ -134,7 +135,8 @@ class EntryPointTest {
                 .contains("--mode=zen")
                 .contains("--mini")
                 .contains("--user-name=John")
-                .contains("--location");
+                .contains("--location")
+                .contains("--autosave");
     }
 
     @Test

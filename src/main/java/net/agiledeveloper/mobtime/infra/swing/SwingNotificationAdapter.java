@@ -29,17 +29,19 @@ public class SwingNotificationAdapter implements NotificationPort {
     private SwingPopup currentFrame;
     private Color currentColor;
     private final boolean shouldMinimize;
+    private final boolean autosave;
     private final Location location;
 
     private boolean awaitingKillSignal = false;
 
 
     public SwingNotificationAdapter(
-            SessionPort mobPort, Roaming roaming, boolean shouldMinimize, Location location
+            SessionPort mobPort, Roaming roaming, boolean shouldMinimize, boolean autosave, Location location
     ) {
         this.mobPort = mobPort;
         this.roaming = roaming;
         this.shouldMinimize = shouldMinimize;
+        this.autosave = autosave;
         this.location = location;
     }
 
@@ -96,7 +98,7 @@ public class SwingNotificationAdapter implements NotificationPort {
 
         SwingUtilities.invokeLater(() -> {
             currentFrame.dispose();
-            currentFrame = new SwingPopup(notification, shouldMinimize);
+            currentFrame = createPopup(notification);
             currentFrame.setLabelForeground(currentColor);
             currentFrame.setVisible(true);
             currentFrame.pack();
@@ -131,14 +133,18 @@ public class SwingNotificationAdapter implements NotificationPort {
     }
 
     private void createPopupFor(Notification notification) {
-        Optional<Coordinate> offset = roaming.read();
-        currentFrame = offset
-                .map(coordinate -> new SwingPopup(notification, shouldMinimize, coordinate))
-                .orElseGet(() -> new SwingPopup(notification, shouldMinimize));
+        currentFrame = createPopup(notification);
         currentFrame.onClick(this::onGuiEvent);
         currentFrame.setVisible(true);
         currentFrame.setPosition(location);
         currentFrame.setFocusableWindowState(false);
+    }
+
+    private SwingPopup createPopup(Notification notification) {
+        Optional<Coordinate> offset = roaming.read();
+        return autosave && offset.isPresent() ?
+                new SwingPopup(notification, shouldMinimize, offset.get()) :
+                new SwingPopup(notification, shouldMinimize);
     }
 
     private void onGuiEvent(GUIEvent event) {
@@ -184,9 +190,9 @@ public class SwingNotificationAdapter implements NotificationPort {
     }
 
     private void updateRoaming() {
-        var rememberLocation = true;
-        if (rememberLocation) {
-            roaming.save(currentFrame.getCurrentLocation());
+        var location = currentFrame.getCurrentLocation();
+        if (autosave && location != null) {
+            roaming.save(location);
         }
     }
 

@@ -2,10 +2,7 @@ package net.agiledeveloper.mobtime.domain.command.commands;
 
 import net.agiledeveloper.mobtime.domain.command.commands.impl.StartCommand;
 import net.agiledeveloper.mobtime.domain.command.parameters.Parameter;
-import net.agiledeveloper.mobtime.domain.command.parameters.impl.AutoModeParameter;
-import net.agiledeveloper.mobtime.domain.command.parameters.impl.DryRunParameter;
-import net.agiledeveloper.mobtime.domain.command.parameters.impl.DurationParameter;
-import net.agiledeveloper.mobtime.domain.command.parameters.impl.FocusModeParameter;
+import net.agiledeveloper.mobtime.domain.command.parameters.impl.*;
 import net.agiledeveloper.mobtime.domain.session.Session;
 import net.agiledeveloper.mobtime.test.builders.DurationParameterBuilder;
 import org.junit.jupiter.api.BeforeEach;
@@ -60,6 +57,13 @@ class StartCommandTest {
         havingParameters(aDurationParameter().build(), new AutoModeParameter());
 
         assertThat(command.isAutoModeEnabled()).isTrue();
+    }
+
+    @Test
+    void isAutoSaveEnabled_when_enabled_returns_true() {
+        havingParameters(aDurationParameter().build(), new AutoSaveParameter());
+
+        assertThat(command.isAutoSaveEnabled()).isTrue();
     }
 
     @Test

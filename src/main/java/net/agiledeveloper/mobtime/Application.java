@@ -26,9 +26,11 @@ public class Application {
 
     private final MobPort mobPort;
 
+
     public Application(MobPort mobPort) {
         this.mobPort = mobPort;
     }
+
 
     public void process(String[] commandLine) {
         var parser = new CommandLineParser();
@@ -67,8 +69,16 @@ public class Application {
     }
 
     private static boolean shouldMinimize(List<BashParameter> bashParameters) {
+        return hasFlag(bashParameters, "mini");
+    }
+
+    private static boolean shouldAutosave(List<BashParameter> bashParameters) {
+        return hasFlag(bashParameters, "autosave");
+    }
+
+    private static boolean hasFlag(List<BashParameter> bashParameters, String flag) {
         return !bashParameters.stream()
-                .filter(param -> param.hasName("mini"))
+                .filter(param -> param.hasName(flag))
                 .toList()
                 .isEmpty();
     }
@@ -84,7 +94,11 @@ public class Application {
 
     private static NotificationPort createNotificationAdapter(SessionPort sessionPort, List<BashParameter> bashParameters) {
         return new SwingNotificationAdapter(
-                sessionPort, new Roaming(ROAMING_FILE), shouldMinimize(bashParameters), getLocation(bashParameters)
+                sessionPort,
+                new Roaming(ROAMING_FILE),
+                shouldMinimize(bashParameters),
+                shouldAutosave(bashParameters),
+                getLocation(bashParameters)
         );
     }
 

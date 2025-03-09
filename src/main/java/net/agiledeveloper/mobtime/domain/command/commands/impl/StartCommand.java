@@ -42,6 +42,10 @@ public class StartCommand extends AbstractCommand {
         return getFocusMode() == mode;
     }
 
+    public boolean isAutoSaveEnabled() {
+        return has(AutoSaveParameter.class);
+    }
+
     public Duration getDuration() {
         if (durationCache == null) {
             durationCache = findDuration();
