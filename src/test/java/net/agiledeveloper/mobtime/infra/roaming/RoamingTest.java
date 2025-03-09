@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -94,12 +95,45 @@ class RoamingTest {
     }
 
 
+    @Test
+    void setLastActivity_writes_serialized_coordinate_to_roaming() {
+        roaming.setLastActivity(Instant.EPOCH);
+
+        Optional<Instant> lastActivity = roaming.getLastActivity();
+
+        assertThat(lastActivity).isPresent();
+        assertThat(lastActivity.get()).isEqualTo(Instant.EPOCH);
+    }
+
+    @Test
+    void getLastActivity_returns_empty_optional_when_file_does_not_exist() {
+        var nonExistentRoaming = new Roaming(NON_EXISTENT_FILE);
+
+        Optional<Instant> detached = nonExistentRoaming.getLastActivity();
+
+        assertThat(detached).isEmpty();
+    }
+
+
+    @Test
+    void getLastActivity_throws_exception_when_coordinate_could_not_be_parsed() throws IOException {
+        givenThatLastActivityIsMalformed();
+
+        assertThatExceptionOfType(RoamingException.class)
+                .isThrownBy(roaming::getLastActivity);
+    }
+
+
     private void givenThatCoordinateIsMalformed() throws IOException {
         Files.writeString(ROAMING_FILE, "coordinate=malformed coordinate");
     }
 
     private void givenThatDetachedIsMalformed() throws IOException {
         Files.writeString(ROAMING_FILE, "detach=malformed boolean");
+    }
+
+    private void givenThatLastActivityIsMalformed() throws IOException {
+        Files.writeString(ROAMING_FILE, "last.activity=malformed timestamp");
     }
 
 }

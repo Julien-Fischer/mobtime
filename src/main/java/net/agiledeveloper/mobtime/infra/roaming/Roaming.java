@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Instant;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -30,6 +31,10 @@ public class Roaming {
         write("detach", detached);
     }
 
+    public void setLastActivity(Instant lastActivity) {
+        write("last.activity", lastActivity.toEpochMilli());
+    }
+
     public Optional<Coordinate> getCoordinate() {
         var serialized = read("coordinate");
         return (serialized == null) ?
@@ -40,6 +45,23 @@ public class Roaming {
     public boolean isDetached() {
         var serialized = read("detach");
         return Boolean.parseBoolean(serialized);
+    }
+
+    public Optional<Instant> getLastActivity() {
+        var serialized = read("last.activity");
+        return (serialized == null) ?
+                Optional.empty() :
+                ofEpochMilli(serialized);
+    }
+
+    private Optional<Instant> ofEpochMilli(String epochMilli) {
+        try {
+            long epochMillis = Long.parseLong(epochMilli);
+            var instant = Instant.ofEpochMilli(epochMillis);
+            return Optional.of(instant);
+        } catch (NumberFormatException cause) {
+            throw new RoamingException(cause);
+        }
     }
 
 
