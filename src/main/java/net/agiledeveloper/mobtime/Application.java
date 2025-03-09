@@ -9,16 +9,20 @@ import net.agiledeveloper.mobtime.domain.session.MobService;
 import net.agiledeveloper.mobtime.domain.session.SessionService;
 import net.agiledeveloper.mobtime.infra.cli.BashParameter;
 import net.agiledeveloper.mobtime.infra.cli.CommandLineParser;
+import net.agiledeveloper.mobtime.infra.roaming.Roaming;
 import net.agiledeveloper.mobtime.infra.swing.SwingNotificationAdapter;
 import net.agiledeveloper.mobtime.infra.swing.SwingWorkerTimeAdapter;
 import net.agiledeveloper.mobtime.infra.swing.gui.Location;
 import net.agiledeveloper.mobtime.infra.swing.gui.SwingPopup;
 import net.agiledeveloper.mobtime.utils.App;
 
+import java.nio.file.Path;
 import java.util.List;
 import java.util.function.Supplier;
 
 public class Application {
+
+    private static final Path ROAMING_FILE = getAppDirectory().resolve("roaming");
 
     private final MobPort mobPort;
 
@@ -79,7 +83,14 @@ public class Application {
     }
 
     private static NotificationPort createNotificationAdapter(SessionPort sessionPort, List<BashParameter> bashParameters) {
-        return new SwingNotificationAdapter(sessionPort, shouldMinimize(bashParameters), getLocation(bashParameters));
+        return new SwingNotificationAdapter(
+                sessionPort, new Roaming(ROAMING_FILE), shouldMinimize(bashParameters), getLocation(bashParameters)
+        );
+    }
+
+    private static Path getAppDirectory() {
+        String homeDirectory = System.getProperty("user.home");
+        return Path.of(homeDirectory, "mobtime");
     }
 
 }

@@ -8,10 +8,7 @@ import net.agiledeveloper.mobtime.utils.App;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 import java.util.function.Consumer;
 
 import static net.agiledeveloper.mobtime.infra.swing.theme.Theme.*;
@@ -35,12 +32,20 @@ public class SwingPopup extends JFrame {
     private JLabel counterLabel;
     private Gauge gauge;
 
+    private Coordinate currentLocation;
+
     private int mouseX;
     private int mouseY;
 
 
     public SwingPopup(Notification notification, boolean minimized) {
+        this(notification, minimized, null);
+    }
+
+    public SwingPopup(Notification notification, boolean minimized, Coordinate currentLocation) {
         super(DEFAULT_TITLE);
+        this.currentLocation = currentLocation;
+
         var session = notification.session();
         init(notification);
         if (!(notification instanceof SessionCloseNotification)) {
@@ -49,6 +54,7 @@ public class SwingPopup extends JFrame {
         if (minimized) {
             minimize();
         }
+        addComponentListener(createLocationChangeListener());
         pack();
     }
 
@@ -106,10 +112,23 @@ public class SwingPopup extends JFrame {
 
     public void setPosition(Location location) {
         setLocationRelativeTo(null);
-        Point loc = location.relativeTo(this.getSize(), Toolkit.getDefaultToolkit().getScreenSize());
-        setLocation(loc);
+
+        if (currentLocation != null) {
+            setLocation(toPoint(currentLocation));
+        } else {
+            Point loc = location.relativeTo(this.getSize(), Toolkit.getDefaultToolkit().getScreenSize());
+            setLocation(loc);
+        }
     }
 
+    public Coordinate getCurrentLocation() {
+        return currentLocation;
+    }
+
+
+    private Point toPoint(Coordinate coordinate) {
+        return new Point(coordinate.x(), coordinate.y());
+    }
 
     private JComponent createButtonsContainer() {
         nextButton = new MobButton("Next", GUIEvent.NEXT);
@@ -196,6 +215,16 @@ public class SwingPopup extends JFrame {
             @Override
             public void mouseExited(MouseEvent e) {
                 counterLabel.setVisible(false);
+            }
+        };
+    }
+
+    private ComponentListener createLocationChangeListener() {
+        return new ComponentAdapter() {
+            @Override
+            public void componentMoved(ComponentEvent e) {
+                var component = e.getComponent();
+                currentLocation = new Coordinate(component.getX(), component.getY());
             }
         };
     }
