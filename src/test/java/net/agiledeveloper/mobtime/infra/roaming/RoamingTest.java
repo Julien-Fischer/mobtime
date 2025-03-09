@@ -62,13 +62,13 @@ class RoamingTest {
     void readCoordinate_throws_exception_when_coordinate_could_not_be_parsed() throws IOException {
         givenThatCoordinateIsMalformed();
 
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(RoamingException.class)
                 .isThrownBy(roaming::readCoordinate);
     }
 
 
     private void givenThatCoordinateIsMalformed() throws IOException {
-        Files.writeString(ROAMING_FILE, "malformed coordinate");
+        Files.writeString(ROAMING_FILE, "coordinate=malformed coordinate");
     }
 
 }

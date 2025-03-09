@@ -3,14 +3,17 @@ package net.agiledeveloper.mobtime.infra.roaming;
 import net.agiledeveloper.mobtime.infra.swing.gui.Coordinate;
 import net.agiledeveloper.mobtime.utils.App;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.Properties;
 
 public class Roaming {
 
     private final Path roamingFile;
+    private Properties properties;
 
 
     public Roaming(Path roamingFile) {
@@ -20,7 +23,7 @@ public class Roaming {
 
     public void saveCoordinate(Coordinate coordinate) {
         try {
-            Files.writeString(roamingFile, coordinate.toString());
+            Files.writeString(roamingFile, "coordinate=" + coordinate.toString());
         } catch (IOException ex) {
             App.logger.err(ex);
         }
@@ -29,16 +32,29 @@ public class Roaming {
     public Optional<Coordinate> readCoordinate() {
         try {
             createRoamingIfNotExists();
-            var serialized = new String(Files.readAllBytes(roamingFile));
-            return serialized.isEmpty() ?
+            readProperties();
+
+            var serialized = properties.getProperty("coordinate");
+            return (serialized == null) ?
                     Optional.empty() :
                     Optional.of(Coordinate.of(serialized));
-        } catch (IOException cause) {
+        } catch (Exception cause) {
             App.logger.err(cause);
             throw new RoamingException(cause);
         }
     }
 
+
+    private void readProperties() throws IOException {
+        if (properties != null) {
+            return;
+        }
+
+        properties = new Properties();
+        try (var inputStream = new FileInputStream(roamingFile.toFile())) {
+            properties.load(inputStream);
+        }
+    }
 
     private void createRoamingIfNotExists() throws IOException {
         if (!Files.exists(roamingFile)) {
