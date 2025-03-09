@@ -99,7 +99,7 @@ class RoamingTest {
     }
 
     private void givenThatDetachedIsMalformed() throws IOException {
-        Files.writeString(ROAMING_FILE, "coordinate=malformed coordinate");
+        Files.writeString(ROAMING_FILE, "detach=malformed boolean");
     }
 
 }
