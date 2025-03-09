@@ -4,6 +4,7 @@ import net.agiledeveloper.mobtime.infra.swing.gui.Coordinate;
 import net.agiledeveloper.mobtime.utils.App;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,19 +23,11 @@ public class Roaming {
 
 
     public void saveCoordinate(Coordinate coordinate) {
-        try {
-            Files.writeString(roamingFile, "coordinate=" + coordinate.toString());
-        } catch (IOException ex) {
-            App.logger.err(ex);
-        }
+        write("coordinate", coordinate);
     }
 
     public void saveDetached(boolean detached) {
-        try {
-            Files.writeString(roamingFile, "detach=" + detached);
-        } catch (IOException ex) {
-            App.logger.err(ex);
-        }
+        write("detach", detached);
     }
 
     public Optional<Coordinate> readCoordinate() {
@@ -50,6 +43,18 @@ public class Roaming {
     }
 
 
+    private void write(String property, Object value) {
+        if (properties == null) {
+            properties = new Properties();
+        }
+        properties.put(property, value.toString());
+        try (var output = new FileOutputStream(roamingFile.toFile())) {
+            properties.store(output, null);
+        } catch (IOException cause) {
+            throw new RoamingException(cause);
+        }
+    }
+
     private String read(String key) {
         try {
             createRoamingIfNotExists();
@@ -60,7 +65,6 @@ public class Roaming {
             throw new RoamingException(cause);
         }
     }
-
 
     private void readProperties() throws IOException {
         if (properties != null) {
