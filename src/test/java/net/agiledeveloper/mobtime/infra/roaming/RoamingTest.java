@@ -11,6 +11,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
+import static net.agiledeveloper.mobtime.infra.roaming.Roaming.Key.*;
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 class RoamingTest {
@@ -125,15 +126,19 @@ class RoamingTest {
 
 
     private void givenThatCoordinateIsMalformed() throws IOException {
-        Files.writeString(ROAMING_FILE, "coordinate=malformed coordinate");
+        setMalformedProperty(COORDINATE, "malformed coordinate");
     }
 
     private void givenThatDetachedIsMalformed() throws IOException {
-        Files.writeString(ROAMING_FILE, "detach=malformed boolean");
+        setMalformedProperty(DETACH, "malformed boolean");
     }
 
     private void givenThatLastActivityIsMalformed() throws IOException {
-        Files.writeString(ROAMING_FILE, "last.activity=malformed timestamp");
+        setMalformedProperty(LAST_ACTIVITY, "malformed timestamp");
+    }
+
+    private void setMalformedProperty(Roaming.Key key, String value) throws IOException {
+        Files.writeString(ROAMING_FILE, key + "=" + value);
     }
 
 }

@@ -12,6 +12,8 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.Properties;
 
+import static net.agiledeveloper.mobtime.infra.roaming.Roaming.Key.*;
+
 public class Roaming {
 
     private final Path roamingFile;
@@ -24,35 +26,36 @@ public class Roaming {
 
 
     public void setCoordinate(Coordinate coordinate) {
-        write("coordinate", coordinate);
+        write(COORDINATE, coordinate);
     }
 
     public void setDetached(boolean detached) {
-        write("detach", detached);
+        write(DETACH, detached);
     }
 
     public void setLastActivity(Instant lastActivity) {
-        write("last.activity", lastActivity.toEpochMilli());
+        write(LAST_ACTIVITY, lastActivity.toEpochMilli());
     }
 
     public Optional<Coordinate> getCoordinate() {
-        var serialized = read("coordinate");
+        var serialized = read(COORDINATE);
         return (serialized == null) ?
                 Optional.empty() :
                 Optional.of(Coordinate.of(serialized));
     }
 
     public boolean isDetached() {
-        var serialized = read("detach");
+        var serialized = read(DETACH);
         return Boolean.parseBoolean(serialized);
     }
 
     public Optional<Instant> getLastActivity() {
-        var serialized = read("last.activity");
+        var serialized = read(LAST_ACTIVITY);
         return (serialized == null) ?
                 Optional.empty() :
                 ofEpochMilli(serialized);
     }
+
 
     private Optional<Instant> ofEpochMilli(String epochMilli) {
         try {
@@ -64,12 +67,11 @@ public class Roaming {
         }
     }
 
-
-    private void write(String property, Object value) {
+    private void write(Key key, Object value) {
         if (properties == null) {
             properties = new Properties();
         }
-        properties.put(property, value.toString());
+        properties.put(key.toString(), value.toString());
         try (var output = new FileOutputStream(roamingFile.toFile())) {
             properties.store(output, null);
         } catch (IOException cause) {
@@ -77,11 +79,11 @@ public class Roaming {
         }
     }
 
-    private String read(String key) {
+    private String read(Key key) {
         try {
             createRoamingIfNotExists();
             loadProperties();
-            return properties.getProperty(key);
+            return properties.getProperty(key.toString());
         } catch (Exception cause) {
             App.logger.err(cause);
             throw new RoamingException(cause);
@@ -103,6 +105,26 @@ public class Roaming {
         if (!Files.exists(roamingFile)) {
             Files.createFile(roamingFile);
         }
+    }
+
+
+    public enum Key {
+
+        COORDINATE    ("coordinate"),
+        DETACH        ("detach"),
+        LAST_ACTIVITY ("last.activity");
+
+        private final String nameString;
+
+        Key(String nameString) {
+            this.nameString = nameString;
+        }
+
+        @Override
+        public String toString() {
+            return nameString;
+        }
+
     }
 
 }
