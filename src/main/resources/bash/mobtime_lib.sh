@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+MOBTIME_REPOSITORY="https://github.com/Julien-Fischer/mobtime.git"
 MOBTIME_RUNTIME_DIR="${HOME}/mobtime"
 MOBTIME_SRC_DIR="${HOME}/mobtime/src"
 MOBTIME_HELP_DIR="${HOME}/mobtime/help"
@@ -15,15 +16,14 @@ MOBTIME_HELP_FILE="${MOBTIME_HELP_DIR}/help"
 MOBTIME_CONFIG_FILE="${MOBTIME_RUNTIME_DIR}/preferences"
 
 LOCAL_DIR="$(pwd)/src/main/resources"
-LOCAL_BASH_DIR="${LOCAL_DIR}/bash"
-LOCAL_COMMANDS_DIR="${LOCAL_BASH_DIR}/commands"
+LOCAL_INFO_FILE() { echo "${LOCAL_DIR}/info"; }
+LOCAL_CONFIG_FILE() { echo "${LOCAL_DIR}/preferences"; }
+LOCAL_HELP_FILE() { echo "${LOCAL_DIR}/help"; }
+LOCAL_BASH_DIR() { echo "${LOCAL_DIR}/bash"; }
+LOCAL_COMMANDS_DIR() { echo "$(LOCAL_BASH_DIR)/commands"; }
+LOCAL_MOBTIME_LIB_FILE() { echo "$(LOCAL_BASH_DIR)/mobtime_lib.sh"; }
 
-LOCAL_MOBTIME_LIB_FILE="${LOCAL_BASH_DIR}/mobtime_lib.sh"
-LOCAL_INFO_FILE="${LOCAL_DIR}/info"
-LOCAL_CONFIG_FILE="${LOCAL_DIR}/preferences"
-LOCAL_HELP_FILE="${LOCAL_DIR}/help"
-
-TARGET_COMPILED_JAR_FILE="$(pwd)/target/mobtime.jar"
+TARGET_COMPILED_JAR_FILE="target/mobtime.jar"
 
 USER_RC_FILES=("${HOME}/.bashrc" "${HOME}/.zshrc")
 USER_RC_MOBTIME_LIB_SOURCE_LINE="source ${MOBTIME_LIB_FILE}"
@@ -81,20 +81,26 @@ mobinstall() {
         mvn clean package | tee -a "${MOBTIME_LOG_FILE}"
     fi
 
+    local status=$?
+
     mobtime_loader_stop
 
-    if [[ $? -eq 0 ]]; then
+    if [[ $status -eq 0 ]]; then
         wizard_log -a "  OK - mobtime compiled successfully"
     else
         wizard_log -a "  E: Could not compile mobtime"
         return 1
     fi
 
-    mobtime_install "Java executable" "${TARGET_COMPILED_JAR_FILE}" "${MOBTIME_JAR_FILE}" -x
-    mobtime_install "mobtime shared functions" "${LOCAL_MOBTIME_LIB_FILE}" "${MOBTIME_LIB_FILE}"
+    if ! mobtime_install "Java executable" "$(pwd)/${TARGET_COMPILED_JAR_FILE}" "${MOBTIME_JAR_FILE}" -x; then
+        return 1
+    fi
+    if ! mobtime_install "mobtime shared functions" "$(LOCAL_MOBTIME_LIB_FILE)" "${MOBTIME_LIB_FILE}"; then
+        return 1
+    fi
 
     wizard_log -a "> Installing mobtime commands..."
-    local mobtime_commands=("${LOCAL_COMMANDS_DIR}/"*)
+    local mobtime_commands=("$(LOCAL_COMMANDS_DIR)/"*)
     local i=0
     local length=${#mobtime_commands[@]}
     for file in "${mobtime_commands[@]}"; do
@@ -118,10 +124,10 @@ mobinstall() {
     wizard_log -a "> Initializing system files..."
     touch "${MOBTIME_PID_FILE}"
     touch "${MOBTIME_LOG_FILE}"
-    cp "${LOCAL_INFO_FILE}" "${MOBTIME_INFO_FILE}"
-    cp "${LOCAL_HELP_FILE}" "${MOBTIME_HELP_FILE}"
+    cp "$(LOCAL_INFO_FILE)" "${MOBTIME_INFO_FILE}"
+    cp "$(LOCAL_HELP_FILE)" "${MOBTIME_HELP_FILE}"
     if [[ ! -f "${MOBTIME_CONFIG_FILE}" ]]; then
-        cp "${LOCAL_CONFIG_FILE}" "${MOBTIME_CONFIG_FILE}"
+        cp "$(LOCAL_CONFIG_FILE)" "${MOBTIME_CONFIG_FILE}"
     fi
     wizard_log -a "  OK - system files initialized"
 
@@ -218,7 +224,15 @@ mobuninstall() {
 #########################################################################################
 
 mobupdate() {
+    local mobtime_install_dir
+    mobtime_install_dir=$(mktemp -d)
+    cd "${mobtime_install_dir}" || (rm "${mobtime_install_dir}" && echo "E: Could not cd into ${mobtime_install_dir}" && return 1)
+    git clone "${MOBTIME_REPOSITORY}"
+    cd mobtime || (echo "E: Could not cd into $(pwd)/mobtime" && return 1)
+    LOCAL_DIR="$(pwd)/src/main/resources"
     mobinstall
+    cd ../..
+    rm -rf "${mobtime_install_dir}"
 }
 
 mobinfo() {
@@ -405,7 +419,7 @@ mobtime_install() {
         wizard_log -a "  OK - ${display_name} installed"
     else
         wizard_log -a "  E: Could not install ${display_name} to ${dest}"
-        exit 1
+        return 1
     fi
 }
 
