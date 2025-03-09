@@ -264,7 +264,7 @@ mobdir() {
 }
 
 mobnav() {
-    cd "$(mobdir)" || exit 1
+    cd "$(mobdir)" || return 1
     ls --color=auto -AF --group-directories-first
 }
 
