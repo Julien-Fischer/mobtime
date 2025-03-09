@@ -117,7 +117,14 @@ class EntryPointTest {
 
     @Test
     void app_prints_all_input_parameters() {
-        withParameters("--start", "--duration=42", "--mode=zen", "--mini", "--user-name=John");
+        withParameters(
+                "--start",
+                "--duration=42",
+                "--mode=zen",
+                "--mini",
+                "--user-name=John",
+                "--location"
+        );
 
         runApp();
 
@@ -126,7 +133,8 @@ class EntryPointTest {
                 .contains("--duration=42")
                 .contains("--mode=zen")
                 .contains("--mini")
-                .contains("--user-name=John");
+                .contains("--user-name=John")
+                .contains("--location");
     }
 
     @Test
