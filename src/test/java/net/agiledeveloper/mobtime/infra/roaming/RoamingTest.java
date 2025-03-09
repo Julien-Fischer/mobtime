@@ -37,33 +37,33 @@ class RoamingTest {
 
 
     @Test
-    void save_writes_serialized_coordinate_to_roaming() {
+    void saveCoordinateCoordinate_writes_serialized_coordinate_to_roaming() {
         var lastLocation = new Coordinate(3, 5);
 
-        roaming.save(lastLocation);
+        roaming.saveCoordinate(lastLocation);
 
-        Optional<Coordinate> location = roaming.read();
+        Optional<Coordinate> location = roaming.readCoordinate();
 
         assertThat(location).isPresent();
         assertThat(location.get()).isEqualTo(lastLocation);
     }
 
     @Test
-    void read_returns_empty_optional_when_file_does_not_exist() {
+    void readCoordinate_returns_empty_optional_when_file_does_not_exist() {
         var nonExistentRoaming = new Roaming(NON_EXISTENT_FILE);
 
-        Optional<Coordinate> location = nonExistentRoaming.read();
+        Optional<Coordinate> location = nonExistentRoaming.readCoordinate();
 
         assertThat(location).isEmpty();
     }
 
 
     @Test
-    void read_throws_exception_when_coordinate_could_not_be_parsed() throws IOException {
+    void readCoordinate_throws_exception_when_coordinate_could_not_be_parsed() throws IOException {
         givenThatCoordinateIsMalformed();
 
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(roaming::read);
+                .isThrownBy(roaming::readCoordinate);
     }
 
 

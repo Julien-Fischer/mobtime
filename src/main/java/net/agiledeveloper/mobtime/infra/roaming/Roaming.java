@@ -18,7 +18,7 @@ public class Roaming {
     }
 
 
-    public void save(Coordinate coordinate) {
+    public void saveCoordinate(Coordinate coordinate) {
         try {
             Files.writeString(roamingFile, coordinate.toString());
         } catch (IOException ex) {
@@ -26,7 +26,7 @@ public class Roaming {
         }
     }
 
-    public Optional<Coordinate> read() {
+    public Optional<Coordinate> readCoordinate() {
         try {
             createRoamingIfNotExists();
             var serialized = new String(Files.readAllBytes(roamingFile));
