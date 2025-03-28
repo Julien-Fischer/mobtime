@@ -15,6 +15,7 @@ import net.agiledeveloper.mobtime.utils.App;
 
 import javax.swing.*;
 import java.awt.*;
+import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
@@ -33,10 +34,15 @@ public class SwingNotificationAdapter implements NotificationPort {
     private final Location location;
 
     private boolean awaitingKillSignal = false;
+    private Duration remainingTime;
 
 
     public SwingNotificationAdapter(
-            SessionPort mobPort, Roaming roaming, boolean shouldMinimize, boolean autosave, Location location
+            SessionPort mobPort,
+            Roaming roaming,
+            boolean shouldMinimize,
+            boolean autosave,
+            Location location
     ) {
         this.mobPort = mobPort;
         this.roaming = roaming;
@@ -77,6 +83,7 @@ public class SwingNotificationAdapter implements NotificationPort {
         }
         var color = notification.hasLittleTimeLeft() ? MESSAGE_INFO : MESSAGE_OK;
         currentFrame.updateProgress(notification, color);
+        remainingTime = notification.remainingTime();
     }
 
     private void handleCloseNotification(Notification notification) {
@@ -94,8 +101,6 @@ public class SwingNotificationAdapter implements NotificationPort {
     }
 
     private void notifySessionEnd(Notification notification) {
-        updateRoaming();
-
         SwingUtilities.invokeLater(() -> {
             currentFrame.dispose();
             currentFrame = createPopup(notification);
@@ -148,7 +153,7 @@ public class SwingNotificationAdapter implements NotificationPort {
     }
 
     private void onGuiEvent(GUIEvent event) {
-        updateRoaming();
+        closeRoaming();
         switch (event) {
             case NEXT:
                 executeInBackground(mobPort::next);
@@ -189,10 +194,13 @@ public class SwingNotificationAdapter implements NotificationPort {
         worker.execute();
     }
 
-    private void updateRoaming() {
-        var location = currentFrame.getCurrentLocation();
+    private void closeRoaming() {
+        Coordinate location = currentFrame.getCurrentLocation();
         if (autosave && location != null) {
             roaming.setCoordinate(location);
+        }
+        if (roaming.isDetached()) {
+            roaming.setActivityRemaining(remainingTime);
         }
     }
 

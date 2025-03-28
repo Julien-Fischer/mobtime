@@ -8,23 +8,23 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
-import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
 import static java.nio.file.StandardOpenOption.APPEND;
 import static java.nio.file.StandardOpenOption.CREATE;
-import static java.time.temporal.ChronoUnit.MINUTES;
 import static net.agiledeveloper.mobtime.infra.roaming.Roaming.Key.*;
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 class RoamingTest {
 
+    private static final Duration FIVE_MINUTES = Duration.ofMinutes(5);
+    private static final Duration TWO_MINUTES = Duration.ofMinutes(2);
+
     private static final Path ROAMING_FILE      = Path.of("COORDINATE_FILE_PATH");
     private static final Path NON_EXISTENT_FILE = Path.of("NON_EXISTENT_FILE");
 
     private final Roaming roaming = new Roaming(ROAMING_FILE);
-
 
     @AfterEach
     void tearDown() {
@@ -44,13 +44,10 @@ class RoamingTest {
     @Test
     void setCoordinate_writes_serialized_coordinate_to_roaming() {
         var lastLocation = new Coordinate(3, 5);
-
         roaming.setCoordinate(lastLocation);
 
-        Optional<Coordinate> location = roaming.getCoordinate();
-
-        assertThat(location).isPresent();
-        assertThat(location.get()).isEqualTo(lastLocation);
+        assertThat(roaming.getCoordinate())
+                .contains(lastLocation);
     }
 
     @Test
@@ -100,75 +97,117 @@ class RoamingTest {
 
 
     @Test
-    void setActivityStart_writes_serialized_coordinate_to_roaming() {
-        roaming.setActivityStart(Instant.EPOCH);
+    void getActivityDuration_writes_serialized_timestamp_to_roaming() {
+        roaming.setActivityDuration(TWO_MINUTES);
 
-        Optional<Instant> lastActivity = roaming.getActivityStart();
-
-        assertThat(lastActivity).isPresent();
-        assertThat(lastActivity.get()).isEqualTo(Instant.EPOCH);
+        assertThat(roaming.getActivityDuration())
+                .contains(TWO_MINUTES);
     }
 
+
     @Test
-    void getActivityStart_returns_empty_optional_when_file_does_not_exist() {
-        var nonExistentRoaming = new Roaming(NON_EXISTENT_FILE);
+    void getActivityRemaining_writes_serialized_timestamp_to_roaming() {
+        roaming.setActivityRemaining(FIVE_MINUTES);
 
-        Optional<Instant> startInstant = nonExistentRoaming.getActivityStart();
-
-        assertThat(startInstant).isEmpty();
+        assertThat(roaming.getActivityRemaining())
+                .contains(FIVE_MINUTES);
     }
 
     @Test
     void getActivityStart_throws_exception_when_coordinate_could_not_be_parsed() throws IOException {
-        givenThatActivityStartIsMalformed();
+        givenThatRemainingTimeIsMalformed();
 
         assertThatExceptionOfType(RoamingException.class)
-                .isThrownBy(roaming::getActivityStart);
+                .isThrownBy(roaming::getActivityRemaining);
     }
 
-
     @Test
-    void setActivityStop_writes_serialized_coordinate_to_roaming() {
-        roaming.setActivityStop(Instant.EPOCH);
+    void getActivityStop_throws_exception_when_coordinate_could_not_be_parsed() throws IOException {
+        givenThatActivityDurationIsMalformed();
 
-        Optional<Instant> lastActivity = roaming.getActivityStop();
-
-        assertThat(lastActivity).isPresent();
-        assertThat(lastActivity.get()).isEqualTo(Instant.EPOCH);
+        assertThatExceptionOfType(RoamingException.class)
+                .isThrownBy(roaming::getActivityDuration);
     }
 
     @Test
     void getActivityStop_returns_empty_optional_when_file_does_not_exist() {
         var nonExistentRoaming = new Roaming(NON_EXISTENT_FILE);
 
-        Optional<Instant> stopInstant = nonExistentRoaming.getActivityStop();
+        Optional<Duration> duration = nonExistentRoaming.getActivityDuration();
 
-        assertThat(stopInstant).isEmpty();
+        assertThat(duration).isEmpty();
     }
 
     @Test
-    void getActivityStop_throws_exception_when_coordinate_could_not_be_parsed() throws IOException {
-        givenThatActivityStopIsMalformed();
+    void getActivityRemaining_returns_empty_optional_when_file_does_not_exist() {
+        var nonExistentRoaming = new Roaming(NON_EXISTENT_FILE);
 
-        assertThatExceptionOfType(RoamingException.class)
-                .isThrownBy(roaming::getActivityStop);
+        Optional<Duration> remaining = nonExistentRoaming.getActivityRemaining();
+
+        assertThat(remaining).isEmpty();
     }
 
     @Test
-    void getLastActivityDuration_returns_duration() throws IOException {
-        var start = Instant.EPOCH;
-        var stop = start.plus(1, MINUTES);
-        givenThatSessionLasted(start, stop);
+    void roaming_stores_and_retrieves_any_value() {
+        var expectedDetached = true;
+        var expectedCoordinate = new Coordinate(3, 5);
+        var expectedDuration = Duration.ofMinutes(5);
+        var expectedRemaining = Duration.ofMinutes(4);
+        roaming.setActivityDuration(expectedDuration);
+        roaming.setActivityRemaining(expectedRemaining);
+        roaming.setCoordinate(expectedCoordinate);
+        roaming.setDetached(expectedDetached);
 
-        Duration duration = roaming.getLastActivityDuration();
+        Coordinate coordinate = roaming.getCoordinate().orElseThrow();
+        boolean detached = roaming.isDetached();
+        Duration remaining = roaming.getActivityRemaining().orElseThrow();
+        Duration duration = roaming.getActivityDuration().orElseThrow();
 
-        assertThat(duration)
-                .isEqualTo(Duration.between(start, stop));
+        assertThat(remaining).isEqualTo(expectedRemaining);
+        assertThat(duration).isEqualTo(expectedDuration);
+        assertThat(coordinate).isEqualTo(expectedCoordinate);
+        assertThat(detached).isEqualTo(expectedDetached);
+        assertThat(duration).isEqualTo(expectedDuration);
     }
 
-    private void givenThatSessionLasted(Instant start, Instant end) throws IOException {
-        setProperty(ACTIVITY_START, start.toEpochMilli());
-        setProperty(ACTIVITY_STOP,  end.toEpochMilli());
+    @Test
+    void getDuration_returns_activity_duration() throws IOException {
+        givenThatActivityLastsFor(FIVE_MINUTES);
+
+        assertThat(roaming.getActivityDuration())
+                .contains(FIVE_MINUTES);
+    }
+
+    @Test
+    void an_activity_is_not_ongoing_when_roaming_is_empty() {
+        assertThat(roaming.hasOngoingActivity())
+                .isFalse();
+    }
+
+    @Test
+    void an_activity_is_not_ongoing_when_measured_duration_is_less_than_expected_duration() throws IOException {
+        givenThatActivityLastsFor(TWO_MINUTES);
+        givenThatRemainingTimeIs(FIVE_MINUTES);
+
+        assertThat(roaming.hasOngoingActivity())
+                .isFalse();
+    }
+
+    @Test
+    void an_activity_is_ongoing_when_measured_duration_is_equal_or_greater_than_expected_duration() throws IOException {
+        givenThatActivityLastsFor(FIVE_MINUTES);
+        givenThatRemainingTimeIs(TWO_MINUTES);
+
+        assertThat(roaming.hasOngoingActivity())
+                .isTrue();
+    }
+
+    private void givenThatActivityLastsFor(Duration duration) throws IOException {
+        setProperty(ACTIVITY_DURATION,  duration.toMillis());
+    }
+
+    private void givenThatRemainingTimeIs(Duration duration) throws IOException {
+        setProperty(ACTIVITY_REMAINING, duration.toMillis());
     }
 
     private void givenThatCoordinateIsMalformed() throws IOException {
@@ -179,12 +218,12 @@ class RoamingTest {
         setProperty(DETACH, "malformed boolean");
     }
 
-    private void givenThatActivityStartIsMalformed() throws IOException {
-        setProperty(ACTIVITY_START, "malformed timestamp");
+    private void givenThatRemainingTimeIsMalformed() throws IOException {
+        setProperty(ACTIVITY_REMAINING, "malformed timestamp");
     }
 
-    private void givenThatActivityStopIsMalformed() throws IOException {
-        setProperty(ACTIVITY_STOP, "malformed timestamp");
+    private void givenThatActivityDurationIsMalformed() throws IOException {
+        setProperty(ACTIVITY_DURATION, "malformed timestamp");
     }
 
     private void setProperty(Roaming.Key key, Object value) throws IOException {

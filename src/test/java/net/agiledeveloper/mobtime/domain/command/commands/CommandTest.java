@@ -75,11 +75,11 @@ class CommandTest {
 
 
     void havingParameters(Parameter... parameter) {
-        command = new StartCommand(Set.of(parameter), null);
+        command = new StartCommand(Set.of(parameter), null, null);
     }
 
     void havingNoParameters() {
-        command = new StartCommand(Collections.emptySet(), null);
+        command = new StartCommand(Collections.emptySet(), null, null);
     }
 
 

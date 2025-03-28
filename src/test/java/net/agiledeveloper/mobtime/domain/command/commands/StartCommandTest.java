@@ -4,10 +4,15 @@ import net.agiledeveloper.mobtime.domain.command.commands.impl.StartCommand;
 import net.agiledeveloper.mobtime.domain.command.parameters.Parameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.impl.*;
 import net.agiledeveloper.mobtime.domain.session.Session;
+import net.agiledeveloper.mobtime.infra.roaming.Roaming;
 import net.agiledeveloper.mobtime.test.builders.DurationParameterBuilder;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Set;
@@ -22,6 +27,7 @@ class StartCommandTest {
     private static final Duration FIVE_MINUTES = Duration.ofMinutes(5);
     private static final Duration TEN_SECONDS = Duration.of(10, ChronoUnit.SECONDS);
     private static final Duration ONE_MILLISECOND = Duration.of(1, ChronoUnit.MILLIS);
+    private static final Path ROAMING_FILE = Path.of("MOBTIME_ROAMING");
 
     private StartCommand command;
 
@@ -30,6 +36,12 @@ class StartCommandTest {
         command = null;
     }
 
+    @AfterEach
+    void tearDown() throws IOException {
+        if (Files.exists(ROAMING_FILE)) {
+            Files.delete(ROAMING_FILE);
+        }
+    }
 
     @Test
     void isDryRunEnabled_when_enabled_returns_true() {
@@ -138,7 +150,7 @@ class StartCommandTest {
     }
 
     void havingParameters(Parameter... parameter) {
-        command = new StartCommand(Set.of(parameter), null);
+        command = new StartCommand(Set.of(parameter), null, new Roaming(ROAMING_FILE));
     }
 
     void havingParameters(DurationParameterBuilder... parameters) {

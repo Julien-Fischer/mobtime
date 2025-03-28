@@ -32,7 +32,7 @@ public class StartCommandBuilder implements Builder<StartCommand> {
 
     @Override
     public StartCommand build() {
-        return new StartCommand(parameters, sessionService);
+        return new StartCommand(parameters, sessionService, null);
     }
 
 }

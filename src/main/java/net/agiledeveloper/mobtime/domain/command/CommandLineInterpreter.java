@@ -8,6 +8,7 @@ import net.agiledeveloper.mobtime.domain.session.FocusMode;
 import net.agiledeveloper.mobtime.domain.session.Session;
 import net.agiledeveloper.mobtime.domain.session.SessionService;
 import net.agiledeveloper.mobtime.infra.cli.BashParameter;
+import net.agiledeveloper.mobtime.infra.roaming.Roaming;
 import net.agiledeveloper.mobtime.utils.App;
 
 import java.time.Duration;
@@ -20,10 +21,14 @@ import static net.agiledeveloper.mobtime.utils.EnumUtils.printValues;
 public class CommandLineInterpreter {
 
     private final SessionService sessionService;
+    private final Roaming roaming;
+
+    private boolean detached = false;
 
 
-    public CommandLineInterpreter(SessionService sessionService) {
+    public CommandLineInterpreter(SessionService sessionService, Roaming roaming) {
         this.sessionService = sessionService;
+        this.roaming = roaming;
     }
 
 
@@ -38,7 +43,7 @@ public class CommandLineInterpreter {
             App.logger.log(" ", parameter.toString());
 
             if (parameter.hasName("start")) {
-                command = new StartCommand(parameters, sessionService);
+                command = new StartCommand(parameters, sessionService, roaming);
             }
 
             else if (parameter.hasName("dry-run")) {
@@ -61,6 +66,10 @@ public class CommandLineInterpreter {
                 parameters.add(new UserNameParameter(readUserName(parameter)));
             }
 
+            else if (parameter.hasName("detach")) {
+                detached = true;
+            }
+
             else if (parameter.hasName("invalid")) {
                 var msg = "Error: --invalid is not a valid argument";
                 App.logger.log(msg);
@@ -71,6 +80,8 @@ public class CommandLineInterpreter {
         if (command == null) {
             throw new IllegalArgumentException("No command specified");
         }
+
+        roaming.setDetached(detached);
 
         App.logger.logSeparator();
         App.logger.log("Command parameters:");

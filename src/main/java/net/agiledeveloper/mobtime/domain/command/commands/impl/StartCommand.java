@@ -6,22 +6,28 @@ import net.agiledeveloper.mobtime.domain.command.parameters.impl.*;
 import net.agiledeveloper.mobtime.domain.session.FocusMode;
 import net.agiledeveloper.mobtime.domain.session.Session;
 import net.agiledeveloper.mobtime.domain.session.SessionService;
+import net.agiledeveloper.mobtime.infra.roaming.Roaming;
+import net.agiledeveloper.mobtime.utils.App;
 
 import java.time.Duration;
 import java.util.Optional;
 import java.util.Set;
 
+import static net.agiledeveloper.mobtime.utils.TimeFormatter.formatDuration;
+
 public class StartCommand extends AbstractCommand {
 
     private final SessionService sessionService;
+    private final Roaming roaming;
 
     private Duration durationCache = null;
     private FocusMode focusCache = null;
 
 
-    public StartCommand(Set<Parameter> parameters, SessionService sessionService) {
+    public StartCommand(Set<Parameter> parameters, SessionService sessionService, Roaming roaming) {
         super(parameters);
         this.sessionService = sessionService;
+        this.roaming = roaming;
     }
 
 
@@ -49,6 +55,7 @@ public class StartCommand extends AbstractCommand {
     public Duration getDuration() {
         if (durationCache == null) {
             durationCache = findDuration();
+            startRoaming(durationCache);
         }
         return durationCache;
     }
@@ -69,6 +76,36 @@ public class StartCommand extends AbstractCommand {
     }
 
     private Duration findDuration() {
+        var specifiedDuration = getArgumentDuration();
+
+        if (roaming.isDetached()) {
+            if (roaming.hasOngoingActivity()) {
+                Duration duration = roaming.getActivityDuration().orElseThrow();
+                Duration remaining = roaming.getActivityRemaining().orElseThrow();
+                App.logger.log("[roaming] Activity duration: " + formatDuration(duration));
+                App.logger.log("[roaming] Remaining activity duration: " + formatDuration(remaining));
+                return remaining;
+            } else {
+                App.logger.log("[roaming] Starting new activity with duration: " + formatDuration(specifiedDuration));
+                return specifiedDuration;
+            }
+        }
+
+        return specifiedDuration;
+    }
+
+    private void startRoaming(Duration duration) {
+        if (roaming.isDetached() && !roaming.hasOngoingActivity()) {
+            App.logger.log("[roaming] Starting new activity with duration: " + formatDuration(duration));
+            doStartRoaming(duration);
+        }
+    }
+
+    private void doStartRoaming(Duration duration) {
+        roaming.setActivityDuration(duration);
+    }
+
+    private Duration getArgumentDuration() {
         Optional<Parameter> duration = get(DurationParameter.class);
         if (duration.isPresent()) {
             var durationParameter = (DurationParameter) duration.get();

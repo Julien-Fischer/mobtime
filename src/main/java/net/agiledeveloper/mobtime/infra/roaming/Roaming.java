@@ -9,11 +9,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
-import java.time.Instant;
 import java.util.Optional;
 import java.util.Properties;
 
 import static net.agiledeveloper.mobtime.infra.roaming.Roaming.Key.*;
+import static net.agiledeveloper.mobtime.utils.TimeFormatter.toDuration;
 
 public class Roaming {
 
@@ -34,22 +34,24 @@ public class Roaming {
         write(DETACH, detached);
     }
 
-    public void setActivityStart(Instant lastActivity) {
-        write(ACTIVITY_START, lastActivity.toEpochMilli());
+    public void setActivityDuration(Duration duration) {
+        var millis = duration.toMillis();
+        App.logger.log("[roaming] Set activity duration: " + millis);
+        write(ACTIVITY_DURATION, duration.toMillis());
     }
 
-    public void setActivityStop(Instant lastActivity) {
-        write(ACTIVITY_STOP, lastActivity.toEpochMilli());
+    public void setActivityRemaining(Duration duration) {
+        var millis = duration.toMillis();
+        App.logger.log("[roaming] Set activity remaining" + millis);
+        write(ACTIVITY_REMAINING, duration.toMillis());
     }
 
-    public Duration getLastActivityDuration() {
-        var start = this.getActivityStart();
-        var stop = this.getActivityStop();
-        if (start.isPresent() && stop.isPresent()) {
-            return Duration.between(start.get(), stop.get());
-        } else {
-            throw new UnsupportedOperationException("%s, %s".formatted(start, stop));
-        }
+    public Optional<Duration> getActivityDuration() {
+        return getOptionalActivityDuration(ACTIVITY_DURATION);
+    }
+
+    public Optional<Duration> getActivityRemaining() {
+        return getOptionalActivityDuration(ACTIVITY_REMAINING);
     }
 
     public Optional<Coordinate> getCoordinate() {
@@ -64,34 +66,37 @@ public class Roaming {
         return Boolean.parseBoolean(serialized);
     }
 
-    public Optional<Instant> getActivityStart() {
-        var serialized = read(ACTIVITY_START);
-        return (serialized == null) ?
-                Optional.empty() :
-                ofEpochMilli(serialized);
+    public boolean hasOngoingActivity() {
+        var remaining = getActivityRemaining();
+        var duration = getActivityDuration();
+        if (remaining.isEmpty() || duration.isEmpty()) {
+            return false;
+        }
+        return duration.get()
+                .minus(remaining.get())
+                .isPositive();
     }
 
-    public Optional<Instant> getActivityStop() {
-        var serialized = read(ACTIVITY_STOP);
-        return (serialized == null) ?
-                Optional.empty() :
-                ofEpochMilli(serialized);
-    }
-
-
-    private Optional<Instant> ofEpochMilli(String epochMilli) {
+    private Optional<Duration> getOptionalActivityDuration(Key key) {
+        var serialized = read(key);
         try {
-            long epochMillis = Long.parseLong(epochMilli);
-            var instant = Instant.ofEpochMilli(epochMillis);
-            return Optional.of(instant);
+            return (serialized == null) ?
+                    Optional.empty() :
+                    Optional.of(toDuration(serialized));
         } catch (NumberFormatException cause) {
             throw new RoamingException(cause);
         }
     }
 
     private void write(Key key, Object value) {
+        App.logger.log("[roaming] Writing property: %s=%s".formatted(key, value));
         if (properties == null) {
-            properties = new Properties();
+            try {
+                loadProperties();
+            } catch (IOException cause) {
+                properties = new Properties();
+                App.logger.log("[roaming] Could not load roaming properties. Created a new one.");
+            }
         }
         properties.put(key.toString(), value.toString());
         try (var output = new FileOutputStream(roamingFile.toFile())) {
@@ -121,6 +126,7 @@ public class Roaming {
         try (var inputStream = new FileInputStream(roamingFile.toFile())) {
             properties.load(inputStream);
         }
+        App.logger.log("[roaming] Loading properties:", properties.toString());
     }
 
     private void createRoamingIfNotExists() throws IOException {
@@ -129,13 +135,12 @@ public class Roaming {
         }
     }
 
-
     public enum Key {
 
-        COORDINATE     ("coordinate"),
-        DETACH         ("detach"),
-        ACTIVITY_START ("activity.start"),
-        ACTIVITY_STOP  ("activity.stop");
+        COORDINATE         ("coordinate"),
+        DETACH             ("detach"),
+        ACTIVITY_REMAINING ("activity.remaining"),
+        ACTIVITY_DURATION  ("activity.duration");
 
         private final String nameString;
 

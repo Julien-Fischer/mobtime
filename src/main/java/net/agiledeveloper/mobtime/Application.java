@@ -25,10 +25,12 @@ public class Application {
     private static final Path ROAMING_FILE = getAppDirectory().resolve("roaming");
 
     private final MobPort mobPort;
+    private final Roaming roaming;
 
 
     public Application(MobPort mobPort) {
         this.mobPort = mobPort;
+        this.roaming = new Roaming(ROAMING_FILE);
     }
 
 
@@ -37,10 +39,10 @@ public class Application {
         List<BashParameter> bashParameters = getOrThrow(() -> parser.parse(commandLine));
 
         var mobService = new MobService(mobPort);
-        var notificationAdapter = createNotificationAdapter(mobService, bashParameters);
+        var notificationAdapter = createNotificationAdapter(mobService, roaming, bashParameters);
         var sessionService = new SessionService(new SwingWorkerTimeAdapter(), notificationAdapter, mobPort);
 
-        var handler = new CommandLineInterpreter(sessionService);
+        var handler = new CommandLineInterpreter(sessionService, roaming);
         Command command = getOrThrow(() -> handler.interpret(bashParameters));
 
         command.execute();
@@ -92,10 +94,12 @@ public class Application {
         return SwingPopup.DEFAULT_LOCATION;
     }
 
-    private static NotificationPort createNotificationAdapter(SessionPort sessionPort, List<BashParameter> bashParameters) {
+    private static NotificationPort createNotificationAdapter(
+            SessionPort sessionPort, Roaming roaming, List<BashParameter> bashParameters
+    ) {
         return new SwingNotificationAdapter(
                 sessionPort,
-                new Roaming(ROAMING_FILE),
+                roaming,
                 shouldMinimize(bashParameters),
                 shouldAutosave(bashParameters),
                 getLocation(bashParameters)
