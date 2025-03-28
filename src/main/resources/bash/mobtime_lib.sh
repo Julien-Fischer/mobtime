@@ -224,14 +224,15 @@ mobuninstall() {
 #########################################################################################
 
 mobupdate() {
-    local mobtime_install_dir
+    local initial_dir mobtime_install_dir
+    initial_dir="$(pwd)"
     mobtime_install_dir=$(mktemp -d)
     cd "${mobtime_install_dir}" || (rm "${mobtime_install_dir}" && echo "E: Could not cd into ${mobtime_install_dir}" && return 1)
     git clone "${MOBTIME_REPOSITORY}"
     cd mobtime || (echo "E: Could not cd into $(pwd)/mobtime" && return 1)
     LOCAL_DIR="$(pwd)/src/main/resources"
     mobinstall
-    cd ../..
+    cd "${initial_dir}" || (echo "E: Could not cd into ${initial_dir}" && return 1)
     rm -rf "${mobtime_install_dir}"
 }
 
