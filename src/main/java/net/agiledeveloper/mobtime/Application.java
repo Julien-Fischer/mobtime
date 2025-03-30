@@ -66,10 +66,6 @@ public class Application {
         }
     }
 
-    private boolean isDebugModeEnabled(List<BashParameter> bashParameters) {
-        return bashParameters.stream().anyMatch(e -> e.hasName("debug"));
-    }
-
     private static void logError(String message) {
         var errorSeparator = "/!\\ ".repeat(20);
         App.logger.logSeparator(errorSeparator);
@@ -79,22 +75,24 @@ public class Application {
         App.logger.logSeparator(errorSeparator);
     }
 
-    private static boolean shouldMinimize(List<BashParameter> bashParameters) {
+    private boolean isDebugModeEnabled(List<BashParameter> bashParameters) {
+        return hasFlag(bashParameters, "debug");
+    }
+
+    private boolean shouldMinimize(List<BashParameter> bashParameters) {
         return hasFlag(bashParameters, "mini");
     }
 
-    private static boolean shouldAutosave(List<BashParameter> bashParameters) {
+    private boolean shouldAutosave(List<BashParameter> bashParameters) {
         return hasFlag(bashParameters, "autosave");
     }
 
-    private static boolean hasFlag(List<BashParameter> bashParameters, String flag) {
-        return !bashParameters.stream()
-                .filter(param -> param.hasName(flag))
-                .toList()
-                .isEmpty();
+    private boolean hasFlag(List<BashParameter> bashParameters, String flag) {
+        return bashParameters.stream()
+                .anyMatch(param -> param.hasName(flag));
     }
 
-    private static Location getLocation(List<BashParameter> bashParameters) {
+    private Location getLocation(List<BashParameter> bashParameters) {
         for (BashParameter bashParameter : bashParameters) {
             if (bashParameter.hasName("location") && bashParameter.hasValue()) {
                 return Location.of(bashParameter.value());
@@ -103,7 +101,7 @@ public class Application {
         return SwingPopup.DEFAULT_LOCATION;
     }
 
-    private static NotificationPort createNotificationAdapter(
+    private NotificationPort createNotificationAdapter(
             SessionPort sessionPort, Roaming roaming, List<BashParameter> bashParameters
     ) {
         return new SwingNotificationAdapter(
