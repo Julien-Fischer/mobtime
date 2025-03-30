@@ -11,6 +11,7 @@ Mob Commands:
     --user-name    (Option) Set a username for this session
     --autosave     (Option) Reuse last window location if set
     --detach       (Option) Don't reset the timer on mob next or done
+    --debug        (Option) Start mobtime in debug mode
 
 Config commands:
 

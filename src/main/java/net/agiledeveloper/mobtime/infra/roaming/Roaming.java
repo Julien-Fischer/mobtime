@@ -36,13 +36,13 @@ public class Roaming {
 
     public void setActivityDuration(Duration duration) {
         var millis = duration.toMillis();
-        App.logger.log("[roaming] Set activity duration: " + millis);
+        App.logger.debug("[roaming] Set activity duration: " + millis);
         write(ACTIVITY_DURATION, duration.toMillis());
     }
 
     public void setActivityRemaining(Duration duration) {
         var millis = duration.toMillis();
-        App.logger.log("[roaming] Set activity remaining" + millis);
+        App.logger.debug("[roaming] Set activity remaining" + millis);
         write(ACTIVITY_REMAINING, duration.toMillis());
     }
 
@@ -89,13 +89,13 @@ public class Roaming {
     }
 
     private void write(Key key, Object value) {
-        App.logger.log("[roaming] Writing property: %s=%s".formatted(key, value));
+        App.logger.debug("[roaming] Writing property: %s=%s".formatted(key, value));
         if (properties == null) {
             try {
                 loadProperties();
             } catch (IOException cause) {
                 properties = new Properties();
-                App.logger.log("[roaming] Could not load roaming properties. Created a new one.");
+                App.logger.debug("[roaming] Could not load roaming properties. Created a new one.");
             }
         }
         properties.put(key.toString(), value.toString());
@@ -126,7 +126,7 @@ public class Roaming {
         try (var inputStream = new FileInputStream(roamingFile.toFile())) {
             properties.load(inputStream);
         }
-        App.logger.log("[roaming] Loading properties:", properties.toString());
+        App.logger.debug("[roaming] Loading properties:", properties.toString());
     }
 
     private void createRoamingIfNotExists() throws IOException {

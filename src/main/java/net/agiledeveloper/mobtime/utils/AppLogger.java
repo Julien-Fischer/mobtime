@@ -8,16 +8,22 @@ public class AppLogger {
 
     public static final String DEFAULT_SEPARATOR = "-".repeat(60);
     public static final String ERROR_PREFIX = "/!\\";
+    public static final Level DEFAULT_LEVEL = Level.INFO;
 
     private final Target target;
     private final TimeProvider timeProvider;
+    private Level level = DEFAULT_LEVEL;
 
 
-    public AppLogger(Target target, TimeProvider timeProvider) {
+    AppLogger(Target target, TimeProvider timeProvider) {
         this.target = target;
         this.timeProvider = timeProvider;
     }
 
+
+    public void setLevel(Level level) {
+        this.level = level;
+    }
 
     public void print(String message) {
         target.print(message);
@@ -33,6 +39,12 @@ public class AppLogger {
 
     public void log(String... elements) {
         print("[%s] %s".formatted(now(), join(elements)));
+    }
+
+    public void debug(String... elements) {
+        if (level == Level.DEBUG) {
+            log(elements);
+        }
     }
 
     public void err(String... elements) {
@@ -58,6 +70,12 @@ public class AppLogger {
 
     public interface TimeProvider {
         Instant now();
+    }
+
+
+    public enum Level {
+        DEBUG,
+        INFO
     }
 
 }

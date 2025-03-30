@@ -15,6 +15,7 @@ import net.agiledeveloper.mobtime.infra.swing.SwingWorkerTimeAdapter;
 import net.agiledeveloper.mobtime.infra.swing.gui.Location;
 import net.agiledeveloper.mobtime.infra.swing.gui.SwingPopup;
 import net.agiledeveloper.mobtime.utils.App;
+import net.agiledeveloper.mobtime.utils.AppLogger;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -38,6 +39,10 @@ public class Application {
         var parser = new CommandLineParser();
         List<BashParameter> bashParameters = getOrThrow(() -> parser.parse(commandLine));
 
+        if (isDebugModeEnabled(bashParameters)) {
+            App.logger.setLevel(AppLogger.Level.DEBUG);
+        }
+
         var mobService = new MobService(mobPort);
         var notificationAdapter = createNotificationAdapter(mobService, roaming, bashParameters);
         var sessionService = new SessionService(new SwingWorkerTimeAdapter(), notificationAdapter, mobPort);
@@ -59,6 +64,10 @@ public class Application {
             mobPort.done();
             throw exception;
         }
+    }
+
+    private boolean isDebugModeEnabled(List<BashParameter> bashParameters) {
+        return bashParameters.stream().anyMatch(e -> e.hasName("debug"));
     }
 
     private static void logError(String message) {
