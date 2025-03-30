@@ -2,11 +2,14 @@ package net.agiledeveloper.mobtime.infra.cli;
 
 import net.agiledeveloper.mobtime.domain.command.parameters.Parameter;
 
+import static java.util.Objects.requireNonNull;
+
 public class BashParameter implements Parameter {
 
     private final String[] split;
 
-    BashParameter(String argument) {
+    public BashParameter(String argument) {
+        requireNonNull(argument);
         split = argument.substring(2).split(SEPARATOR);
     }
 
