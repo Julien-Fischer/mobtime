@@ -1,21 +1,31 @@
 package net.agiledeveloper.mobtime.utils;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.stream.Stream;
 
+import static java.time.LocalDateTime.parse;
+import static java.time.ZonedDateTime.of;
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 import static net.agiledeveloper.mobtime.utils.TimeFormatter.formatDuration;
 import static net.agiledeveloper.mobtime.utils.TimeFormatter.formatInstant;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 class TimeFormatterTest {
+
+    private static final ZoneId PARIS = ZoneId.of("Europe/Paris");
+
+    @BeforeAll
+    static void beforeAll() {
+        TimeFormatter.setTimeZone(PARIS);
+    }
 
     static Stream<Arguments> durations() {
         return Stream.of(
@@ -53,11 +63,8 @@ class TimeFormatterTest {
 
 
     private static Instant at(String dateString) {
-        ZoneId parisZoneId = ZoneId.of("Europe/Paris");
-        ZonedDateTime parisDateTime = ZonedDateTime.now(parisZoneId);
-        String offset = DateTimeFormatter.ofPattern("XXX").format(parisDateTime);
-        String dateTimeString = dateString + offset;
-        return ZonedDateTime.parse(dateTimeString).toInstant();
+        LocalDateTime datetime = parse(dateString, ISO_LOCAL_DATE_TIME);
+        return of(datetime, PARIS).toInstant();
     }
 
 }
