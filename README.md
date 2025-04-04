@@ -39,7 +39,7 @@ This software was designed for Linux, and was primarily tested on Debian 12 and 
 
 - `--start`      (Command) Start a new driving session
   - `--duration` (Option)  Set session duration in minutes (15 by default). Accepts: any positive integer
-  - `--auto`     (Option)  Automatically execute mob next when time runs out
+  - `--auto-next`     (Option)  Automatically execute mob next when time runs out
   - `--focus`    (Option)  Set the focus mode (normal by default). Accepts: normal, chill, zen
 - `--mini`       (Option)  Minimize the GUI
 - `--location`   (Option)  Set GUI location (north by default). Accepts: center, north, north-east, east, south-east, etc...
@@ -49,7 +49,7 @@ This software was designed for Linux, and was primarily tested on Debian 12 and 
 
 - `mobstart` Start a driving session with default duration
 - `mobstart 7` Start a 7-minute driving session
-- `mobstart --auto` Automatically execute `mobnext` when time runs out
+- `mobstart --auto-next` Automatically execute `mobnext` when time runs out
 - `mobstart --duration=7 --focus=zen --location=north-east --mini` Start a 7-minute driving session in Zen mode with a minimalist UI. The timer will be displayed in the top-right corner of the screen.
 
 ## Bash commands

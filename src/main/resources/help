@@ -4,7 +4,7 @@ Mob Commands:
   mobnext          Pass the keyboard to someone else
   mobstart         Start a new driving session
     --duration     (Option) Set session duration in minutes (15 by default). Accepts: any positive integer
-    --auto         (Option) Automatically execute mob next when time runs out
+    --auto-next    (Option) Automatically execute mob next when time runs out
     --focus        (Option) Set the focus mode (normal by default). Accepts: normal, chill, zen
     --mini         (Option) Minimize the GUI
     --location     (Option) Set GUI location (north by default). Accepts: center, north, north-east, east, south-east, etc...

@@ -54,8 +54,8 @@ public class CommandLineInterpreter {
                 parameters.add(new DurationParameter(readDuration(parameter)));
             }
 
-            else if (parameter.hasName("auto")) {
-                parameters.add(new AutoModeParameter());
+            else if (parameter.hasName("auto-next")) {
+                parameters.add(new AutoNextParameter());
             }
 
             else if (parameter.hasName("focus")) {

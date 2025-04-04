@@ -8,7 +8,7 @@ import static net.agiledeveloper.mobtime.utils.TimeFormatter.formatInstant;
 
 public record Session(
         Duration duration,
-        boolean isAutoModeEnabled,
+        boolean shouldAutomaticallyPassKeyboard,
         FocusMode focusMode,
         String username,
         Instant createdAt
@@ -38,8 +38,8 @@ public record Session(
     public String toString() {
         return "[Session]"
                 + " createdAt: " + formatInstant(createdAt) + ","
-                + " duration: " + formatDuration(duration) + ","
-                + " isAutoModeEnabled: " + isAutoModeEnabled + ","
+                + " duration:  " + formatDuration(duration) + ","
+                + " auto-next: " + shouldAutomaticallyPassKeyboard + ","
                 + " focusMode: " + focusMode;
     }
 

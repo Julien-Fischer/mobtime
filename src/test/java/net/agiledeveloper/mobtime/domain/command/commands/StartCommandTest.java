@@ -61,14 +61,14 @@ class StartCommandTest {
     void isAutoModeEnabled_when_not_enabled_returns_false() {
         havingParameters(aDurationParameter());
 
-        assertThat(command.isAutoModeEnabled()).isFalse();
+        assertThat(command.isAutoNextModeEnabled()).isFalse();
     }
 
     @Test
-    void isAutoModeEnabled_when_enabled_returns_true() {
-        havingParameters(aDurationParameter().build(), new AutoModeParameter());
+    void isAutoNextModeEnabled_when_enabled_returns_true() {
+        havingParameters(aDurationParameter().build(), new AutoNextParameter());
 
-        assertThat(command.isAutoModeEnabled()).isTrue();
+        assertThat(command.isAutoNextModeEnabled()).isTrue();
     }
 
     @Test

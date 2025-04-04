@@ -36,8 +36,8 @@ public class StartCommand extends AbstractCommand {
         mobStart();
     }
 
-    public boolean isAutoModeEnabled() {
-        return has(AutoModeParameter.class);
+    public boolean isAutoNextModeEnabled() {
+        return has(AutoNextParameter.class);
     }
 
     public boolean isDryRunEnabled() {
@@ -70,7 +70,7 @@ public class StartCommand extends AbstractCommand {
 
     private void mobStart() {
         if (!isDryRunEnabled()) {
-            var session = new Session(getDuration(), isAutoModeEnabled(), findFocusMode(), findUserName());
+            var session = new Session(getDuration(), isAutoNextModeEnabled(), findFocusMode(), findUserName());
             sessionService.open(session);
         }
     }

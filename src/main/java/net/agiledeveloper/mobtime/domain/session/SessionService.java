@@ -41,7 +41,7 @@ public class SessionService {
     }
 
     public void close(Session session) {
-        if (session.isAutoModeEnabled()) {
+        if (session.shouldAutomaticallyPassKeyboard()) {
             mobNext(session);
         } else {
             suggestMobNext(session);
