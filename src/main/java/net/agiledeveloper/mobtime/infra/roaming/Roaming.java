@@ -30,8 +30,8 @@ public class Roaming {
         write(COORDINATE, coordinate);
     }
 
-    public void setDetached(boolean detached) {
-        write(DETACH, detached);
+    public void setPausable(boolean pausable) {
+        write(PAUSABLE, pausable);
     }
 
     public void setActivityDuration(Duration duration) {
@@ -61,8 +61,8 @@ public class Roaming {
                 Optional.of(Coordinate.of(serialized));
     }
 
-    public boolean isDetached() {
-        var serialized = read(DETACH);
+    public boolean isPausable() {
+        var serialized = read(PAUSABLE);
         return Boolean.parseBoolean(serialized);
     }
 
@@ -138,7 +138,7 @@ public class Roaming {
     public enum Key {
 
         COORDINATE         ("coordinate"),
-        DETACH             ("detach"),
+        PAUSABLE           ("pausable"),
         ACTIVITY_REMAINING ("activity.remaining"),
         ACTIVITY_DURATION  ("activity.duration");
 

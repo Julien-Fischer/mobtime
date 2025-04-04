@@ -78,7 +78,7 @@ public class StartCommand extends AbstractCommand {
     private Duration findDuration() {
         var specifiedDuration = getArgumentDuration();
 
-        if (roaming.isDetached()) {
+        if (roaming.isPausable()) {
             if (roaming.hasOngoingActivity()) {
                 Duration duration = roaming.getActivityDuration().orElseThrow();
                 Duration remaining = roaming.getActivityRemaining().orElseThrow();
@@ -95,7 +95,7 @@ public class StartCommand extends AbstractCommand {
     }
 
     private void startRoaming(Duration duration) {
-        if (roaming.isDetached() && !roaming.hasOngoingActivity()) {
+        if (roaming.isPausable() && !roaming.hasOngoingActivity()) {
             App.logger.debug("[roaming] Starting new activity with duration: " + formatDuration(duration));
             doStartRoaming(duration);
         }

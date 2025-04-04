@@ -23,7 +23,7 @@ public class CommandLineInterpreter {
     private final SessionService sessionService;
     private final Roaming roaming;
 
-    private boolean detached = false;
+    private boolean pausable = false;
 
 
     public CommandLineInterpreter(SessionService sessionService, Roaming roaming) {
@@ -66,8 +66,8 @@ public class CommandLineInterpreter {
                 parameters.add(new UserNameParameter(readUserName(parameter)));
             }
 
-            else if (parameter.hasName("detach")) {
-                detached = true;
+            else if (parameter.hasName("pausable")) {
+                pausable = true;
             }
 
             else if (parameter.hasName("invalid")) {
@@ -81,7 +81,7 @@ public class CommandLineInterpreter {
             throw new IllegalArgumentException("No command specified");
         }
 
-        roaming.setDetached(detached);
+        roaming.setPausable(pausable);
 
         App.logger.logSeparator();
         App.logger.log("Command parameters:");

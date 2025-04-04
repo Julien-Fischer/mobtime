@@ -199,7 +199,7 @@ public class SwingNotificationAdapter implements NotificationPort {
         if (relocate && location != null) {
             roaming.setCoordinate(location);
         }
-        if (roaming.isDetached()) {
+        if (roaming.isPausable()) {
             roaming.setActivityRemaining(remainingTime);
         }
     }

@@ -70,29 +70,29 @@ class RoamingTest {
 
 
     @Test
-    void setDetached_writes_serialized_coordinate_to_roaming() {
-        roaming.setDetached(true);
+    void setPausable_writes_serialized_coordinate_to_roaming() {
+        roaming.setPausable(true);
 
-        Boolean detached = roaming.isDetached();
+        Boolean pausable = roaming.isPausable();
 
-        assertThat(detached).isTrue();
+        assertThat(pausable).isTrue();
     }
 
     @Test
-    void isDetached_returns_empty_optional_when_file_does_not_exist() {
+    void isPausable_returns_empty_optional_when_file_does_not_exist() {
         var nonExistentRoaming = new Roaming(NON_EXISTENT_FILE);
 
-        Boolean detached = nonExistentRoaming.isDetached();
+        Boolean pausable = nonExistentRoaming.isPausable();
 
-        assertThat(detached).isFalse();
+        assertThat(pausable).isFalse();
     }
 
     @Test
-    void isDetached_throws_exception_when_coordinate_could_not_be_parsed() throws IOException {
-        givenThatDetachedIsMalformed();
+    void isPausable_throws_exception_when_coordinate_could_not_be_parsed() throws IOException {
+        givenThatpausableIsMalformed();
 
         assertThatNoException()
-                .isThrownBy(roaming::isDetached);
+                .isThrownBy(roaming::isPausable);
     }
 
 
@@ -149,24 +149,24 @@ class RoamingTest {
 
     @Test
     void roaming_stores_and_retrieves_any_value() {
-        var expectedDetached = true;
+        var expectedpausable = true;
         var expectedCoordinate = new Coordinate(3, 5);
         var expectedDuration = Duration.ofMinutes(5);
         var expectedRemaining = Duration.ofMinutes(4);
         roaming.setActivityDuration(expectedDuration);
         roaming.setActivityRemaining(expectedRemaining);
         roaming.setCoordinate(expectedCoordinate);
-        roaming.setDetached(expectedDetached);
+        roaming.setPausable(expectedpausable);
 
         Coordinate coordinate = roaming.getCoordinate().orElseThrow();
-        boolean detached = roaming.isDetached();
+        boolean pausable = roaming.isPausable();
         Duration remaining = roaming.getActivityRemaining().orElseThrow();
         Duration duration = roaming.getActivityDuration().orElseThrow();
 
         assertThat(remaining).isEqualTo(expectedRemaining);
         assertThat(duration).isEqualTo(expectedDuration);
         assertThat(coordinate).isEqualTo(expectedCoordinate);
-        assertThat(detached).isEqualTo(expectedDetached);
+        assertThat(pausable).isEqualTo(expectedpausable);
         assertThat(duration).isEqualTo(expectedDuration);
     }
 
@@ -214,8 +214,8 @@ class RoamingTest {
         setProperty(COORDINATE, "malformed coordinate");
     }
 
-    private void givenThatDetachedIsMalformed() throws IOException {
-        setProperty(DETACH, "malformed boolean");
+    private void givenThatpausableIsMalformed() throws IOException {
+        setProperty(PAUSABLE, "malformed boolean");
     }
 
     private void givenThatRemainingTimeIsMalformed() throws IOException {

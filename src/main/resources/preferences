@@ -13,5 +13,5 @@
 # --mini
 # --auto-next
 # --relocate
-# --detach
+# --pausable
 # --debug
