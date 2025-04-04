@@ -72,10 +72,10 @@ class StartCommandTest {
     }
 
     @Test
-    void isAutoSaveEnabled_when_enabled_returns_true() {
-        havingParameters(aDurationParameter().build(), new AutoSaveParameter());
+    void isRelocateEnabled_when_enabled_returns_true() {
+        havingParameters(aDurationParameter().build(), new RelocateParameter());
 
-        assertThat(command.isAutoSaveEnabled()).isTrue();
+        assertThat(command.isRelocateEnabled()).isTrue();
     }
 
     @Test

@@ -124,7 +124,7 @@ class EntryPointTest {
                 "--mini",
                 "--user-name=John",
                 "--location",
-                "--autosave"
+                "--relocate"
         );
 
         runApp();
@@ -136,7 +136,7 @@ class EntryPointTest {
                 .contains("--mini")
                 .contains("--user-name=John")
                 .contains("--location")
-                .contains("--autosave");
+                .contains("--relocate");
     }
 
     @Test

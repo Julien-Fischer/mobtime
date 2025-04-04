@@ -30,7 +30,7 @@ public class SwingNotificationAdapter implements NotificationPort {
     private SwingPopup currentFrame;
     private Color currentColor;
     private final boolean shouldMinimize;
-    private final boolean autosave;
+    private final boolean relocate;
     private final Location location;
 
     private boolean awaitingKillSignal = false;
@@ -41,13 +41,13 @@ public class SwingNotificationAdapter implements NotificationPort {
             SessionPort mobPort,
             Roaming roaming,
             boolean shouldMinimize,
-            boolean autosave,
+            boolean relocate,
             Location location
     ) {
         this.mobPort = mobPort;
         this.roaming = roaming;
         this.shouldMinimize = shouldMinimize;
-        this.autosave = autosave;
+        this.relocate = relocate;
         this.location = location;
     }
 
@@ -147,7 +147,7 @@ public class SwingNotificationAdapter implements NotificationPort {
 
     private SwingPopup createPopup(Notification notification) {
         Optional<Coordinate> offset = roaming.getCoordinate();
-        return autosave && offset.isPresent() ?
+        return relocate && offset.isPresent() ?
                 new SwingPopup(notification, shouldMinimize, offset.get()) :
                 new SwingPopup(notification, shouldMinimize);
     }
@@ -196,7 +196,7 @@ public class SwingNotificationAdapter implements NotificationPort {
 
     private void closeRoaming() {
         Coordinate location = currentFrame.getCurrentLocation();
-        if (autosave && location != null) {
+        if (relocate && location != null) {
             roaming.setCoordinate(location);
         }
         if (roaming.isDetached()) {

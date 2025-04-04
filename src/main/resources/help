@@ -9,7 +9,7 @@ Mob Commands:
     --mini         (Option) Minimize the GUI
     --location     (Option) Set GUI location (north by default). Accepts: center, north, north-east, east, south-east, etc...
     --user-name    (Option) Set a username for this session
-    --autosave     (Option) Reuse last window location if set
+    --relocate     (Option) Reuse last window location if set
     --detach       (Option) Don't reset the timer on mob next or done
     --debug        (Option) Start mobtime in debug mode
 

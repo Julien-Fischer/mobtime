@@ -48,8 +48,8 @@ public class StartCommand extends AbstractCommand {
         return getFocusMode() == mode;
     }
 
-    public boolean isAutoSaveEnabled() {
-        return has(AutoSaveParameter.class);
+    public boolean isRelocateEnabled() {
+        return has(RelocateParameter.class);
     }
 
     public Duration getDuration() {

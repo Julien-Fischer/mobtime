@@ -83,8 +83,8 @@ public class Application {
         return hasFlag(bashParameters, "mini");
     }
 
-    private boolean shouldAutosave(List<BashParameter> bashParameters) {
-        return hasFlag(bashParameters, "autosave");
+    private boolean shouldRelocate(List<BashParameter> bashParameters) {
+        return hasFlag(bashParameters, "relocate");
     }
 
     private boolean hasFlag(List<BashParameter> bashParameters, String flag) {
@@ -108,7 +108,7 @@ public class Application {
                 sessionPort,
                 roaming,
                 shouldMinimize(bashParameters),
-                shouldAutosave(bashParameters),
+                shouldRelocate(bashParameters),
                 getLocation(bashParameters)
         );
     }
