@@ -1,5 +1,6 @@
 package net.agiledeveloper.mobtime.infra.swing;
 
+import net.agiledeveloper.mobtime.domain.command.UIOptionSet;
 import net.agiledeveloper.mobtime.domain.notification.Notification;
 import net.agiledeveloper.mobtime.domain.notification.session.*;
 import net.agiledeveloper.mobtime.domain.ports.api.SessionPort;
@@ -8,7 +9,6 @@ import net.agiledeveloper.mobtime.infra.InfraException;
 import net.agiledeveloper.mobtime.infra.roaming.Roaming;
 import net.agiledeveloper.mobtime.infra.swing.gui.Coordinate;
 import net.agiledeveloper.mobtime.infra.swing.gui.GUIEvent;
-import net.agiledeveloper.mobtime.infra.swing.gui.Location;
 import net.agiledeveloper.mobtime.infra.swing.gui.SwingPopup;
 import net.agiledeveloper.mobtime.infra.swing.theme.Theme;
 import net.agiledeveloper.mobtime.utils.App;
@@ -29,9 +29,7 @@ public class SwingNotificationAdapter implements NotificationPort {
 
     private SwingPopup currentFrame;
     private Color currentColor;
-    private final boolean shouldMinimize;
-    private final boolean relocate;
-    private final Location location;
+    private final UIOptionSet options;
 
     private boolean awaitingKillSignal = false;
     private Duration remainingTime;
@@ -40,15 +38,11 @@ public class SwingNotificationAdapter implements NotificationPort {
     public SwingNotificationAdapter(
             SessionPort mobPort,
             Roaming roaming,
-            boolean shouldMinimize,
-            boolean relocate,
-            Location location
+            UIOptionSet options
     ) {
         this.mobPort = mobPort;
         this.roaming = roaming;
-        this.shouldMinimize = shouldMinimize;
-        this.relocate = relocate;
-        this.location = location;
+        this.options = options;
     }
 
 
@@ -108,7 +102,7 @@ public class SwingNotificationAdapter implements NotificationPort {
             currentFrame.setVisible(true);
             currentFrame.pack();
             currentFrame.onClick(this::onGuiEvent);
-            currentFrame.setPosition(location);
+            currentFrame.setPosition(options.getLocation());
         });
     }
 
@@ -141,15 +135,15 @@ public class SwingNotificationAdapter implements NotificationPort {
         currentFrame = createPopup(notification);
         currentFrame.onClick(this::onGuiEvent);
         currentFrame.setVisible(true);
-        currentFrame.setPosition(location);
+        currentFrame.setPosition(options.getLocation());
         currentFrame.setFocusableWindowState(false);
     }
 
     private SwingPopup createPopup(Notification notification) {
         Optional<Coordinate> offset = roaming.getCoordinate();
-        return relocate && offset.isPresent() ?
-                new SwingPopup(notification, shouldMinimize, offset.get()) :
-                new SwingPopup(notification, shouldMinimize);
+        return options.shouldRelocate() && offset.isPresent() ?
+                new SwingPopup(notification, options.shouldMinimize(), offset.get()) :
+                new SwingPopup(notification, options.shouldMinimize());
     }
 
     private void onGuiEvent(GUIEvent event) {
@@ -196,7 +190,7 @@ public class SwingNotificationAdapter implements NotificationPort {
 
     private void closeRoaming() {
         Coordinate location = currentFrame.getCurrentLocation();
-        if (relocate && location != null) {
+        if (options.shouldRelocate() && location != null) {
             roaming.setCoordinate(location);
         }
         if (roaming.isPausable()) {

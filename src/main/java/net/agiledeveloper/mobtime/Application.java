@@ -1,10 +1,9 @@
 package net.agiledeveloper.mobtime;
 
 import net.agiledeveloper.mobtime.domain.command.CommandLineInterpreter;
+import net.agiledeveloper.mobtime.domain.command.UIOptionSet;
 import net.agiledeveloper.mobtime.domain.command.commands.Command;
-import net.agiledeveloper.mobtime.domain.ports.api.SessionPort;
 import net.agiledeveloper.mobtime.domain.ports.spi.MobPort;
-import net.agiledeveloper.mobtime.domain.ports.spi.NotificationPort;
 import net.agiledeveloper.mobtime.domain.session.MobService;
 import net.agiledeveloper.mobtime.domain.session.SessionService;
 import net.agiledeveloper.mobtime.infra.cli.BashParameter;
@@ -12,8 +11,6 @@ import net.agiledeveloper.mobtime.infra.cli.CommandLineParser;
 import net.agiledeveloper.mobtime.infra.roaming.Roaming;
 import net.agiledeveloper.mobtime.infra.swing.SwingNotificationAdapter;
 import net.agiledeveloper.mobtime.infra.swing.SwingWorkerTimeAdapter;
-import net.agiledeveloper.mobtime.infra.swing.gui.Location;
-import net.agiledeveloper.mobtime.infra.swing.gui.SwingPopup;
 import net.agiledeveloper.mobtime.utils.App;
 import net.agiledeveloper.mobtime.utils.AppLogger;
 
@@ -38,13 +35,14 @@ public class Application {
     public void process(String[] commandLine) {
         var parser = new CommandLineParser();
         List<BashParameter> bashParameters = getOrThrow(() -> parser.parse(commandLine));
+        var options = new UIOptionSet(bashParameters);
 
-        if (isDebugModeEnabled(bashParameters)) {
+        if (options.isDebugModeEnabled()) {
             App.logger.setLevel(AppLogger.Level.DEBUG);
         }
 
         var mobService = new MobService(mobPort);
-        var notificationAdapter = createNotificationAdapter(mobService, roaming, bashParameters);
+        var notificationAdapter = new SwingNotificationAdapter(mobService, roaming, options);
         var sessionService = new SessionService(new SwingWorkerTimeAdapter(), notificationAdapter, mobPort);
 
         var handler = new CommandLineInterpreter(sessionService, roaming);
@@ -75,43 +73,6 @@ public class Application {
         App.logger.logSeparator(errorSeparator);
     }
 
-    private boolean isDebugModeEnabled(List<BashParameter> bashParameters) {
-        return hasFlag(bashParameters, "debug");
-    }
-
-    private boolean shouldMinimize(List<BashParameter> bashParameters) {
-        return hasFlag(bashParameters, "mini");
-    }
-
-    private boolean shouldRelocate(List<BashParameter> bashParameters) {
-        return hasFlag(bashParameters, "relocate");
-    }
-
-    private boolean hasFlag(List<BashParameter> bashParameters, String flag) {
-        return bashParameters.stream()
-                .anyMatch(param -> param.hasName(flag));
-    }
-
-    private Location getLocation(List<BashParameter> bashParameters) {
-        for (BashParameter bashParameter : bashParameters) {
-            if (bashParameter.hasName("location") && bashParameter.hasValue()) {
-                return Location.of(bashParameter.value());
-            }
-        }
-        return SwingPopup.DEFAULT_LOCATION;
-    }
-
-    private NotificationPort createNotificationAdapter(
-            SessionPort sessionPort, Roaming roaming, List<BashParameter> bashParameters
-    ) {
-        return new SwingNotificationAdapter(
-                sessionPort,
-                roaming,
-                shouldMinimize(bashParameters),
-                shouldRelocate(bashParameters),
-                getLocation(bashParameters)
-        );
-    }
 
     private static Path getAppDirectory() {
         String homeDirectory = System.getProperty("user.home");
