@@ -33,8 +33,8 @@ public class Application {
 
 
     public void process(String[] commandLine) {
-        var parser = new CommandLineParser();
-        List<BashParameter> bashParameters = getOrThrow(() -> parser.parse(commandLine));
+        var commandLineParser = new CommandLineParser();
+        List<BashParameter> bashParameters = getOrThrow(() -> commandLineParser.parse(commandLine));
         var options = new UIOptionSet(bashParameters);
 
         if (options.isDebugModeEnabled()) {
@@ -54,9 +54,9 @@ public class Application {
     }
 
 
-    private <T> T getOrThrow(Supplier<T> procedure) {
+    private <T> T getOrThrow(Supplier<T> supplier) {
         try {
-            return procedure.get();
+            return supplier.get();
         } catch (Exception exception) {
             logError(exception.getMessage());
             mobPort.done();
@@ -65,12 +65,12 @@ public class Application {
     }
 
     private static void logError(String message) {
-        var errorSeparator = "/!\\ ".repeat(20);
-        App.logger.logSeparator(errorSeparator);
+        var separator = "/!\\ ".repeat(20);
+        App.logger.logSeparator(separator);
         App.logger.err("Error parsing command");
         App.logger.err("E: " + message);
         App.logger.err("Closing mob session...");
-        App.logger.logSeparator(errorSeparator);
+        App.logger.logSeparator(separator);
     }
 
 
