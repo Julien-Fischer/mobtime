@@ -37,11 +37,11 @@ public class StartCommand extends AbstractCommand {
     }
 
     public boolean isAutoNextModeEnabled() {
-        return has(AutoNextParameter.class);
+        return hasOption(AutoNextParameter.class);
     }
 
     public boolean isDryRunEnabled() {
-        return has(DryRunParameter.class);
+        return hasOption(DryRunParameter.class);
     }
 
     public boolean hasFocus(FocusMode mode) {
@@ -49,7 +49,7 @@ public class StartCommand extends AbstractCommand {
     }
 
     public boolean isRelocateEnabled() {
-        return has(RelocateParameter.class);
+        return hasOption(RelocateParameter.class);
     }
 
     public Duration getDuration() {
@@ -106,7 +106,7 @@ public class StartCommand extends AbstractCommand {
     }
 
     private Duration getArgumentDuration() {
-        Optional<Parameter> duration = get(DurationParameter.class);
+        Optional<Parameter> duration = getOption(DurationParameter.class);
         if (duration.isPresent()) {
             var durationParameter = (DurationParameter) duration.get();
             return durationParameter.value();
@@ -116,7 +116,7 @@ public class StartCommand extends AbstractCommand {
     }
 
     private FocusMode findFocusMode() {
-        Optional<Parameter> focusMode = get(FocusModeParameter.class);
+        Optional<Parameter> focusMode = getOption(FocusModeParameter.class);
         if (focusMode.isPresent()) {
             var focusParameter = (FocusModeParameter) focusMode.get();
             return focusParameter.value();
@@ -126,7 +126,7 @@ public class StartCommand extends AbstractCommand {
     }
 
     private String findUserName() {
-        Optional<Parameter> userName = get(UserNameParameter.class);
+        Optional<Parameter> userName = getOption(UserNameParameter.class);
         if (userName.isPresent()) {
             var parameter = (UserNameParameter) userName.get();
             return parameter.value();

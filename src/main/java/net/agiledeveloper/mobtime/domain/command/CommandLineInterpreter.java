@@ -85,9 +85,8 @@ public class CommandLineInterpreter {
 
         App.logger.logSeparator();
         App.logger.log("Command parameters:");
-        for (var parameter : command.parameters()) {
-            App.logger.log(" ", parameter.toString());
-        }
+        command.options()
+                .forEach(option -> App.logger.log(" ", option.toString()));
         return command;
     }
 

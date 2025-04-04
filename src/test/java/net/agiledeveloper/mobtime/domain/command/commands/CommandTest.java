@@ -41,16 +41,16 @@ class CommandTest {
     void has_when_parameter_present_returns_true() {
         havingParameters(new DryRunParameter());
 
-        var hasParameter = command.has(DryRunParameter.class);
+        var hasParameter = command.hasOption(DryRunParameter.class);
 
         assertThat(hasParameter).isTrue();
     }
 
     @Test
     void has_when_parameter_absent_returns_true() {
-        havingNoParameters();
+        havingNoOptions();
 
-        var hasParameter = command.has(DryRunParameter.class);
+        var hasParameter = command.hasOption(DryRunParameter.class);
 
         assertThat(hasParameter).isFalse();
     }
@@ -59,16 +59,16 @@ class CommandTest {
     void get_when_parameter_present_returns_optional() {
         havingParameters(aDurationParameter().build(), new DryRunParameter());
 
-        var optionalParameter = command.get(DryRunParameter.class);
+        var optionalParameter = command.getOption(DryRunParameter.class);
 
         assertThat(optionalParameter).isPresent();
     }
 
     @Test
     void get_when_parameter_absent_returns_empty_optional() {
-        havingNoParameters();
+        havingNoOptions();
 
-        var optionalParameter = command.get(DryRunParameter.class);
+        var optionalParameter = command.getOption(DryRunParameter.class);
 
         assertThat(optionalParameter).isEmpty();
     }
@@ -78,7 +78,7 @@ class CommandTest {
         command = new StartCommand(Set.of(parameter), null, null);
     }
 
-    void havingNoParameters() {
+    void havingNoOptions() {
         command = new StartCommand(Collections.emptySet(), null, null);
     }
 
@@ -89,8 +89,8 @@ class CommandTest {
         }
 
         @Override
-        public Set<Parameter> parameters() {
-            return Set.of();
+        public OptionSet options() {
+            return new OptionSet(Set.of());
         }
     }
 

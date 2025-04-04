@@ -88,7 +88,7 @@ class StartCommandTest {
     }
 
     @Test
-    void hasFocus_determines_whether_specified_focus_is_set() {
+    void hasOptionFocus_determines_whether_specified_focus_is_set() {
         havingParameters(aDurationParameter().build(), new FocusModeParameter(ZEN));
 
         assertThat(command.hasFocus(ZEN)).isTrue();
@@ -140,7 +140,7 @@ class StartCommandTest {
     }
 
     @Test
-    void getDuration_returns_duration_in_milliseconds() {
+    void getOptionDuration_returns_duration_in_milliseconds() {
         havingParameters(new DurationParameter(ONE_MILLISECOND));
 
         var duration = command.getDuration();

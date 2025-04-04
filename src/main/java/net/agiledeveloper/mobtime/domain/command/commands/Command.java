@@ -3,7 +3,6 @@ package net.agiledeveloper.mobtime.domain.command.commands;
 import net.agiledeveloper.mobtime.domain.command.parameters.Parameter;
 
 import java.util.Optional;
-import java.util.Set;
 
 public interface Command {
 
@@ -13,17 +12,14 @@ public interface Command {
         return this.getClass() == className;
     }
 
-    Set<Parameter> parameters();
+    OptionSet options();
 
-    default boolean has(Class<? extends Parameter> parameterName) {
-        return parameters().stream()
-                .anyMatch(parameter -> parameter.getClass().equals(parameterName));
+    default boolean hasOption(Class<? extends Parameter> parameterName) {
+        return options().has(parameterName);
     }
 
-    default Optional<Parameter> get(Class<? extends Parameter> parameterName) {
-        return parameters().stream()
-                .filter(parameter -> parameter.getClass().equals(parameterName))
-                .findFirst();
+    default Optional<Parameter> getOption(Class<? extends Parameter> parameterName) {
+        return options().get(parameterName);
     }
 
 }
