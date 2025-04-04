@@ -5,6 +5,7 @@ source "${HOME}/mobtime/src/mobtime_lib.sh"
 mobstart() {
     local parameters=()
     local -A defaults
+    local detach=false
 
     local preference_file="${MOBTIME_CONFIG_FILE}"
 
@@ -27,11 +28,16 @@ mobstart() {
 
     for param in "$@"; do
         if [[ "$param" =~ ^--(.+) ]]; then
-            key="${BASH_REMATCH[1]}"
-            unset "defaults[$key]"
+            if [[ "${param}" == --detach ]]; then
+                detach=true
+                mobtime_log "Starting mobtime in detached mode..."
+            else
+                key="${BASH_REMATCH[1]}"
+                unset "defaults[$key]"
+                parameters+=("$param")
+                mobtime_log "[override] override parameter ${defaults[$key]}"
+            fi
         fi
-        parameters+=("$param")
-        mobtime_log "[override] override parameter ${defaults[$key]}"
     done
 
     for key in "${!defaults[@]}"; do
@@ -48,7 +54,14 @@ mobstart() {
     fi
 
     if mob start --include-uncommitted-changes; then
-        java -jar "${MOBTIME_JAR_FILE}" --start "${parameters[@]}" &
+#        java -jar "${MOBTIME_JAR_FILE}" --start "${parameters[@]}" &
+        if $detach; then
+            java -jar "${MOBTIME_JAR_FILE}" --start "${parameters[@]}" &
+        else
+            java -jar "${MOBTIME_JAR_FILE}" --start "${parameters[@]}"
+        fi
+
+
         if [[ $? -eq 0 ]]; then
             local mobtime_pid=$!
             echo "${mobtime_pid}" >> "${MOBTIME_PID_FILE}"

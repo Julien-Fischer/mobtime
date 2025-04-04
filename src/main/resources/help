@@ -11,6 +11,7 @@ Mob Commands:
     --user-name    (Option) Set a username for this session
     --relocate     (Option) Reuse last window location if set
     --pausable     (Option) Don't reset the timer on mob next or done
+    --detach       (Option) Detach mobtime from the current terminal session
     --debug        (Option) Start mobtime in debug mode
 
 Config commands:
