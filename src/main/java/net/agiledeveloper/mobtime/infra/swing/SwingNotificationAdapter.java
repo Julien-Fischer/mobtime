@@ -10,17 +10,14 @@ import net.agiledeveloper.mobtime.infra.roaming.Roaming;
 import net.agiledeveloper.mobtime.infra.swing.gui.Coordinate;
 import net.agiledeveloper.mobtime.infra.swing.gui.GUIEvent;
 import net.agiledeveloper.mobtime.infra.swing.gui.SwingPopup;
-import net.agiledeveloper.mobtime.infra.swing.theme.Theme;
 import net.agiledeveloper.mobtime.utils.App;
 
 import javax.swing.*;
-import java.awt.*;
 import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
-import static net.agiledeveloper.mobtime.infra.swing.theme.Theme.MESSAGE_INFO;
-import static net.agiledeveloper.mobtime.infra.swing.theme.Theme.MESSAGE_OK;
+import static net.agiledeveloper.mobtime.infra.swing.Severity.*;
 
 public class SwingNotificationAdapter implements NotificationPort {
 
@@ -28,7 +25,7 @@ public class SwingNotificationAdapter implements NotificationPort {
     private final Roaming roaming;
 
     private SwingPopup currentFrame;
-    private Color currentColor;
+    private Severity currentSeverity;
     private final UIOptionSet options;
 
     private boolean awaitingKillSignal = false;
@@ -60,13 +57,13 @@ public class SwingNotificationAdapter implements NotificationPort {
 
 
     private void handleOpenNotification(Notification notification) {
-        currentColor = MESSAGE_INFO;
+        currentSeverity = INFO;
         showPopup(notification);
         notifySessionStart(notification);
     }
 
     private void handleStartNotification(Notification notification) {
-        currentColor = MESSAGE_OK;
+        currentSeverity = SUCCESS;
         displayMessage(notification);
     }
 
@@ -75,18 +72,18 @@ public class SwingNotificationAdapter implements NotificationPort {
             App.logger.log("App will shutdown soon...");
             return;
         }
-        var color = notification.hasLittleTimeLeft() ? MESSAGE_INFO : MESSAGE_OK;
-        currentFrame.updateProgress(notification, color);
+        var severity = notification.hasLittleTimeLeft() ? INFO : SUCCESS;
+        currentFrame.updateProgress(notification, severity);
         remainingTime = notification.remainingTime();
     }
 
     private void handleCloseNotification(Notification notification) {
-        currentColor = Theme.MESSAGE_WARN;
+        currentSeverity = CRITICAL;
         notifySessionEnd(notification);
     }
 
     private void handleShutdownNotification(Notification notification) {
-        currentColor = Theme.MESSAGE_WARN;
+        currentSeverity = CRITICAL;
         shutdown(notification);
     }
 
@@ -98,7 +95,7 @@ public class SwingNotificationAdapter implements NotificationPort {
         SwingUtilities.invokeLater(() -> {
             currentFrame.dispose();
             currentFrame = createPopup(notification);
-            currentFrame.setLabelForeground(currentColor);
+            currentFrame.setLabelForeground(currentSeverity.getColor());
             currentFrame.setVisible(true);
             currentFrame.pack();
             currentFrame.onClick(this::onGuiEvent);
@@ -111,18 +108,18 @@ public class SwingNotificationAdapter implements NotificationPort {
             if (currentFrame == null) {
                 createPopupFor(notification);
             } else {
-                currentFrame.setMessage(notification, currentColor);
+                currentFrame.setMessage(notification, currentSeverity);
             }
         });
     }
 
     private void displayMessage(Notification notification) {
-        displayMessage(notification, currentColor);
+        displayMessage(notification, currentSeverity);
     }
 
-    private void displayMessage(Notification notification, Color color) {
+    private void displayMessage(Notification notification, Severity severity) {
         SwingUtilities.invokeLater(() ->
-                currentFrame.setMessage(notification, color)
+                currentFrame.setMessage(notification, severity)
         );
     }
 
