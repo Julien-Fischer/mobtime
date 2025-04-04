@@ -90,7 +90,7 @@ class CommandTest {
 
         @Override
         public OptionSet options() {
-            return new OptionSet(Set.of());
+            return OptionSet.empty();
         }
     }
 

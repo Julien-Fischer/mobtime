@@ -3,10 +3,7 @@ package net.agiledeveloper.mobtime.domain.command.commands;
 import net.agiledeveloper.mobtime.domain.command.parameters.Parameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.ValueParameter;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 public record OptionSet(Set<Parameter> parameters) implements Iterable<Parameter> {
 
@@ -37,6 +34,10 @@ public record OptionSet(Set<Parameter> parameters) implements Iterable<Parameter
     @Override
     public Iterator<Parameter> iterator() {
         return parameters().iterator();
+    }
+
+    public static OptionSet empty() {
+        return new OptionSet(Collections.emptySet());
     }
 
 }
