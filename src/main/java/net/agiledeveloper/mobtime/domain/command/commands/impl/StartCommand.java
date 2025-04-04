@@ -2,6 +2,7 @@ package net.agiledeveloper.mobtime.domain.command.commands.impl;
 
 import net.agiledeveloper.mobtime.domain.command.commands.AbstractCommand;
 import net.agiledeveloper.mobtime.domain.command.parameters.Parameter;
+import net.agiledeveloper.mobtime.domain.command.parameters.ValueParameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.impl.*;
 import net.agiledeveloper.mobtime.domain.session.FocusMode;
 import net.agiledeveloper.mobtime.domain.session.Session;
@@ -10,7 +11,6 @@ import net.agiledeveloper.mobtime.infra.roaming.Roaming;
 import net.agiledeveloper.mobtime.utils.App;
 
 import java.time.Duration;
-import java.util.Optional;
 import java.util.Set;
 
 import static net.agiledeveloper.mobtime.utils.TimeFormatter.formatDuration;
@@ -106,33 +106,19 @@ public class StartCommand extends AbstractCommand {
     }
 
     private Duration getArgumentDuration() {
-        Optional<Parameter> duration = getOption(DurationParameter.class);
-        if (duration.isPresent()) {
-            var durationParameter = (DurationParameter) duration.get();
-            return durationParameter.value();
-        } else {
-            return Session.DEFAULT_DURATION;
-        }
+        return valueOf(DurationParameter.class, Session.DEFAULT_DURATION);
     }
 
     private FocusMode findFocusMode() {
-        Optional<Parameter> focusMode = getOption(FocusModeParameter.class);
-        if (focusMode.isPresent()) {
-            var focusParameter = (FocusModeParameter) focusMode.get();
-            return focusParameter.value();
-        } else {
-            return Session.DEFAULT_FOCUS_MODE;
-        }
+        return valueOf(FocusModeParameter.class, Session.DEFAULT_FOCUS_MODE);
     }
 
     private String findUserName() {
-        Optional<Parameter> userName = getOption(UserNameParameter.class);
-        if (userName.isPresent()) {
-            var parameter = (UserNameParameter) userName.get();
-            return parameter.value();
-        } else {
-            return Session.DEFAULT_USERNAME;
-        }
+        return valueOf(UserNameParameter.class, Session.DEFAULT_USERNAME);
+    }
+
+    private <V, P extends ValueParameter<V>> V valueOf(Class<P> parameterType, V defaultValue) {
+        return options().getValue(parameterType, defaultValue);
     }
 
 }

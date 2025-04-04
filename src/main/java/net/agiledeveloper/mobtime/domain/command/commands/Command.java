@@ -15,11 +15,11 @@ public interface Command {
     OptionSet options();
 
     default boolean hasOption(Class<? extends Parameter> parameterName) {
-        return options().has(parameterName);
+        return options().hasOption(parameterName);
     }
 
     default Optional<Parameter> getOption(Class<? extends Parameter> parameterName) {
-        return options().get(parameterName);
+        return options().getOption(parameterName);
     }
 
 }

@@ -1,6 +1,7 @@
 package net.agiledeveloper.mobtime.domain.command.commands;
 
 import net.agiledeveloper.mobtime.domain.command.parameters.Parameter;
+import net.agiledeveloper.mobtime.domain.command.parameters.ValueParameter;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -13,15 +14,24 @@ public record OptionSet(Set<Parameter> parameters) implements Iterable<Parameter
         return new HashSet<>(parameters);
     }
 
-    public boolean has(Class<? extends Parameter> parameterName) {
+    public boolean hasOption(Class<? extends Parameter> parameterName) {
         return parameters().stream()
                 .anyMatch(parameter -> parameter.getClass().equals(parameterName));
     }
 
-    public Optional<Parameter> get(Class<? extends Parameter> parameterName) {
+    public Optional<Parameter> getOption(Class<? extends Parameter> parameterName) {
         return parameters().stream()
                 .filter(parameter -> parameter.getClass().equals(parameterName))
                 .findFirst();
+    }
+
+    public <V, P extends ValueParameter<V>> V getValue(Class<P> parameterType, V defaultValue) {
+        Optional<Parameter> parameter = getOption(parameterType);
+        if (parameter.isPresent() && parameterType.isInstance(parameter.get())) {
+            return parameterType.cast(parameter.get()).value();
+        } else {
+            return defaultValue;
+        }
     }
 
     @Override
