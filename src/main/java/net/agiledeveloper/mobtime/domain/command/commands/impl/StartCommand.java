@@ -53,6 +53,7 @@ public class StartCommand extends AbstractCommand {
     }
 
     public Duration getDuration() {
+        App.logger.debug("[roaming] Duration cache: " + durationCache);
         if (durationCache == null) {
             durationCache = findDuration();
             startRoaming(durationCache);
@@ -77,8 +78,11 @@ public class StartCommand extends AbstractCommand {
 
     private Duration findDuration() {
         var specifiedDuration = getArgumentDuration();
+        var reset = resetTimer();
+        App.logger.debug("[roaming] Specified duration: " + formatDuration(specifiedDuration));
+        App.logger.debug("[roaming] Force reset: " + reset);
 
-        if (roaming.isPausable()) {
+        if (roaming.isPausable() && !reset) {
             if (roaming.hasOngoingActivity()) {
                 Duration duration = roaming.getActivityDuration().orElseThrow();
                 Duration remaining = roaming.getActivityRemaining().orElseThrow();
@@ -103,6 +107,10 @@ public class StartCommand extends AbstractCommand {
 
     private void doStartRoaming(Duration duration) {
         roaming.setActivityDuration(duration);
+    }
+
+    private boolean resetTimer() {
+        return hasOption(ResetParameter.class);
     }
 
     private Duration getArgumentDuration() {

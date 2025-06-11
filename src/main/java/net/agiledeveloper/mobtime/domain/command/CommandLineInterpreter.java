@@ -70,6 +70,10 @@ public class CommandLineInterpreter {
                 pausable = true;
             }
 
+            else if (parameter.hasName("reset")) {
+                parameters.add(new ResetParameter());
+            }
+
             else if (parameter.hasName("invalid")) {
                 var msg = "Error: --invalid is not a valid argument";
                 App.logger.log(msg);

@@ -13,6 +13,7 @@ Mob Commands:
     --pausable     (Option) Don't reset the timer on mob next or done
     --detach       (Option) Detach mobtime from the current terminal session
     --debug        (Option) Start mobtime in debug mode
+    --reset        (Option) Reset the activity timer to the specified --duration (15 by default)
 
 Config commands:
 
