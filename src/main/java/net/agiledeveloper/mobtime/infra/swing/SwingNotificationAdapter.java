@@ -5,6 +5,7 @@ import net.agiledeveloper.mobtime.domain.notification.Notification;
 import net.agiledeveloper.mobtime.domain.notification.session.*;
 import net.agiledeveloper.mobtime.domain.ports.api.SessionPort;
 import net.agiledeveloper.mobtime.domain.ports.spi.NotificationPort;
+import net.agiledeveloper.mobtime.domain.session.Session;
 import net.agiledeveloper.mobtime.infra.InfraException;
 import net.agiledeveloper.mobtime.infra.roaming.Roaming;
 import net.agiledeveloper.mobtime.infra.swing.gui.Coordinate;
@@ -29,7 +30,7 @@ public class SwingNotificationAdapter implements NotificationPort {
     private final UIOptionSet options;
 
     private boolean awaitingKillSignal = false;
-    private Duration remainingTime;
+    private Duration remainingTime = Session.DEFAULT_DURATION;
 
 
     public SwingNotificationAdapter(
