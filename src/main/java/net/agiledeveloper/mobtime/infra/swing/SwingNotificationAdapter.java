@@ -19,6 +19,8 @@ import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
+import static javax.swing.SwingUtilities.invokeLater;
+
 public class SwingNotificationAdapter implements NotificationPort {
 
     private final SessionPort mobPort;
@@ -86,7 +88,7 @@ public class SwingNotificationAdapter implements NotificationPort {
     }
 
     private void notifySessionEnd(Notification notification) {
-        SwingUtilities.invokeLater(() -> {
+        invokeLater(() -> {
             currentFrame.dispose();
             currentFrame = createPopup(notification);
             currentFrame.setLabelForeground(Theme.of(notification.severity()));
@@ -98,7 +100,7 @@ public class SwingNotificationAdapter implements NotificationPort {
     }
 
     private void notifySessionStart(Notification notification) {
-        SwingUtilities.invokeLater(() -> {
+        invokeLater(() -> {
             if (currentFrame == null) {
                 createPopupFor(notification);
             } else {
@@ -108,9 +110,7 @@ public class SwingNotificationAdapter implements NotificationPort {
     }
 
     private void displayMessage(Notification notification) {
-        SwingUtilities.invokeLater(() ->
-                currentFrame.setMessage(notification)
-        );
+        invokeLater(() -> currentFrame.setMessage(notification));
     }
 
     private void shutdown(Notification notification) {
@@ -147,7 +147,7 @@ public class SwingNotificationAdapter implements NotificationPort {
         }
         awaitingKillSignal = true;
         var message = "Executing " + event.commandName() + "...";
-        SwingUtilities.invokeLater(() ->
+        invokeLater(() ->
             handleShutdownNotification(new SessionShutdownNotification(null, message, ""))
         );
     }
