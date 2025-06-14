@@ -3,6 +3,9 @@ package net.agiledeveloper.mobtime.domain.session;
 import java.time.Duration;
 import java.time.Instant;
 
+import static java.time.Duration.ofMinutes;
+import static java.time.Duration.ofSeconds;
+import static net.agiledeveloper.mobtime.domain.session.FocusMode.NORMAL;
 import static net.agiledeveloper.mobtime.utils.TimeFormatter.formatDuration;
 import static net.agiledeveloper.mobtime.utils.TimeFormatter.formatInstant;
 
@@ -14,20 +17,18 @@ public record Session(
         Instant createdAt
 ) {
 
-    private static final int DEFAULT_DURATION_SECONDS = 15 * 60;
-    private static final int DEFAULT_GRACE_DURATION_SECONDS = 2;
-
+    public static final Duration DEFAULT_DURATION = ofMinutes(15);
+    public static final Duration DEFAULT_GRACE_DURATION = ofSeconds(2);
     public static final String DEFAULT_USERNAME = "Driver";
-    public static final Duration DEFAULT_DURATION = Duration.ofSeconds(DEFAULT_DURATION_SECONDS);
-    public static final FocusMode DEFAULT_FOCUS_MODE = FocusMode.NORMAL;
+    public static final FocusMode DEFAULT_FOCUS_MODE = NORMAL;
 
 
-    public Session(Duration duration, boolean isAutoModeEnabled, FocusMode mode, String username) {
-        this(duration, isAutoModeEnabled, mode, username, Instant.now());
+    public Session(Duration duration, boolean shouldAutomaticallyPassKeyboard, FocusMode mode, String username) {
+        this(duration, shouldAutomaticallyPassKeyboard, mode, username, Instant.now());
     }
 
     public Duration graceDuration() {
-        return Duration.ofSeconds(DEFAULT_GRACE_DURATION_SECONDS);
+        return DEFAULT_GRACE_DURATION;
     }
 
     public boolean hasFocus(FocusMode mode) {
