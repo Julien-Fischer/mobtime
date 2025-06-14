@@ -1,5 +1,6 @@
 package net.agiledeveloper.mobtime.infra.swing.gui;
 
+import net.agiledeveloper.mobtime.domain.Ratio;
 import net.agiledeveloper.mobtime.domain.notification.Notification;
 import net.agiledeveloper.mobtime.domain.notification.session.SessionCloseNotification;
 import net.agiledeveloper.mobtime.domain.notification.session.SessionRefreshNotification;
@@ -327,8 +328,8 @@ public class SwingPopup extends JFrame {
             setPreferredSize(new Dimension(0, 0));
         }
 
-        public void setProgress(double ratio) {
-            var width = (1 - ratio) * mainContainer.getWidth();
+        public void setProgress(Ratio ratio) {
+            var width = (1 - ratio.value()) * mainContainer.getWidth();
             setSize(new Dimension((int) width, HEIGHT));
             repaint();
         }

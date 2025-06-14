@@ -1,5 +1,6 @@
 package net.agiledeveloper.mobtime.domain.notification.session;
 
+import net.agiledeveloper.mobtime.domain.Ratio;
 import net.agiledeveloper.mobtime.domain.notification.Notification;
 import net.agiledeveloper.mobtime.domain.session.Session;
 
@@ -13,8 +14,8 @@ public record SessionRefreshNotification(
         Duration remainingTime
 ) implements Notification {
 
-    public double progress() {
-        return ((double) remainingTime.toMillis()) / session.initialDuration().toMillis();
+    public Ratio progress() {
+        return session.progress(remainingTime);
     }
 
 }
