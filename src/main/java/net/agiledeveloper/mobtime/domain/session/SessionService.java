@@ -99,7 +99,7 @@ public class SessionService {
         var notification = new SessionCloseNotification(session, "Pass keyboard", "");
         notificationPort.send(notification);
         App.logger.logSeparator();
-        App.logger.log("Pass keyboard Use mob next to switch driver or mob done to end the mob session");
+        App.logger.log("Pass keyboard - Use mob next to switch driver or mob done to end the mob session");
     }
 
     private void mobNext(Session session) {
