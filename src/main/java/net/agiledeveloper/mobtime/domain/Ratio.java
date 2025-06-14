@@ -6,6 +6,12 @@ public record Ratio(double value) {
     public static final Ratio HALF          = new Ratio(0.5);
     public static final Ratio THREE_QUARTER = new Ratio(0.75);
 
+    public Ratio {
+        if (value < 0 || value > 1) {
+            throw new IllegalArgumentException("Ratio must be between 0 and 1");
+        }
+    }
+
     public static Ratio of(double numerator, double denominator) {
         return new Ratio(numerator / denominator);
     }
