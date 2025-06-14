@@ -7,13 +7,14 @@ import java.time.Instant;
 
 import static java.time.Duration.ofMinutes;
 import static java.time.Duration.ofSeconds;
+import static net.agiledeveloper.mobtime.domain.session.EndMode.AUTOMATICALLY_PASS_KEYBOARD;
 import static net.agiledeveloper.mobtime.domain.session.FocusMode.NORMAL;
 import static net.agiledeveloper.mobtime.utils.TimeFormatter.formatDuration;
 import static net.agiledeveloper.mobtime.utils.TimeFormatter.formatInstant;
 
 public record Session(
         Duration initialDuration,
-        boolean shouldAutomaticallyPassKeyboard,
+        EndMode endMode,
         FocusMode focusMode,
         String username,
         Instant createdAt
@@ -26,8 +27,12 @@ public record Session(
     public static final Ratio LOW_TIME_THRESHOLD = new Ratio(0.25);
 
 
-    public Session(Duration duration, boolean shouldAutomaticallyPassKeyboard, FocusMode mode, String username) {
-        this(duration, shouldAutomaticallyPassKeyboard, mode, username, Instant.now());
+    public Session(Duration duration, EndMode endMode, FocusMode mode, String username) {
+        this(duration, endMode, mode, username, Instant.now());
+    }
+
+    public boolean shouldAutomaticallyPassKeyboard() {
+        return endMode == AUTOMATICALLY_PASS_KEYBOARD;
     }
 
     public Duration graceDuration() {
@@ -57,7 +62,7 @@ public record Session(
         return "[Session]"
                 + " createdAt:       " + formatInstant(createdAt) + ","
                 + " initialDuration: " + formatDuration(initialDuration) + ","
-                + " auto-next:       " + shouldAutomaticallyPassKeyboard + ","
+                + " auto-next:       " + endMode + ","
                 + " focusMode:       " + focusMode;
     }
 

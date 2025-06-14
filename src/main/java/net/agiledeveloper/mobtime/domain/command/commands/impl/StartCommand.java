@@ -4,6 +4,7 @@ import net.agiledeveloper.mobtime.domain.command.commands.AbstractCommand;
 import net.agiledeveloper.mobtime.domain.command.parameters.Parameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.ValueParameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.impl.*;
+import net.agiledeveloper.mobtime.domain.session.EndMode;
 import net.agiledeveloper.mobtime.domain.session.FocusMode;
 import net.agiledeveloper.mobtime.domain.session.Session;
 import net.agiledeveloper.mobtime.domain.session.SessionService;
@@ -13,6 +14,8 @@ import net.agiledeveloper.mobtime.utils.App;
 import java.time.Duration;
 import java.util.Set;
 
+import static net.agiledeveloper.mobtime.domain.session.EndMode.AUTOMATICALLY_PASS_KEYBOARD;
+import static net.agiledeveloper.mobtime.domain.session.EndMode.WAIT_FOR_INSTRUCTION;
 import static net.agiledeveloper.mobtime.utils.TimeFormatter.formatDuration;
 
 public class StartCommand extends AbstractCommand {
@@ -34,6 +37,10 @@ public class StartCommand extends AbstractCommand {
     @Override
     public void execute() {
         mobStart();
+    }
+
+    public EndMode getEndMode() {
+        return isAutoNextModeEnabled() ? AUTOMATICALLY_PASS_KEYBOARD : WAIT_FOR_INSTRUCTION;
     }
 
     public boolean isAutoNextModeEnabled() {
@@ -71,7 +78,7 @@ public class StartCommand extends AbstractCommand {
 
     private void mobStart() {
         if (!isDryRunEnabled()) {
-            var session = new Session(getDuration(), isAutoNextModeEnabled(), findFocusMode(), findUserName());
+            var session = new Session(getDuration(), getEndMode(), findFocusMode(), findUserName());
             sessionService.open(session);
         }
     }

@@ -10,6 +10,8 @@ import net.agiledeveloper.mobtime.test.lib.Mock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static net.agiledeveloper.mobtime.domain.session.EndMode.AUTOMATICALLY_PASS_KEYBOARD;
+import static net.agiledeveloper.mobtime.domain.session.EndMode.WAIT_FOR_INSTRUCTION;
 import static net.agiledeveloper.mobtime.test.builders.SessionBuilder.aSession;
 import static net.agiledeveloper.mobtime.test.lib.MockAssertion.expectThat;
 
@@ -50,7 +52,7 @@ class SessionServiceTest {
 
     @Test
     void close_when_auto_mode_enabled_calls_mob_port() {
-        var session = aSession().withAutoMode(true).build();
+        var session = aSession().thatWill(AUTOMATICALLY_PASS_KEYBOARD).build();
 
         sessionService.close(session);
 
@@ -59,7 +61,7 @@ class SessionServiceTest {
 
     @Test
     void close_when_auto_mode_enabled_does_not_call_mob_port() {
-        var session = aSession().withAutoMode(false).build();
+        var session = aSession().thatWill(WAIT_FOR_INSTRUCTION).build();
 
         sessionService.close(session);
 

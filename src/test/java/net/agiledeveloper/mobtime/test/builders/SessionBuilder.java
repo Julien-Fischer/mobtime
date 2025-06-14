@@ -1,5 +1,6 @@
 package net.agiledeveloper.mobtime.test.builders;
 
+import net.agiledeveloper.mobtime.domain.session.EndMode;
 import net.agiledeveloper.mobtime.domain.session.FocusMode;
 import net.agiledeveloper.mobtime.domain.session.Session;
 import net.agiledeveloper.mobtime.test.lib.Builder;
@@ -11,7 +12,7 @@ public class SessionBuilder implements Builder<Session> {
     private Duration duration = Session.DEFAULT_DURATION;
     private FocusMode focusMode = FocusMode.NORMAL;
     private String username = Session.DEFAULT_USERNAME;
-    private boolean auto = false;
+    private EndMode endMode = EndMode.WAIT_FOR_INSTRUCTION;
 
 
     private SessionBuilder() {}
@@ -36,14 +37,14 @@ public class SessionBuilder implements Builder<Session> {
         return this;
     }
 
-    public SessionBuilder withAutoMode(boolean auto) {
-        this.auto = auto;
+    public SessionBuilder thatWill(EndMode endMode) {
+        this.endMode = endMode;
         return this;
     }
 
     @Override
     public Session build() {
-        return new Session(duration, auto, focusMode, username);
+        return new Session(duration, endMode, focusMode, username);
     }
 
 }
