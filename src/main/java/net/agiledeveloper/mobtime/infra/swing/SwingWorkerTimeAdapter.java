@@ -11,22 +11,24 @@ import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static java.time.Duration.ofMillis;
+
 public class SwingWorkerTimeAdapter implements TimerPort {
 
-    private static final int DEFAULT_FREQUENCY_MS = 1000;
+    private static final Duration DEFAULT_FREQUENCY = ofMillis(1000);
 
-    private final int tickFrequencyMilliseconds;
+    private final Duration tickFrequency;
 
     private OnTick refreshCallback;
     private OnDone expiredCallback;
 
 
     public SwingWorkerTimeAdapter() {
-        this(DEFAULT_FREQUENCY_MS);
+        this(DEFAULT_FREQUENCY);
     }
 
-    public SwingWorkerTimeAdapter(int tickFrequencyMilliseconds) {
-        this.tickFrequencyMilliseconds = tickFrequencyMilliseconds;
+    public SwingWorkerTimeAdapter(Duration tickFrequency) {
+        this.tickFrequency = tickFrequency;
     }
 
 
@@ -67,7 +69,7 @@ public class SwingWorkerTimeAdapter implements TimerPort {
                 remainingTime = Duration.between(Instant.now(), deadline);
                 publish(remainingTime.toString());
                 synchronized (this) {
-                    wait(tickFrequencyMilliseconds);
+                    wait(tickFrequency.toMillis());
                 }
                 if (remainingTime.toSeconds() <= Duration.ZERO.toSeconds()) {
                     stop();
