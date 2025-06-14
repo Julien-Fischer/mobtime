@@ -24,6 +24,7 @@ public class Session {
 
     private final Clock clock;
 
+    private final SessionId id;
     private final Duration initialDuration;
     private final EndMode endMode;
     private final FocusMode focusMode;
@@ -34,7 +35,25 @@ public class Session {
     private Instant deadline;
 
 
-    public Session(Clock clock, Duration initialDuration, EndMode endMode, FocusMode focusMode, Username username) {
+    public Session(
+            Clock clock,
+            Duration initialDuration,
+            EndMode endMode,
+            FocusMode focusMode,
+            Username username
+    ) {
+        this(SessionId.random(), clock, initialDuration, endMode, focusMode, username);
+    }
+
+    public Session(
+            SessionId id,
+            Clock clock,
+            Duration initialDuration,
+            EndMode endMode,
+            FocusMode focusMode,
+            Username username
+    ) {
+        this.id = id;
         this.clock = clock;
         this.initialDuration = initialDuration;
         this.endMode = endMode;
@@ -46,8 +65,7 @@ public class Session {
 
     public void start() {
         this.startedAt = clock.instant();
-        this.deadline = startedAt
-                .plus(initialDuration());
+        this.deadline = startedAt.plus(initialDuration());
     }
 
     public boolean shouldAutomaticallyPassKeyboard() {
@@ -109,10 +127,15 @@ public class Session {
         return startedAt;
     }
 
+    public SessionId id() {
+        return id;
+    }
+
 
     @Override
     public String toString() {
         return "[Session]"
+                + "\n> id:              " + id
                 + "\n> createdAt:       " + formatInstant(createdAt)
                 + "\n> initialDuration: " + formatDuration(initialDuration)
                 + "\n> startedAt:       " + ifPresent(() -> formatInstant(startedAt))

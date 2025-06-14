@@ -29,7 +29,7 @@ public class SessionService {
     public void open(Session session) {
         var durationString = formatDuration(session.initialDuration());
         App.logger.logSeparator();
-        App.logger.log("Opening mob session (duration = " + durationString + ")");
+        App.logger.log("Opening mob session (duration = %s, id = %s)".formatted(durationString, session.id()));
         notificationPort.send(new SessionOpenNotification(session, "Starting driver session...", ""));
         timerPort.runFor(
                 session,
@@ -58,7 +58,7 @@ public class SessionService {
     private void startSession(Session session) {
         var notification = new SessionStartNotification(session, "Driving", "");
         notificationPort.send(notification);
-        App.logger.log("  Driving ");
+        App.logger.log("  Now driving ");
     }
 
     private void refreshSession(Session session) {
