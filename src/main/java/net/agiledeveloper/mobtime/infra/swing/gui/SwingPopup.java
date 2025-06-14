@@ -5,7 +5,7 @@ import net.agiledeveloper.mobtime.domain.notification.Notification;
 import net.agiledeveloper.mobtime.domain.notification.session.SessionCloseNotification;
 import net.agiledeveloper.mobtime.domain.notification.session.SessionRefreshNotification;
 import net.agiledeveloper.mobtime.domain.session.FocusMode;
-import net.agiledeveloper.mobtime.infra.swing.Severity;
+import net.agiledeveloper.mobtime.infra.swing.theme.Theme;
 import net.agiledeveloper.mobtime.utils.App;
 
 import javax.swing.*;
@@ -17,7 +17,6 @@ import static net.agiledeveloper.mobtime.infra.swing.theme.Theme.*;
 
 public class SwingPopup extends JFrame {
 
-    public static final Severity DEFAULT_SEVERITY = Severity.INFO;
     public static final Location DEFAULT_LOCATION = Location.NORTH;
 
     private static final String DEFAULT_TITLE = "MobTime";
@@ -60,13 +59,13 @@ public class SwingPopup extends JFrame {
         pack();
     }
 
-    public void updateProgress(SessionRefreshNotification notification, Severity severity) {
+    public void updateProgress(SessionRefreshNotification notification) {
         gauge.setProgress(notification.progress());
-        this.setMessage(notification, severity);
+        this.setMessage(notification);
     }
 
-    public void setMessage(Notification notification, Severity severity) {
-        var color = severity.getColor();
+    public void setMessage(Notification notification) {
+        var color = Theme.of(notification.severity());
         style(messageLabel, notification.message(), color);
         style(counterLabel, notification.value(), color);
         gauge.setBackground(color);
@@ -185,7 +184,7 @@ public class SwingPopup extends JFrame {
         mobButtonsContainer = createButtonsContainer();
         mainContainer = createContainer();
         add(mainContainer, BorderLayout.CENTER);
-        this.setMessage(notification, DEFAULT_SEVERITY);
+        this.setMessage(notification);
     }
 
     private void minimize() {

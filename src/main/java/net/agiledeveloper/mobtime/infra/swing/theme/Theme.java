@@ -1,5 +1,7 @@
 package net.agiledeveloper.mobtime.infra.swing.theme;
 
+import net.agiledeveloper.mobtime.domain.notification.Severity;
+
 import java.awt.*;
 
 import static net.agiledeveloper.mobtime.infra.swing.theme.Palette.*;
@@ -14,6 +16,14 @@ public class Theme {
     public static final Color MESSAGE_INFO    = YELLOW;
     public static final Color MESSAGE_WARN    = MAGENTA;
     public static final Color MESSAGE_NEUTRAL = GRAY;
+
+    public static Color of(Severity severity) {
+        return switch (severity) {
+            case SUCCESS  -> MESSAGE_OK;
+            case INFO     -> MESSAGE_INFO;
+            case CRITICAL -> MESSAGE_WARN;
+        };
+    }
 
     private Theme() {}
 

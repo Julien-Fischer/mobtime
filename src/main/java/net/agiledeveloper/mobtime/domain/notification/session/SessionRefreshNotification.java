@@ -2,10 +2,14 @@ package net.agiledeveloper.mobtime.domain.notification.session;
 
 import net.agiledeveloper.mobtime.domain.Ratio;
 import net.agiledeveloper.mobtime.domain.notification.Notification;
+import net.agiledeveloper.mobtime.domain.notification.Severity;
 import net.agiledeveloper.mobtime.domain.session.Session;
 import net.agiledeveloper.mobtime.domain.session.Username;
 
 import java.time.Duration;
+
+import static net.agiledeveloper.mobtime.domain.notification.Severity.INFO;
+import static net.agiledeveloper.mobtime.domain.notification.Severity.SUCCESS;
 
 public record SessionRefreshNotification(
         Session session,
@@ -18,8 +22,9 @@ public record SessionRefreshNotification(
         return session.progress();
     }
 
-    public boolean hasLittleTimeLeft() {
-        return session.isOverSoon();
+    @Override
+    public Severity severity() {
+        return session.isOverSoon() ? INFO : SUCCESS;
     }
 
     @Override

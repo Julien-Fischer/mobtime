@@ -10,4 +10,6 @@ public interface Notification {
 
     String value();
 
+    Severity severity();
+
 }
