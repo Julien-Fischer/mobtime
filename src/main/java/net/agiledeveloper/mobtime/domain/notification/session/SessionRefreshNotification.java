@@ -10,12 +10,15 @@ public record SessionRefreshNotification(
         Session session,
         String message,
         String value,
-        boolean hasLittleTimeLeft,
         Duration remainingTime
 ) implements Notification {
 
     public Ratio progress() {
         return session.progress(remainingTime);
+    }
+
+    public boolean hasLittleTimeLeft() {
+        return session.isOverSoon(remainingTime);
     }
 
 }

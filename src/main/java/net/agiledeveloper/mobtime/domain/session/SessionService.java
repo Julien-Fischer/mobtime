@@ -61,9 +61,9 @@ public class SessionService {
         App.logger.log("  Driving ");
     }
 
-    private void refreshSession(Session session, Duration remainingTime, boolean littleTimeLeft) {
+    private void refreshSession(Session session, Duration remainingTime) {
         var durationString = formatDuration(remainingTime);
-        var notification = new SessionRefreshNotification(session, session.username(), durationString, littleTimeLeft, remainingTime);
+        var notification = new SessionRefreshNotification(session, session.username(), durationString, remainingTime);
         notificationPort.send(notification);
         App.logger.log("  Session ending in " + durationString);
     }
@@ -72,16 +72,13 @@ public class SessionService {
         if (!sessionStarted) {
             startSession(session);
             sessionStarted = true;
-        } else {
-            boolean littleTimeLeft = session.isOverSoon(remainingTime);
-            if (shouldRefresh(session, littleTimeLeft)) {
-                refreshSession(session, remainingTime, littleTimeLeft);
-            }
+        } else if (shouldRefresh(session, remainingTime)) {
+            refreshSession(session, remainingTime);
         }
     }
 
-    private boolean shouldRefresh(Session session, boolean littleTimeLeft) {
-        return littleTimeLeft || !session.hasFocus(ZEN);
+    private static boolean shouldRefresh(Session session, Duration remainingTime) {
+        return session.isOverSoon(remainingTime) || !session.hasFocus(ZEN);
     }
 
     private void suggestMobNext(Session session) {
