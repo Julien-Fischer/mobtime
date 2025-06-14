@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static java.lang.String.format;
 import static net.agiledeveloper.mobtime.utils.EnumUtils.printValues;
 
 public class CommandLineInterpreter {
@@ -106,8 +107,10 @@ public class CommandLineInterpreter {
             try {
                 mode = FocusMode.of(argument.value());
                 if (mode == null) {
-                    var message = "--focus must be one of (" + printValues(FocusMode.class) + "). "
-                            + "Received: " + mode;
+                    var message = format(
+                            "--focus must be one of (%s). Received: %s",
+                            printValues(FocusMode.class), mode
+                    );
                     throw new IllegalArgumentException(message);
                 }
             } catch (Exception cause) {
