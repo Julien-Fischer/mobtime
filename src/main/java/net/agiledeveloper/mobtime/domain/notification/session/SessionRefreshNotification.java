@@ -3,12 +3,13 @@ package net.agiledeveloper.mobtime.domain.notification.session;
 import net.agiledeveloper.mobtime.domain.Ratio;
 import net.agiledeveloper.mobtime.domain.notification.Notification;
 import net.agiledeveloper.mobtime.domain.session.Session;
+import net.agiledeveloper.mobtime.domain.session.Username;
 
 import java.time.Duration;
 
 public record SessionRefreshNotification(
         Session session,
-        String message,
+        Username username,
         String value,
         Duration remainingTime
 ) implements Notification {
@@ -19,6 +20,11 @@ public record SessionRefreshNotification(
 
     public boolean hasLittleTimeLeft() {
         return session.isOverSoon(remainingTime);
+    }
+
+    @Override
+    public String message() {
+        return username.value();
     }
 
 }

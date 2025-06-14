@@ -16,18 +16,18 @@ public record Session(
         Duration initialDuration,
         EndMode endMode,
         FocusMode focusMode,
-        String username,
+        Username username,
         Instant createdAt
 ) {
 
     public static final Duration DEFAULT_DURATION = ofMinutes(15);
     public static final Duration DEFAULT_GRACE_DURATION = ofSeconds(2);
-    public static final String DEFAULT_USERNAME = "Driver";
+    public static final Username DEFAULT_USERNAME = new Username("Driver");
     public static final FocusMode DEFAULT_FOCUS_MODE = NORMAL;
     public static final Ratio LOW_TIME_THRESHOLD = new Ratio(0.25);
 
 
-    public Session(Duration duration, EndMode endMode, FocusMode mode, String username) {
+    public Session(Duration duration, EndMode endMode, FocusMode mode, Username username) {
         this(duration, endMode, mode, username, Instant.now());
     }
 

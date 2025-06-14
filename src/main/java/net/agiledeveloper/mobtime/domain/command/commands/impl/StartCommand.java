@@ -4,10 +4,7 @@ import net.agiledeveloper.mobtime.domain.command.commands.AbstractCommand;
 import net.agiledeveloper.mobtime.domain.command.parameters.Parameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.ValueParameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.impl.*;
-import net.agiledeveloper.mobtime.domain.session.EndMode;
-import net.agiledeveloper.mobtime.domain.session.FocusMode;
-import net.agiledeveloper.mobtime.domain.session.Session;
-import net.agiledeveloper.mobtime.domain.session.SessionService;
+import net.agiledeveloper.mobtime.domain.session.*;
 import net.agiledeveloper.mobtime.infra.roaming.Roaming;
 import net.agiledeveloper.mobtime.utils.App;
 
@@ -128,7 +125,7 @@ public class StartCommand extends AbstractCommand {
         return valueOf(FocusModeParameter.class, Session.DEFAULT_FOCUS_MODE);
     }
 
-    private String findUserName() {
+    private Username findUserName() {
         return valueOf(UserNameParameter.class, Session.DEFAULT_USERNAME);
     }
 

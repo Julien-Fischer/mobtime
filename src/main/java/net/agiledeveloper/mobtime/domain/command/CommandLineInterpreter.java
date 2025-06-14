@@ -7,6 +7,7 @@ import net.agiledeveloper.mobtime.domain.command.parameters.impl.*;
 import net.agiledeveloper.mobtime.domain.session.FocusMode;
 import net.agiledeveloper.mobtime.domain.session.Session;
 import net.agiledeveloper.mobtime.domain.session.SessionService;
+import net.agiledeveloper.mobtime.domain.session.Username;
 import net.agiledeveloper.mobtime.infra.cli.BashParameter;
 import net.agiledeveloper.mobtime.infra.roaming.Roaming;
 import net.agiledeveloper.mobtime.utils.App;
@@ -95,8 +96,8 @@ public class CommandLineInterpreter {
     }
 
 
-    private static String readUserName(BashParameter argument) {
-        return argument.hasValue() ? argument.value() : Session.DEFAULT_USERNAME;
+    private static Username readUserName(BashParameter argument) {
+        return argument.hasValue() ? new Username(argument.value()) : Session.DEFAULT_USERNAME;
     }
 
     private static FocusMode readFocus(BashParameter argument) {
