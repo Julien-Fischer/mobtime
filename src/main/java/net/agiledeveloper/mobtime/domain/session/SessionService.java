@@ -13,8 +13,6 @@ import static net.agiledeveloper.mobtime.utils.TimeFormatter.formatDuration;
 
 public class SessionService {
 
-    private static final float LOW_TIME_THRESHOLD = 0.25f;
-
     private final TimerPort timerPort;
     private final NotificationPort notificationPort;
     private final MobPort mobPort;
@@ -29,7 +27,7 @@ public class SessionService {
 
 
     public void open(Session session) {
-        var durationString = formatDuration(session.duration());
+        var durationString = formatDuration(session.initialDuration());
         App.logger.logSeparator();
         App.logger.log("Opening mob session (duration = " + durationString + ")");
         notificationPort.send(new SessionOpenNotification(session, "Starting driver session...", ""));
@@ -50,7 +48,7 @@ public class SessionService {
 
 
     private void refresh(Session session, Duration remainingTime) {
-        if (isGracePeriodOver(session, remainingTime)) {
+        if (session.isGracePeriodOver(remainingTime)) {
             handleGracePeriodOver(session, remainingTime);
         } else {
             App.logger.log("  Waiting for driving session to start");
@@ -75,7 +73,7 @@ public class SessionService {
             startSession(session);
             sessionStarted = true;
         } else {
-            boolean littleTimeLeft = hasLittleTimeLeft(session, remainingTime);
+            boolean littleTimeLeft = session.isOverSoon(remainingTime);
             if (shouldRefresh(session, littleTimeLeft)) {
                 refreshSession(session, remainingTime, littleTimeLeft);
             }
@@ -84,15 +82,6 @@ public class SessionService {
 
     private boolean shouldRefresh(Session session, boolean littleTimeLeft) {
         return littleTimeLeft || !session.hasFocus(ZEN);
-    }
-
-    private boolean isGracePeriodOver(Session session, Duration remainingTime) {
-        Duration elapsed = remainingTime.minus(session.duration());
-        return !elapsed.isPositive();
-    }
-
-    private boolean hasLittleTimeLeft(Session session, Duration remainingTime) {
-        return ((float) remainingTime.toMillis() / session.duration().toMillis()) < LOW_TIME_THRESHOLD;
     }
 
     private void suggestMobNext(Session session) {

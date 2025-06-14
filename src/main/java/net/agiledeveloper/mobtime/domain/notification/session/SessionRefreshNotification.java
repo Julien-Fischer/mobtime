@@ -14,7 +14,7 @@ public record SessionRefreshNotification(
 ) implements Notification {
 
     public double progress() {
-        return ((double) remainingTime.toMillis()) / session.duration().toMillis();
+        return ((double) remainingTime.toMillis()) / session.initialDuration().toMillis();
     }
 
 }

@@ -1,5 +1,7 @@
 package net.agiledeveloper.mobtime.domain.session;
 
+import net.agiledeveloper.mobtime.domain.Ratio;
+
 import java.time.Duration;
 import java.time.Instant;
 
@@ -10,7 +12,7 @@ import static net.agiledeveloper.mobtime.utils.TimeFormatter.formatDuration;
 import static net.agiledeveloper.mobtime.utils.TimeFormatter.formatInstant;
 
 public record Session(
-        Duration duration,
+        Duration initialDuration,
         boolean shouldAutomaticallyPassKeyboard,
         FocusMode focusMode,
         String username,
@@ -21,6 +23,7 @@ public record Session(
     public static final Duration DEFAULT_GRACE_DURATION = ofSeconds(2);
     public static final String DEFAULT_USERNAME = "Driver";
     public static final FocusMode DEFAULT_FOCUS_MODE = NORMAL;
+    public static final Ratio LOW_TIME_THRESHOLD = new Ratio(0.25);
 
 
     public Session(Duration duration, boolean shouldAutomaticallyPassKeyboard, FocusMode mode, String username) {
@@ -35,13 +38,23 @@ public record Session(
         return (focusMode == mode);
     }
 
+    public boolean isGracePeriodOver(Duration remainingTime) {
+        Duration elapsed = initialDuration.minus(remainingTime);
+        return !graceDuration().minus(elapsed).isPositive();
+    }
+
+    public boolean isOverSoon(Duration remainingTime) {
+        var remainingTimeRatio = Ratio.of(remainingTime.toMillis(), initialDuration.toMillis());
+        return remainingTimeRatio.lessThan(LOW_TIME_THRESHOLD);
+    }
+
     @Override
     public String toString() {
         return "[Session]"
-                + " createdAt: " + formatInstant(createdAt) + ","
-                + " duration:  " + formatDuration(duration) + ","
-                + " auto-next: " + shouldAutomaticallyPassKeyboard + ","
-                + " focusMode: " + focusMode;
+                + " createdAt:       " + formatInstant(createdAt) + ","
+                + " initialDuration: " + formatDuration(initialDuration) + ","
+                + " auto-next:       " + shouldAutomaticallyPassKeyboard + ","
+                + " focusMode:       " + focusMode;
     }
 
 }

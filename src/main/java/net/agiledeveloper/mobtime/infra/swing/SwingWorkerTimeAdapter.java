@@ -61,7 +61,7 @@ public class SwingWorkerTimeAdapter implements TimerPort {
             Instant startedAt = Instant.now();
             Instant deadline = startedAt
                     .plus(session.graceDuration())
-                    .plus(session.duration());
+                    .plus(session.initialDuration());
 
             while (running.get()) {
                 remainingTime = Duration.between(Instant.now(), deadline);
