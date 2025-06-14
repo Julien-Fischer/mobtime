@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.time.Duration.ofMillis;
 
-public class SwingWorkerTimeAdapter implements TimerPort {
+public class SwingTimerAdapter implements TimerPort {
 
     private static final Duration DEFAULT_FREQUENCY = ofMillis(1000);
 
@@ -23,11 +23,11 @@ public class SwingWorkerTimeAdapter implements TimerPort {
     private OnDone expiredCallback;
 
 
-    public SwingWorkerTimeAdapter() {
+    public SwingTimerAdapter() {
         this(DEFAULT_FREQUENCY);
     }
 
-    public SwingWorkerTimeAdapter(Duration tickFrequency) {
+    public SwingTimerAdapter(Duration tickFrequency) {
         this.tickFrequency = tickFrequency;
     }
 

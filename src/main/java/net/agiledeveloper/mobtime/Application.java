@@ -10,7 +10,7 @@ import net.agiledeveloper.mobtime.infra.cli.BashParameter;
 import net.agiledeveloper.mobtime.infra.cli.CommandLineParser;
 import net.agiledeveloper.mobtime.infra.roaming.Roaming;
 import net.agiledeveloper.mobtime.infra.swing.SwingNotificationAdapter;
-import net.agiledeveloper.mobtime.infra.swing.SwingWorkerTimeAdapter;
+import net.agiledeveloper.mobtime.infra.swing.SwingTimerAdapter;
 import net.agiledeveloper.mobtime.utils.App;
 import net.agiledeveloper.mobtime.utils.AppLogger;
 
@@ -43,7 +43,7 @@ public class Application {
 
         var mobService = new MobService(mobPort);
         var notificationAdapter = new SwingNotificationAdapter(mobService, roaming, options);
-        var sessionService = new SessionService(new SwingWorkerTimeAdapter(), notificationAdapter, mobPort);
+        var sessionService = new SessionService(new SwingTimerAdapter(), notificationAdapter, mobPort);
 
         var handler = new CommandLineInterpreter(sessionService, roaming);
         Command command = getOrThrow(() -> handler.interpret(bashParameters));
