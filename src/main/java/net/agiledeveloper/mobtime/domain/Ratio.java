@@ -2,6 +2,7 @@ package net.agiledeveloper.mobtime.domain;
 
 public record Ratio(double value) {
 
+    public static final Ratio ZERO          = new Ratio(0);
     public static final Ratio ONE_QUARTER   = new Ratio(0.25);
     public static final Ratio HALF          = new Ratio(0.5);
     public static final Ratio THREE_QUARTER = new Ratio(0.75);
@@ -22,6 +23,19 @@ public record Ratio(double value) {
 
     public boolean lessThan(Ratio ratio) {
         return value < ratio.value;
+    }
+
+    public boolean lessOrEqualTo(Ratio ratio) {
+        return lessThan(ratio) || equalTo(ratio);
+    }
+
+    public boolean equalTo(Ratio ratio) {
+        return value == ratio.value;
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(value);
     }
 
 }

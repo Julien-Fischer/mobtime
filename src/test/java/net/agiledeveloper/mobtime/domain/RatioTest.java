@@ -38,4 +38,37 @@ class RatioTest {
                 .isThrownBy(() -> new Ratio(1));
     }
 
+    @Test
+    void two_ratios_with_same_values_are_equal() {
+        Ratio r1 = new Ratio(0.5);
+        Ratio r2 = new Ratio(0.5);
+
+        assertThat(r1.equalTo(r2)).isTrue();
+    }
+
+    @Test
+    void two_ratios_with_different_values_are_not_equal() {
+        Ratio r1 = new Ratio(0.5);
+        Ratio r2 = new Ratio(0.6);
+
+        assertThat(r1.equalTo(r2)).isFalse();
+    }
+
+    @Test
+    void less_or_equal_returns_true_when_less() {
+        Ratio r1 = new Ratio(0.5);
+        Ratio r2 = new Ratio(0.6);
+
+        assertThat(r1.lessOrEqualTo(r2)).isTrue();
+        assertThat(r2.lessOrEqualTo(r1)).isFalse();
+    }
+
+    @Test
+    void less_or_equal_returns_true_when_equal() {
+        Ratio r1 = new Ratio(0.5);
+        Ratio r2 = new Ratio(0.5);
+
+        assertThat(r1.lessOrEqualTo(r2)).isTrue();
+    }
+
 }
