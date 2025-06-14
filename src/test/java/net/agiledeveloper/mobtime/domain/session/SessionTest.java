@@ -1,11 +1,13 @@
 package net.agiledeveloper.mobtime.domain.session;
 
+import net.agiledeveloper.mobtime.domain.Ratio;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 
 import static java.time.Duration.ofMinutes;
 import static java.time.Duration.ofSeconds;
+import static net.agiledeveloper.mobtime.domain.Ratio.*;
 import static net.agiledeveloper.mobtime.domain.session.FocusMode.NORMAL;
 import static net.agiledeveloper.mobtime.domain.session.FocusMode.ZEN;
 import static net.agiledeveloper.mobtime.test.builders.SessionBuilder.aSession;
@@ -64,6 +66,25 @@ class SessionTest {
 
         remaining = ofSeconds(10);
         assertThat(session.isOverSoon(remaining)).isTrue();
+    }
+
+    @Test
+    void progress_returns_correct_ratio() {
+        var session = aSession()
+                .lasting(ofSeconds(60))
+                .build();
+
+        Duration remaining = ofSeconds(30);
+        Ratio ratio = session.progress(remaining);
+        assertThat(ratio).isEqualTo(HALF);
+
+        remaining = ofSeconds(15);
+        ratio = session.progress(remaining);
+        assertThat(ratio).isEqualTo(ONE_QUARTER);
+
+        remaining = ofSeconds(45);
+        ratio = session.progress(remaining);
+        assertThat(ratio).isEqualTo(THREE_QUARTER);
     }
 
 }

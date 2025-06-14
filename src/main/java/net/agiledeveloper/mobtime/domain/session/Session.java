@@ -44,8 +44,12 @@ public record Session(
     }
 
     public boolean isOverSoon(Duration remainingTime) {
-        var remainingTimeRatio = Ratio.of(remainingTime.toMillis(), initialDuration.toMillis());
-        return remainingTimeRatio.lessThan(LOW_TIME_THRESHOLD);
+        return progress(remainingTime)
+                .lessThan(LOW_TIME_THRESHOLD);
+    }
+
+    public Ratio progress(Duration remainingTime) {
+        return Ratio.of(remainingTime.toMillis(), initialDuration.toMillis());
     }
 
     @Override
