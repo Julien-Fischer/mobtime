@@ -42,6 +42,7 @@ This software was designed for Linux, and was primarily tested on Debian 12 and 
   - `--auto-next` (Option)  Automatically execute mob next when time runs out
   - `--focus`     (Option)  Set the focus mode (normal by default). Accepts: normal, chill, zen
   - `--reset`     (Option)  Reset the activity timer to the specified --duration (15 by default)
+  - `--log-level` (Option)  Set the log level (INFO by default). Accepts: DEBUG, INFO, ERROR
 - `--mini`        (Option)  Minimize the GUI
 - `--location`    (Option)  Set GUI location (north by default). Accepts: center, north, north-east, east, south-east, etc...
 - `--user-name`   (Option)  Set a username for this session (Driver by default)

@@ -11,6 +11,7 @@ import net.agiledeveloper.mobtime.domain.session.Username;
 import net.agiledeveloper.mobtime.infra.cli.BashParameter;
 import net.agiledeveloper.mobtime.infra.roaming.Roaming;
 import net.agiledeveloper.mobtime.utils.App;
+import net.agiledeveloper.mobtime.utils.AppLogger.Level;
 
 import java.time.Duration;
 import java.util.HashSet;
@@ -76,6 +77,12 @@ public class CommandLineInterpreter {
                 parameters.add(new ResetParameter());
             }
 
+            else if (parameter.hasName("log-level")) {
+                Level level = readLogLevel(parameter);
+                parameters.add(new LogLevelParameter(level));
+                App.logger.setLevel(level);
+            }
+
             else if (parameter.hasName("invalid")) {
                 var msg = "Error: --invalid is not a valid argument";
                 App.logger.log(msg);
@@ -99,6 +106,10 @@ public class CommandLineInterpreter {
 
     private static Username readUserName(BashParameter argument) {
         return argument.hasValue() ? new Username(argument.value()) : Session.DEFAULT_USERNAME;
+    }
+
+    private static Level readLogLevel(BashParameter argument) {
+        return Level.of(argument.value());
     }
 
     private static FocusMode readFocus(BashParameter argument) {

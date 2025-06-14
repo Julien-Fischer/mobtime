@@ -12,7 +12,7 @@ Mob Commands:
     --relocate     (Option) Reuse last window location if set
     --pausable     (Option) Don't reset the timer on mob next or done
     --detach       (Option) Detach mobtime from the current terminal session
-    --debug        (Option) Start mobtime in debug mode
+    --log-level    (Option) Set the log level (INFO by default). Accepts: DEBUG, INFO, ERROR
     --reset        (Option) Reset the activity timer to the specified --duration (15 by default)
 
 Config commands:

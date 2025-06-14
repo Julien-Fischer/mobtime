@@ -15,4 +15,4 @@
 # --relocate
 # --pausable
 # --detach
-# --debug
+# --log-level=INFO
