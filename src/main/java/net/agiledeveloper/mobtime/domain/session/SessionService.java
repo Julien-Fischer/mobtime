@@ -48,8 +48,8 @@ public class SessionService {
 
 
     private void refresh(Session session, Duration remainingTime) {
-        if (session.isGracePeriodOver(remainingTime)) {
-            handleGracePeriodOver(session, remainingTime);
+        if (session.isGracePeriodOver()) {
+            handleGracePeriodOver(session);
         } else {
             App.logger.log("  Waiting for driving session to start");
         }
@@ -61,24 +61,24 @@ public class SessionService {
         App.logger.log("  Driving ");
     }
 
-    private void refreshSession(Session session, Duration remainingTime) {
-        var durationString = formatDuration(remainingTime);
-        var notification = new SessionRefreshNotification(session, session.username(), durationString, remainingTime);
+    private void refreshSession(Session session) {
+        var durationString = formatDuration(session.remainingTime());
+        var notification = new SessionRefreshNotification(session, session.username(), durationString, session.remainingTime());
         notificationPort.send(notification);
         App.logger.log("  Session ending in " + durationString);
     }
 
-    private void handleGracePeriodOver(Session session, Duration remainingTime) {
+    private void handleGracePeriodOver(Session session) {
         if (!sessionStarted) {
             startSession(session);
             sessionStarted = true;
-        } else if (shouldRefresh(session, remainingTime)) {
-            refreshSession(session, remainingTime);
+        } else if (shouldRefresh(session)) {
+            refreshSession(session);
         }
     }
 
-    private static boolean shouldRefresh(Session session, Duration remainingTime) {
-        return session.isOverSoon(remainingTime) || !session.hasFocus(ZEN);
+    private static boolean shouldRefresh(Session session) {
+        return session.isOverSoon() || !session.hasFocus(ZEN);
     }
 
     private void suggestMobNext(Session session) {

@@ -4,10 +4,10 @@ import net.agiledeveloper.mobtime.domain.ports.api.OnDone;
 import net.agiledeveloper.mobtime.domain.ports.api.OnTick;
 import net.agiledeveloper.mobtime.domain.ports.spi.TimerPort;
 import net.agiledeveloper.mobtime.domain.session.Session;
+import net.agiledeveloper.mobtime.utils.App;
 
 import javax.swing.*;
 import java.time.Duration;
-import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -50,7 +50,6 @@ public class SwingWorkerTimeAdapter implements TimerPort {
 
         private final Session session;
         private final AtomicBoolean running = new AtomicBoolean(true);
-        private Duration remainingTime;
 
 
         public SwingClock(Session session) {
@@ -59,20 +58,22 @@ public class SwingWorkerTimeAdapter implements TimerPort {
 
 
         @Override
-        protected Void doInBackground() throws Exception {
-            Instant startedAt = Instant.now();
-            Instant deadline = startedAt
-                    .plus(session.graceDuration())
-                    .plus(session.initialDuration());
+        protected Void doInBackground() throws TimerException {
+            session.start();
 
-            while (running.get()) {
-                remainingTime = Duration.between(Instant.now(), deadline);
-                publish(remainingTime.toString());
-                synchronized (this) {
-                    wait(tickFrequency.toMillis());
-                }
-                if (remainingTime.toSeconds() <= Duration.ZERO.toSeconds()) {
-                    stop();
+            while (shouldRun()) {
+                try {
+                    publish();
+                    synchronized (this) {
+                        wait(tickFrequency.toMillis());
+                    }
+                    if (session.isOver()) {
+                        stop();
+                    }
+                } catch (Exception exception) {
+                    App.logger.err(exception);
+                    Thread.currentThread().interrupt();
+                    throw new TimerException("Timer interrupted by runtime exception: " + exception);
                 }
             }
 
@@ -87,14 +88,24 @@ public class SwingWorkerTimeAdapter implements TimerPort {
             cancel(true);
         }
 
+        private boolean shouldRun() {
+            return running.get();
+        }
+
         @Override
         protected void process(List<String> chunks) {
-            refreshCallback.accept(session, remainingTime);
+            refreshCallback.accept(session, session.remainingTime());
         }
 
         @Override
         protected void done() {
             expiredCallback.accept(session);
+        }
+    }
+
+    private static class TimerException extends RuntimeException {
+        public TimerException(String message) {
+            super(message);
         }
     }
 

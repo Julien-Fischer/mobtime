@@ -9,7 +9,9 @@ public record Ratio(double value) {
 
     public Ratio {
         if (value < 0 || value > 1) {
-            throw new IllegalArgumentException("Ratio must be between 0 and 1");
+            throw new IllegalArgumentException(
+                    "Ratio must be between 0 and 1. Provided value: " + value
+            );
         }
     }
 

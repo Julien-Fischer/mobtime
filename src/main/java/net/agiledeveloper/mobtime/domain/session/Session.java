@@ -2,8 +2,10 @@ package net.agiledeveloper.mobtime.domain.session;
 
 import net.agiledeveloper.mobtime.domain.Ratio;
 
+import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.function.Supplier;
 
 import static java.time.Duration.ofMinutes;
 import static java.time.Duration.ofSeconds;
@@ -12,13 +14,7 @@ import static net.agiledeveloper.mobtime.domain.session.FocusMode.NORMAL;
 import static net.agiledeveloper.mobtime.utils.TimeFormatter.formatDuration;
 import static net.agiledeveloper.mobtime.utils.TimeFormatter.formatInstant;
 
-public record Session(
-        Duration initialDuration,
-        EndMode endMode,
-        FocusMode focusMode,
-        Username username,
-        Instant createdAt
-) {
+public class Session {
 
     public static final Duration DEFAULT_DURATION = ofMinutes(15);
     public static final Duration DEFAULT_GRACE_DURATION = ofSeconds(2);
@@ -26,9 +22,32 @@ public record Session(
     public static final FocusMode DEFAULT_FOCUS_MODE = NORMAL;
     public static final Ratio LOW_TIME_THRESHOLD = new Ratio(0.25);
 
+    private final Clock clock;
 
-    public Session(Duration duration, EndMode endMode, FocusMode mode, Username username) {
-        this(duration, endMode, mode, username, Instant.now());
+    private final Duration initialDuration;
+    private final EndMode endMode;
+    private final FocusMode focusMode;
+    private final Username username;
+    private final Instant createdAt;
+
+    private Instant startedAt;
+    private Instant deadline;
+
+
+    public Session(Clock clock, Duration initialDuration, EndMode endMode, FocusMode focusMode, Username username) {
+        this.clock = clock;
+        this.initialDuration = initialDuration;
+        this.endMode = endMode;
+        this.focusMode = focusMode;
+        this.username = username;
+        this.createdAt = clock.instant();
+    }
+
+
+    public void start() {
+        this.startedAt = clock.instant();
+        this.deadline = startedAt
+                .plus(initialDuration());
     }
 
     public boolean shouldAutomaticallyPassKeyboard() {
@@ -43,27 +62,75 @@ public record Session(
         return (focusMode == mode);
     }
 
-    public boolean isGracePeriodOver(Duration remainingTime) {
-        Duration elapsed = initialDuration.minus(remainingTime);
+    public boolean isGracePeriodOver() {
+        Duration elapsed = initialDuration.minus(remainingTime());
         return !graceDuration().minus(elapsed).isPositive();
     }
 
-    public boolean isOverSoon(Duration remainingTime) {
-        return progress(remainingTime)
-                .lessThan(LOW_TIME_THRESHOLD);
+    public boolean isOverSoon() {
+        return progress().lessThan(LOW_TIME_THRESHOLD);
     }
 
-    public Ratio progress(Duration remainingTime) {
-        return Ratio.of(remainingTime.toMillis(), initialDuration.toMillis());
+    public boolean isOver() {
+        return progress().lessOrEqualTo(Ratio.ZERO);
     }
+
+    public Ratio progress() {
+        return Ratio.of(
+                remainingTime().getSeconds(),
+                initialDuration().getSeconds()
+        );
+    }
+
+    public Duration remainingTime() {
+        if (!hasStarted()) {
+            throw new SessionNotStartedException("Session has not started yet");
+        }
+        return Duration.between(clock.instant(), deadline);
+    }
+
+    public Username username() {
+        return username;
+    }
+
+    public Duration initialDuration() {
+        return initialDuration;
+    }
+
+    public FocusMode focusMode() {
+        return focusMode;
+    }
+
+    public boolean hasStarted() {
+        return startedAt != null;
+    }
+
+    public Instant startedAt() {
+        return startedAt;
+    }
+
 
     @Override
     public String toString() {
         return "[Session]"
-                + " createdAt:       " + formatInstant(createdAt) + ","
-                + " initialDuration: " + formatDuration(initialDuration) + ","
-                + " auto-next:       " + endMode + ","
-                + " focusMode:       " + focusMode;
+                + "\n> createdAt:       " + formatInstant(createdAt)
+                + "\n> initialDuration: " + formatDuration(initialDuration)
+                + "\n> startedAt:       " + ifPresent(() -> formatInstant(startedAt))
+                + "\n> remainingTime:   " + ifPresent(() -> formatDuration(remainingTime()))
+                + "\n> progress:        " + ifPresent(() -> progress().toString())
+                + "\n> auto-next:       " + endMode + ","
+                + "\n> focusMode:       " + focusMode;
+    }
+
+
+    private String ifPresent(Supplier<String> supplier) {
+        return hasStarted() ? supplier.get() : null;
+    }
+
+    public static class SessionNotStartedException extends RuntimeException {
+        public SessionNotStartedException(String message) {
+            super(message);
+        }
     }
 
 }

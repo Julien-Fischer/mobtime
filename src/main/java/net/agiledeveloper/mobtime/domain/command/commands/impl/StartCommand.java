@@ -8,6 +8,7 @@ import net.agiledeveloper.mobtime.domain.session.*;
 import net.agiledeveloper.mobtime.infra.roaming.Roaming;
 import net.agiledeveloper.mobtime.utils.App;
 
+import java.time.Clock;
 import java.time.Duration;
 import java.util.Set;
 
@@ -75,7 +76,12 @@ public class StartCommand extends AbstractCommand {
 
     private void mobStart() {
         if (!isDryRunEnabled()) {
-            var session = new Session(getDuration(), getEndMode(), findFocusMode(), findUserName());
+            var session = new Session(
+                    Clock.systemDefaultZone(),
+                    getDuration(),
+                    getEndMode(),
+                    findFocusMode(), findUserName()
+            );
             sessionService.open(session);
         }
     }

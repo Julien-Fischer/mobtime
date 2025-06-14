@@ -15,11 +15,11 @@ public record SessionRefreshNotification(
 ) implements Notification {
 
     public Ratio progress() {
-        return session.progress(remainingTime);
+        return session.progress();
     }
 
     public boolean hasLittleTimeLeft() {
-        return session.isOverSoon(remainingTime);
+        return session.isOverSoon();
     }
 
     @Override

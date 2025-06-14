@@ -6,10 +6,14 @@ import net.agiledeveloper.mobtime.domain.session.Session;
 import net.agiledeveloper.mobtime.domain.session.Username;
 import net.agiledeveloper.mobtime.test.lib.Builder;
 
+import java.time.Clock;
 import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneId;
 
 public class SessionBuilder implements Builder<Session> {
 
+    private Clock clock = Clock.fixed(Instant.now(), ZoneId.systemDefault());
     private Duration duration = Session.DEFAULT_DURATION;
     private FocusMode focusMode = FocusMode.NORMAL;
     private Username username = Session.DEFAULT_USERNAME;
@@ -43,9 +47,14 @@ public class SessionBuilder implements Builder<Session> {
         return this;
     }
 
+    public SessionBuilder withClock(Clock clock) {
+        this.clock = clock;
+        return this;
+    }
+
     @Override
     public Session build() {
-        return new Session(duration, endMode, focusMode, username);
+        return new Session(clock, duration, endMode, focusMode, username);
     }
 
 }
