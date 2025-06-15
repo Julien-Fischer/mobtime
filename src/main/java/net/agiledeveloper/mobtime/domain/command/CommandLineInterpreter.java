@@ -49,13 +49,12 @@ public class CommandLineInterpreter {
 
     private Command parse(List<BashParameter> commandLine) {
         var command = readCommand(commandLine);
-
-        for (int i = 1; i < commandLine.size(); i++) {
-            var parameter = commandLine.get(i);
-            App.logger.log(" ", parameter.toString());
-
-            parameters.add(readParameter(parameter));
-        }
+        commandLine.stream()
+                .filter(this::sessionParameters)
+                        .forEach(parameter -> {
+                            App.logger.log(" ", parameter.toString());
+                            parameters.add(readParameter(parameter));
+                        });
         return command;
     }
 
@@ -98,12 +97,16 @@ public class CommandLineInterpreter {
         }
     }
 
+    private boolean sessionParameters(BashParameter parameter) {
+        return !(parameter.hasName("start") || parameter.hasName("detach"));
+    }
+
+
     private static void printParameters(Command command) {
         App.logger.log("Command parameters:");
         command.options()
                 .forEach(option -> App.logger.log(" ", option.toString()));
     }
-
 
     private static Username readUserName(BashParameter argument) {
         return argument.hasValue() ? new Username(argument.value()) : Session.DEFAULT_USERNAME;
