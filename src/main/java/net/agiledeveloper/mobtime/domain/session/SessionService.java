@@ -17,6 +17,8 @@ public class SessionService implements SessionServicePort {
     private final NotificationPort notificationPort;
     private final MobPort mobPort;
 
+    private boolean startNotificationWasSent;
+
 
     public SessionService(TimerPort timerPort, NotificationPort notificationPort, MobPort mobPort) {
         this.timerPort = timerPort;
@@ -56,6 +58,7 @@ public class SessionService implements SessionServicePort {
     private void startSession(Session session) {
         var notification = new SessionStartNotification(session, "Driving", "");
         notificationPort.send(notification);
+        startNotificationWasSent = true;
     }
 
     private void sendRefreshNotification(Session session) {
@@ -64,11 +67,15 @@ public class SessionService implements SessionServicePort {
     }
 
     private void handleGracePeriodOver(Session session) {
-        if (!session.hasStarted()) {
+        if (shouldStart(session)) {
             startSession(session);
         } else if (session.isOverSoon() || !session.hasFocus(ZEN)) {
             sendRefreshNotification(session);
         }
+    }
+
+    private boolean shouldStart(Session session) {
+        return session.hasStarted() && !startNotificationWasSent;
     }
 
     private void passKeyboardFrom(Session session) {
