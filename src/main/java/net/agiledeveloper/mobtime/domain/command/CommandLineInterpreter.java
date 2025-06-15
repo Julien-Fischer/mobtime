@@ -26,8 +26,6 @@ public class CommandLineInterpreter {
     private final SessionServicePort sessionService;
     private final RoamingPort roaming;
 
-    private boolean pausable = false;
-
 
     public CommandLineInterpreter(SessionServicePort sessionService, RoamingPort roaming) {
         this.sessionService = sessionService;
@@ -70,7 +68,7 @@ public class CommandLineInterpreter {
             }
 
             else if (parameter.hasName("pausable")) {
-                pausable = true;
+                roaming.setPausable(true);
             }
 
             else if (parameter.hasName("reset")) {
@@ -93,8 +91,6 @@ public class CommandLineInterpreter {
         if (command == null) {
             throw new IllegalArgumentException("No command specified");
         }
-
-        roaming.setPausable(pausable);
 
         App.logger.logSeparator();
         App.logger.log("Command parameters:");
