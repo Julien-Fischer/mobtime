@@ -41,6 +41,7 @@ public class StartCommand extends AbstractCommand {
         return hasOption(AutoNextParameter.class);
     }
 
+    @Override
     public boolean isDryRunEnabled() {
         return hasOption(DryRunParameter.class);
     }

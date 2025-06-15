@@ -6,11 +6,13 @@ import java.util.Optional;
 
 public interface Command {
 
+    OptionSet options();
+
+    boolean isDryRunEnabled();
+
     default boolean is(Class<? extends Command> className) {
         return this.getClass() == className;
     }
-
-    OptionSet options();
 
     default boolean hasOption(Class<? extends Parameter> parameterName) {
         return options().hasOption(parameterName);

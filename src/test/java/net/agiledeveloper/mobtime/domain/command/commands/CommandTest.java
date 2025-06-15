@@ -86,6 +86,11 @@ class CommandTest {
     private static class MockCommand implements Command {
 
         @Override
+        public boolean isDryRunEnabled() {
+            return true;
+        }
+
+        @Override
         public OptionSet options() {
             return OptionSet.empty();
         }

@@ -10,9 +10,7 @@ public interface SessionServicePort {
 
     default void execute(Command command) {
         if (command instanceof StartCommand startCommand) {
-            if (!startCommand.isDryRunEnabled()) {
-                open(startCommand.session());
-            }
+            open(startCommand.session());
         } else {
             throw new UnsupportedOperationException(format("%s is not supported", command.getClass().getSimpleName()));
         }

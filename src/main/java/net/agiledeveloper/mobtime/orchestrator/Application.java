@@ -44,7 +44,9 @@ public class Application {
         var handler = new CommandLineInterpreter(roaming);
         Command command = getOrThrow(() -> handler.interpret(bashParameters));
 
-        sessionService.execute(command);
+        if (!command.isDryRunEnabled()) {
+            sessionService.execute(command);
+        }
 
         App.logger.log("Command processed");
     }
