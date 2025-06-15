@@ -4,12 +4,12 @@ import net.agiledeveloper.mobtime.domain.command.commands.Command;
 import net.agiledeveloper.mobtime.domain.command.commands.impl.StartCommand;
 import net.agiledeveloper.mobtime.domain.command.parameters.Parameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.impl.*;
+import net.agiledeveloper.mobtime.domain.ports.spi.RoamingPort;
 import net.agiledeveloper.mobtime.domain.session.FocusMode;
 import net.agiledeveloper.mobtime.domain.session.Session;
 import net.agiledeveloper.mobtime.domain.session.SessionService;
 import net.agiledeveloper.mobtime.domain.session.Username;
 import net.agiledeveloper.mobtime.infra.cli.BashParameter;
-import net.agiledeveloper.mobtime.infra.roaming.Roaming;
 import net.agiledeveloper.mobtime.utils.App;
 import net.agiledeveloper.mobtime.utils.AppLogger.Level;
 
@@ -24,12 +24,12 @@ import static net.agiledeveloper.mobtime.utils.EnumUtils.printValues;
 public class CommandLineInterpreter {
 
     private final SessionService sessionService;
-    private final Roaming roaming;
+    private final RoamingPort roaming;
 
     private boolean pausable = false;
 
 
-    public CommandLineInterpreter(SessionService sessionService, Roaming roaming) {
+    public CommandLineInterpreter(SessionService sessionService, RoamingPort roaming) {
         this.sessionService = sessionService;
         this.roaming = roaming;
     }

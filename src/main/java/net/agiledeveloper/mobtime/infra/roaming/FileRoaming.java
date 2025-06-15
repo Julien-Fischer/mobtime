@@ -1,5 +1,6 @@
 package net.agiledeveloper.mobtime.infra.roaming;
 
+import net.agiledeveloper.mobtime.domain.ports.spi.RoamingPort;
 import net.agiledeveloper.mobtime.infra.swing.gui.Coordinate;
 import net.agiledeveloper.mobtime.utils.App;
 
@@ -12,48 +13,55 @@ import java.time.Duration;
 import java.util.Optional;
 import java.util.Properties;
 
-import static net.agiledeveloper.mobtime.infra.roaming.Roaming.Key.*;
+import static net.agiledeveloper.mobtime.infra.roaming.FileRoaming.Key.*;
 import static net.agiledeveloper.mobtime.utils.TimeFormatter.toDuration;
 
-public class Roaming {
+public class FileRoaming implements RoamingPort {
 
     private final Path roamingFile;
     private Properties properties;
 
 
-    public Roaming(Path roamingFile) {
+    public FileRoaming(Path roamingFile) {
         this.roamingFile = roamingFile;
     }
 
 
+    @Override
     public void setCoordinate(Coordinate coordinate) {
         write(COORDINATE, coordinate);
     }
 
+    @Override
     public void setPausable(boolean pausable) {
         write(PAUSABLE, pausable);
     }
 
+    @Override
     public void setActivityDuration(Duration duration) {
         var millis = duration.toMillis();
         App.logger.debug("[roaming] Set activity duration: " + millis);
         write(ACTIVITY_DURATION, duration.toMillis());
     }
 
-    public void setActivityRemaining(Duration duration) {
-        var millis = duration.toMillis();
+    @Override
+    public void setActivityRemaining(Duration remaining) {
+        var millis = remaining.toMillis();
         App.logger.debug("[roaming] Set activity remaining" + millis);
-        write(ACTIVITY_REMAINING, duration.toMillis());
+        write(ACTIVITY_REMAINING, remaining.toMillis());
     }
 
+    @Override
     public Optional<Duration> getActivityDuration() {
         return getOptionalActivityDuration(ACTIVITY_DURATION);
     }
 
+    @Override
     public Optional<Duration> getActivityRemaining() {
         return getOptionalActivityDuration(ACTIVITY_REMAINING);
     }
 
+    @Override
     public Optional<Coordinate> getCoordinate() {
         var serialized = read(COORDINATE);
         return (serialized == null) ?
@@ -61,20 +69,10 @@ public class Roaming {
                 Optional.of(Coordinate.of(serialized));
     }
 
+    @Override
     public boolean isPausable() {
         var serialized = read(PAUSABLE);
         return Boolean.parseBoolean(serialized);
-    }
-
-    public boolean hasOngoingActivity() {
-        var remaining = getActivityRemaining();
-        var duration = getActivityDuration();
-        if (remaining.isEmpty() || duration.isEmpty()) {
-            return false;
-        }
-        return duration.get()
-                .minus(remaining.get())
-                .isPositive();
     }
 
     private Optional<Duration> getOptionalActivityDuration(Key key) {
