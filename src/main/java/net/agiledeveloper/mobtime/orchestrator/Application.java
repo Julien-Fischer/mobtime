@@ -5,13 +5,16 @@ import net.agiledeveloper.mobtime.domain.command.CommandLineInterpreter;
 import net.agiledeveloper.mobtime.domain.command.UIOptionSet;
 import net.agiledeveloper.mobtime.domain.command.commands.Command;
 import net.agiledeveloper.mobtime.domain.ports.spi.MobPort;
+import net.agiledeveloper.mobtime.domain.ports.spi.NotificationPort;
 import net.agiledeveloper.mobtime.domain.ports.spi.SessionStorage;
 import net.agiledeveloper.mobtime.domain.session.MobService;
 import net.agiledeveloper.mobtime.domain.session.SessionService;
 import net.agiledeveloper.mobtime.infra.cli.BashParameter;
 import net.agiledeveloper.mobtime.infra.cli.CommandLineParser;
+import net.agiledeveloper.mobtime.infra.notification.CompositeNotificationAdapter;
+import net.agiledeveloper.mobtime.infra.notification.LoggerNotificationAdapter;
+import net.agiledeveloper.mobtime.infra.notification.SwingNotificationAdapter;
 import net.agiledeveloper.mobtime.infra.roaming.FileSessionStorage;
-import net.agiledeveloper.mobtime.infra.swing.SwingNotificationAdapter;
 import net.agiledeveloper.mobtime.infra.swing.SwingTimerAdapter;
 
 import java.nio.file.Path;
@@ -38,7 +41,7 @@ public class Application {
         var options = new UIOptionSet(bashParameters);
 
         var mobService = new MobService(mobPort);
-        var notificationAdapter = new SwingNotificationAdapter(mobService, roaming, options);
+        var notificationAdapter = getNotificationAdapter(mobService, options);
         var sessionService = new SessionService(new SwingTimerAdapter(), notificationAdapter, mobPort);
 
         var handler = new CommandLineInterpreter(roaming);
@@ -49,6 +52,13 @@ public class Application {
         }
 
         App.logger.log("Command processed");
+    }
+
+    private NotificationPort getNotificationAdapter(MobService mobService, UIOptionSet options) {
+        return new CompositeNotificationAdapter(
+                new SwingNotificationAdapter(mobService, roaming, options),
+                new LoggerNotificationAdapter(App.logger)
+        );
     }
 
 

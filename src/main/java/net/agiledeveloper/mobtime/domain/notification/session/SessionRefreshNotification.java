@@ -10,13 +10,19 @@ import java.time.Duration;
 
 import static net.agiledeveloper.mobtime.domain.notification.Severity.INFO;
 import static net.agiledeveloper.mobtime.domain.notification.Severity.SUCCESS;
+import static net.agiledeveloper.mobtime.utils.TimeFormatter.formatDuration;
 
 public record SessionRefreshNotification(
         Session session,
         Username username,
-        String value,
-        Duration remainingTime
+        Duration remainingTime,
+        String durationString
 ) implements Notification {
+
+    public SessionRefreshNotification(Session session) {
+        this(session, session.username(), session.remainingTime(), formatDuration(session.remainingTime()));
+    }
+
 
     public Ratio progress() {
         return session.progress();
@@ -30,6 +36,11 @@ public record SessionRefreshNotification(
     @Override
     public String message() {
         return username.value();
+    }
+
+    @Override
+    public String value() {
+        return durationString;
     }
 
 }

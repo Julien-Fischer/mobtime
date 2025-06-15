@@ -1,6 +1,7 @@
 package net.agiledeveloper.mobtime.domain.session;
 
 import net.agiledeveloper.mobtime.domain.notification.Notification;
+import net.agiledeveloper.mobtime.domain.notification.session.SessionRefreshNotification;
 import net.agiledeveloper.mobtime.domain.ports.api.OnDone;
 import net.agiledeveloper.mobtime.domain.ports.api.OnTick;
 import net.agiledeveloper.mobtime.domain.ports.spi.MobPort;
@@ -73,7 +74,27 @@ class SessionServiceTest {
 class NotificationMock extends Mock implements NotificationPort {
 
     @Override
-    public void send(Notification notification) {
+    public void handleShutdownNotification(Notification notification) {
+        incrementCallCount();
+    }
+
+    @Override
+    public void handleCloseNotification(Notification notification) {
+        incrementCallCount();
+    }
+
+    @Override
+    public void handleRefreshNotification(SessionRefreshNotification notification) {
+        incrementCallCount();
+    }
+
+    @Override
+    public void handleStartNotification(Notification notification) {
+        incrementCallCount();
+    }
+
+    @Override
+    public void handleOpenNotification(Notification notification) {
         incrementCallCount();
     }
 

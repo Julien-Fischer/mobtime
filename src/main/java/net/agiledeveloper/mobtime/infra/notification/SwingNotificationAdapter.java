@@ -1,9 +1,10 @@
-package net.agiledeveloper.mobtime.infra.swing;
+package net.agiledeveloper.mobtime.infra.notification;
 
 import net.agiledeveloper.App;
 import net.agiledeveloper.mobtime.domain.command.UIOptionSet;
 import net.agiledeveloper.mobtime.domain.notification.Notification;
-import net.agiledeveloper.mobtime.domain.notification.session.*;
+import net.agiledeveloper.mobtime.domain.notification.session.SessionRefreshNotification;
+import net.agiledeveloper.mobtime.domain.notification.session.SessionShutdownNotification;
 import net.agiledeveloper.mobtime.domain.ports.api.SessionPort;
 import net.agiledeveloper.mobtime.domain.ports.spi.NotificationPort;
 import net.agiledeveloper.mobtime.domain.ports.spi.SessionStorage;
@@ -45,28 +46,18 @@ public class SwingNotificationAdapter implements NotificationPort {
 
 
     @Override
-    public void send(Notification notification) {
-        switch (notification) {
-            case SessionOpenNotification ignored                -> handleOpenNotification(notification);
-            case SessionStartNotification ignored               -> handleStartNotification(notification);
-            case SessionRefreshNotification refreshNotification -> handleRefreshNotification(refreshNotification);
-            case SessionCloseNotification ignored               -> handleCloseNotification(notification);
-            case SessionShutdownNotification ignored            -> handleShutdownNotification(notification);
-            case null, default -> throw new UnsupportedOperationException("Unknown notification type: " + notification);
-        }
-    }
-
-
-    private void handleOpenNotification(Notification notification) {
+    public void handleOpenNotification(Notification notification) {
         showPopup(notification);
         notifySessionStart(notification);
     }
 
-    private void handleStartNotification(Notification notification) {
+    @Override
+    public void handleStartNotification(Notification notification) {
         displayMessage(notification);
     }
 
-    private void handleRefreshNotification(SessionRefreshNotification notification) {
+    @Override
+    public void handleRefreshNotification(SessionRefreshNotification notification) {
         if (awaitingKillSignal) {
             App.logger.log("App will shutdown soon...");
             return;
@@ -75,13 +66,16 @@ public class SwingNotificationAdapter implements NotificationPort {
         remainingTime = notification.remainingTime();
     }
 
-    private void handleCloseNotification(Notification notification) {
+    @Override
+    public void handleCloseNotification(Notification notification) {
         notifySessionEnd(notification);
     }
 
-    private void handleShutdownNotification(Notification notification) {
+    @Override
+    public void handleShutdownNotification(Notification notification) {
         shutdown(notification);
     }
+
 
     private void showPopup(Notification notification) {
         createPopupFor(notification);

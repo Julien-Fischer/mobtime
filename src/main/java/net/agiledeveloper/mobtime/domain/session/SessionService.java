@@ -10,7 +10,6 @@ import net.agiledeveloper.mobtime.domain.ports.spi.TimerPort;
 import java.time.Duration;
 
 import static net.agiledeveloper.mobtime.domain.session.FocusMode.ZEN;
-import static net.agiledeveloper.mobtime.utils.TimeFormatter.formatDuration;
 
 public class SessionService implements SessionServicePort {
 
@@ -28,7 +27,6 @@ public class SessionService implements SessionServicePort {
 
     @Override
     public void open(Session session) {
-        logSessionStart(session);
         notificationPort.send(new SessionOpenNotification(session, "Starting driver session...", ""));
         timerPort.runFor(session, this::onTick, this::onDone);
     }
@@ -58,14 +56,11 @@ public class SessionService implements SessionServicePort {
     private void startSession(Session session) {
         var notification = new SessionStartNotification(session, "Driving", "");
         notificationPort.send(notification);
-        App.logger.log("  Now driving ");
     }
 
     private void sendRefreshNotification(Session session) {
-        var durationString = formatDuration(session.remainingTime());
-        var notification = new SessionRefreshNotification(session, session.username(), durationString, session.remainingTime());
+        var notification = new SessionRefreshNotification(session);
         notificationPort.send(notification);
-        App.logger.log("  Session ending in " + durationString);
     }
 
     private void handleGracePeriodOver(Session session) {
@@ -79,22 +74,12 @@ public class SessionService implements SessionServicePort {
     private void passKeyboardFrom(Session session) {
         var notification = new SessionShutdownNotification(session, "Pass keyboard", "Next to drive.");
         notificationPort.send(notification);
-        App.logger.logSeparator();
-        App.logger.log("Pass keyboard! Next to drive.");
         mobPort.next();
     }
 
     private void suggestPassingKeyboardFrom(Session session) {
         var notification = new SessionCloseNotification(session, "Pass keyboard", "");
         notificationPort.send(notification);
-        App.logger.logSeparator();
-        App.logger.log("Pass keyboard - Use mob next to switch driver or mob done to end the mob session");
-    }
-
-    private static void logSessionStart(Session session) {
-        var durationString = formatDuration(session.initialDuration());
-        App.logger.logSeparator();
-        App.logger.log("Opening mob session (duration = %s, id = %s)".formatted(durationString, session.id()));
     }
 
 }
