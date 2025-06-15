@@ -41,10 +41,10 @@ public class Application {
         var notificationAdapter = new SwingNotificationAdapter(mobService, roaming, options);
         var sessionService = new SessionService(new SwingTimerAdapter(), notificationAdapter, mobPort);
 
-        var handler = new CommandLineInterpreter(sessionService, roaming);
+        var handler = new CommandLineInterpreter(roaming);
         Command command = getOrThrow(() -> handler.interpret(bashParameters));
 
-        command.execute();
+        sessionService.execute(command);
 
         App.logger.log("Command processed");
     }

@@ -5,7 +5,6 @@ import net.agiledeveloper.mobtime.domain.command.commands.AbstractCommand;
 import net.agiledeveloper.mobtime.domain.command.parameters.Parameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.ValueParameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.impl.*;
-import net.agiledeveloper.mobtime.domain.ports.api.SessionServicePort;
 import net.agiledeveloper.mobtime.domain.ports.spi.RoamingPort;
 import net.agiledeveloper.mobtime.domain.session.EndMode;
 import net.agiledeveloper.mobtime.domain.session.FocusMode;
@@ -22,24 +21,17 @@ import static net.agiledeveloper.mobtime.utils.TimeFormatter.formatDuration;
 
 public class StartCommand extends AbstractCommand {
 
-    private final SessionServicePort sessionService;
     private final RoamingPort roaming;
 
     private Duration durationCache = null;
     private FocusMode focusCache = null;
 
 
-    public StartCommand(Set<Parameter> parameters, SessionServicePort sessionService, RoamingPort roaming) {
+    public StartCommand(Set<Parameter> parameters, RoamingPort roaming) {
         super(parameters);
-        this.sessionService = sessionService;
         this.roaming = roaming;
     }
 
-
-    @Override
-    public void execute() {
-        mobStart();
-    }
 
     public EndMode getEndMode() {
         return isAutoNextModeEnabled() ? AUTOMATICALLY_PASS_KEYBOARD : WAIT_FOR_INSTRUCTION;
@@ -77,17 +69,14 @@ public class StartCommand extends AbstractCommand {
         return focusCache;
     }
 
-
-    private void mobStart() {
-        if (!isDryRunEnabled()) {
-            var session = new Session(
-                    Clock.systemDefaultZone(),
-                    getDuration(),
-                    getEndMode(),
-                    findFocusMode(), findUserName()
-            );
-            sessionService.open(session);
-        }
+    public Session session() {
+        return new Session(
+                Clock.systemDefaultZone(),
+                getDuration(),
+                getEndMode(),
+                findFocusMode(),
+                findUserName()
+        );
     }
 
     private Duration findDuration() {

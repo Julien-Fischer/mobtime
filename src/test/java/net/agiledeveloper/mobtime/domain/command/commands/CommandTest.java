@@ -75,23 +75,21 @@ class CommandTest {
 
 
     void havingParameters(Parameter... parameter) {
-        command = new StartCommand(Set.of(parameter), null, null);
+        command = new StartCommand(Set.of(parameter), null);
     }
 
     void havingNoOptions() {
-        command = new StartCommand(Collections.emptySet(), null, null);
+        command = new StartCommand(Collections.emptySet(), null);
     }
 
 
     private static class MockCommand implements Command {
-        @Override
-        public void execute() {
-        }
 
         @Override
         public OptionSet options() {
             return OptionSet.empty();
         }
+
     }
 
 }

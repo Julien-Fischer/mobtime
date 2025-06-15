@@ -6,8 +6,6 @@ import java.util.Optional;
 
 public interface Command {
 
-    void execute();
-
     default boolean is(Class<? extends Command> className) {
         return this.getClass() == className;
     }

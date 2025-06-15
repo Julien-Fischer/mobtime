@@ -150,7 +150,7 @@ class StartCommandTest {
     }
 
     void havingParameters(Parameter... parameter) {
-        command = new StartCommand(Set.of(parameter), null, new FileRoaming(ROAMING_FILE));
+        command = new StartCommand(Set.of(parameter), new FileRoaming(ROAMING_FILE));
     }
 
     void havingParameters(DurationParameterBuilder... parameters) {

@@ -5,7 +5,6 @@ import net.agiledeveloper.mobtime.domain.command.commands.Command;
 import net.agiledeveloper.mobtime.domain.command.commands.impl.StartCommand;
 import net.agiledeveloper.mobtime.domain.command.parameters.Parameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.impl.*;
-import net.agiledeveloper.mobtime.domain.ports.api.SessionServicePort;
 import net.agiledeveloper.mobtime.domain.ports.spi.RoamingPort;
 import net.agiledeveloper.mobtime.domain.session.FocusMode;
 import net.agiledeveloper.mobtime.domain.session.Session;
@@ -25,13 +24,11 @@ import static net.agiledeveloper.mobtime.utils.EnumUtils.printValues;
 
 public class CommandLineInterpreter {
 
-    private final SessionServicePort sessionService;
     private final RoamingPort roaming;
 
     private final Set<Parameter> parameters = new HashSet<>();
 
-    public CommandLineInterpreter(SessionServicePort sessionService, RoamingPort roaming) {
-        this.sessionService = sessionService;
+    public CommandLineInterpreter(RoamingPort roaming) {
         this.roaming = roaming;
     }
 
@@ -68,7 +65,7 @@ public class CommandLineInterpreter {
             throw new IllegalArgumentException("No command specified");
         }
         App.logger.log(" ", "--start");
-        return new StartCommand(parameters, sessionService, roaming);
+        return new StartCommand(parameters, roaming);
     }
 
     private Parameter readParameter(BashParameter parameter) {
