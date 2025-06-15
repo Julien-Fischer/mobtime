@@ -1,10 +1,10 @@
 package net.agiledeveloper.mobtime.infra.swing;
 
+import net.agiledeveloper.App;
 import net.agiledeveloper.mobtime.domain.ports.api.OnDone;
 import net.agiledeveloper.mobtime.domain.ports.api.OnTick;
 import net.agiledeveloper.mobtime.domain.ports.spi.TimerPort;
 import net.agiledeveloper.mobtime.domain.session.Session;
-import net.agiledeveloper.mobtime.utils.App;
 
 import javax.swing.*;
 import java.time.Duration;

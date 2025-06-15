@@ -1,8 +1,8 @@
 package net.agiledeveloper.mobtime.infra.roaming;
 
+import net.agiledeveloper.App;
 import net.agiledeveloper.mobtime.domain.ports.spi.RoamingPort;
 import net.agiledeveloper.mobtime.infra.swing.gui.Coordinate;
-import net.agiledeveloper.mobtime.utils.App;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

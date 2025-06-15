@@ -1,5 +1,6 @@
 package net.agiledeveloper.mobtime.domain.command;
 
+import net.agiledeveloper.App;
 import net.agiledeveloper.mobtime.domain.command.commands.Command;
 import net.agiledeveloper.mobtime.domain.command.commands.impl.StartCommand;
 import net.agiledeveloper.mobtime.domain.command.parameters.Parameter;
@@ -11,7 +12,6 @@ import net.agiledeveloper.mobtime.domain.session.Session;
 import net.agiledeveloper.mobtime.domain.session.Username;
 import net.agiledeveloper.mobtime.infra.cli.BashParameter;
 import net.agiledeveloper.mobtime.infra.swing.gui.Location;
-import net.agiledeveloper.mobtime.utils.App;
 import net.agiledeveloper.mobtime.utils.AppLogger.Level;
 
 import java.time.Duration;

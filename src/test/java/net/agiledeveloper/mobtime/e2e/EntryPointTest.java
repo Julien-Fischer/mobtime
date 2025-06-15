@@ -1,10 +1,10 @@
 package net.agiledeveloper.mobtime.e2e;
 
-import net.agiledeveloper.mobtime.Application;
+import net.agiledeveloper.App;
 import net.agiledeveloper.mobtime.domain.ports.spi.MobPort;
 import net.agiledeveloper.mobtime.domain.session.Session;
+import net.agiledeveloper.mobtime.orchestrator.Application;
 import net.agiledeveloper.mobtime.test.lib.Mock;
-import net.agiledeveloper.mobtime.utils.App;
 import org.assertj.core.api.AbstractStringAssert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

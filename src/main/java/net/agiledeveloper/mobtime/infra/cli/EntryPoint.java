@@ -1,9 +1,9 @@
 package net.agiledeveloper.mobtime.infra.cli;
 
-import net.agiledeveloper.mobtime.Application;
 import net.agiledeveloper.mobtime.infra.shell.LinuxCommandFormatter;
 import net.agiledeveloper.mobtime.infra.shell.LinuxShell;
 import net.agiledeveloper.mobtime.infra.shell.ShellAdapter;
+import net.agiledeveloper.mobtime.orchestrator.Application;
 
 public class EntryPoint {
 

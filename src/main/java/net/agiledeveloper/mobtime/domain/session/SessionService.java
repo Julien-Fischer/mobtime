@@ -1,11 +1,11 @@
 package net.agiledeveloper.mobtime.domain.session;
 
+import net.agiledeveloper.App;
 import net.agiledeveloper.mobtime.domain.notification.session.*;
 import net.agiledeveloper.mobtime.domain.ports.api.SessionServicePort;
 import net.agiledeveloper.mobtime.domain.ports.spi.MobPort;
 import net.agiledeveloper.mobtime.domain.ports.spi.NotificationPort;
 import net.agiledeveloper.mobtime.domain.ports.spi.TimerPort;
-import net.agiledeveloper.mobtime.utils.App;
 
 import java.time.Duration;
 

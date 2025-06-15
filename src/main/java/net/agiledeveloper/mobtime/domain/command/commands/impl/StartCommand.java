@@ -1,5 +1,6 @@
 package net.agiledeveloper.mobtime.domain.command.commands.impl;
 
+import net.agiledeveloper.App;
 import net.agiledeveloper.mobtime.domain.command.commands.AbstractCommand;
 import net.agiledeveloper.mobtime.domain.command.parameters.Parameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.ValueParameter;
@@ -10,7 +11,6 @@ import net.agiledeveloper.mobtime.domain.session.EndMode;
 import net.agiledeveloper.mobtime.domain.session.FocusMode;
 import net.agiledeveloper.mobtime.domain.session.Session;
 import net.agiledeveloper.mobtime.domain.session.Username;
-import net.agiledeveloper.mobtime.utils.App;
 
 import java.time.Clock;
 import java.time.Duration;

@@ -1,8 +1,8 @@
 package net.agiledeveloper.mobtime.infra.shell;
 
+import net.agiledeveloper.App;
 import net.agiledeveloper.mobtime.domain.ports.spi.MobPort;
 import net.agiledeveloper.mobtime.infra.InfraException;
-import net.agiledeveloper.mobtime.utils.App;
 
 public class ShellAdapter implements MobPort {
 

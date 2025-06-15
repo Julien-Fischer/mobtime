@@ -1,6 +1,6 @@
 package net.agiledeveloper.mobtime.infra.shell;
 
-import net.agiledeveloper.mobtime.utils.App;
+import net.agiledeveloper.App;
 
 import java.io.BufferedReader;
 import java.io.IOException;

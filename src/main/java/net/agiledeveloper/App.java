@@ -1,4 +1,6 @@
-package net.agiledeveloper.mobtime.utils;
+package net.agiledeveloper;
+
+import net.agiledeveloper.mobtime.utils.AppLogger;
 
 import java.time.Instant;
 

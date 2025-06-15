@@ -1,12 +1,12 @@
 package net.agiledeveloper.mobtime.infra.swing.gui;
 
+import net.agiledeveloper.App;
 import net.agiledeveloper.mobtime.domain.Ratio;
 import net.agiledeveloper.mobtime.domain.notification.Notification;
 import net.agiledeveloper.mobtime.domain.notification.session.SessionCloseNotification;
 import net.agiledeveloper.mobtime.domain.notification.session.SessionRefreshNotification;
 import net.agiledeveloper.mobtime.domain.session.FocusMode;
 import net.agiledeveloper.mobtime.infra.swing.theme.Theme;
-import net.agiledeveloper.mobtime.utils.App;
 
 import javax.swing.*;
 import java.awt.*;

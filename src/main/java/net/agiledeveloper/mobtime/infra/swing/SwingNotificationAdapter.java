@@ -1,5 +1,6 @@
 package net.agiledeveloper.mobtime.infra.swing;
 
+import net.agiledeveloper.App;
 import net.agiledeveloper.mobtime.domain.command.UIOptionSet;
 import net.agiledeveloper.mobtime.domain.notification.Notification;
 import net.agiledeveloper.mobtime.domain.notification.session.*;
@@ -12,7 +13,6 @@ import net.agiledeveloper.mobtime.infra.swing.gui.Coordinate;
 import net.agiledeveloper.mobtime.infra.swing.gui.GUIEvent;
 import net.agiledeveloper.mobtime.infra.swing.gui.SwingPopup;
 import net.agiledeveloper.mobtime.infra.swing.theme.Theme;
-import net.agiledeveloper.mobtime.utils.App;
 
 import javax.swing.*;
 import java.time.Duration;

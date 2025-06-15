@@ -16,7 +16,7 @@ public class AppLogger {
     private Level level = DEFAULT_LEVEL;
 
 
-    AppLogger(Target target, TimeProvider timeProvider) {
+    public AppLogger(Target target, TimeProvider timeProvider) {
         this.target = target;
         this.timeProvider = timeProvider;
     }

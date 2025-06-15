@@ -1,5 +1,6 @@
-package net.agiledeveloper.mobtime;
+package net.agiledeveloper.mobtime.orchestrator;
 
+import net.agiledeveloper.App;
 import net.agiledeveloper.mobtime.domain.command.CommandLineInterpreter;
 import net.agiledeveloper.mobtime.domain.command.UIOptionSet;
 import net.agiledeveloper.mobtime.domain.command.commands.Command;
@@ -12,7 +13,6 @@ import net.agiledeveloper.mobtime.infra.cli.CommandLineParser;
 import net.agiledeveloper.mobtime.infra.roaming.FileRoaming;
 import net.agiledeveloper.mobtime.infra.swing.SwingNotificationAdapter;
 import net.agiledeveloper.mobtime.infra.swing.SwingTimerAdapter;
-import net.agiledeveloper.mobtime.utils.App;
 
 import java.nio.file.Path;
 import java.util.List;
