@@ -1,6 +1,7 @@
 package net.agiledeveloper.mobtime.domain.session;
 
 import net.agiledeveloper.mobtime.domain.notification.session.*;
+import net.agiledeveloper.mobtime.domain.ports.api.SessionServicePort;
 import net.agiledeveloper.mobtime.domain.ports.spi.MobPort;
 import net.agiledeveloper.mobtime.domain.ports.spi.NotificationPort;
 import net.agiledeveloper.mobtime.domain.ports.spi.TimerPort;
@@ -11,7 +12,7 @@ import java.time.Duration;
 import static net.agiledeveloper.mobtime.domain.session.FocusMode.ZEN;
 import static net.agiledeveloper.mobtime.utils.TimeFormatter.formatDuration;
 
-public class SessionService {
+public class SessionService implements SessionServicePort {
 
     private final TimerPort timerPort;
     private final NotificationPort notificationPort;
@@ -25,6 +26,7 @@ public class SessionService {
     }
 
 
+    @Override
     public void open(Session session) {
         var durationString = formatDuration(session.initialDuration());
         App.logger.logSeparator();
@@ -37,6 +39,7 @@ public class SessionService {
         );
     }
 
+    @Override
     public void close(Session session) {
         if (session.shouldAutomaticallyPassKeyboard()) {
             mobNext(session);
