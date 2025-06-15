@@ -16,7 +16,6 @@ public class SessionService {
     private final TimerPort timerPort;
     private final NotificationPort notificationPort;
     private final MobPort mobPort;
-    private boolean sessionStarted = false;
 
 
     public SessionService(TimerPort timerPort, NotificationPort notificationPort, MobPort mobPort) {
@@ -69,9 +68,8 @@ public class SessionService {
     }
 
     private void handleGracePeriodOver(Session session) {
-        if (!sessionStarted) {
+        if (!session.hasStarted()) {
             startSession(session);
-            sessionStarted = true;
         } else if (shouldRefresh(session)) {
             refreshSession(session);
         }
