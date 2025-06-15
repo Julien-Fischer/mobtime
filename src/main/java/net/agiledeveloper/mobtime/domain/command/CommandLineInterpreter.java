@@ -72,7 +72,7 @@ public class CommandLineInterpreter {
             case "dry-run"      -> new DryRunParameter();
             case "duration"     -> new DurationParameter(readDuration(parameter));
             case "auto-next"    -> new AutoNextParameter();
-            case "mode"         -> new FocusModeParameter(readFocus(parameter));
+            case "focus"        -> new FocusModeParameter(readFocus(parameter));
             case "user-name"    -> new UserNameParameter(readUserName(parameter));
             case "pausable"     -> new PausableParameter();
             case "reset"        -> new ResetParameter();

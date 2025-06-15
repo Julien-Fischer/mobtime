@@ -122,7 +122,7 @@ class EntryPointTest {
         withParameters(
                 "--start",
                 "--duration=42",
-                "--mode=zen",
+                "--focus=zen",
                 "--mini",
                 "--user-name=John",
                 "--location",
@@ -136,7 +136,7 @@ class EntryPointTest {
         assertStandardOutput()
                 .contains("--start")
                 .contains("--duration=42")
-                .contains("--mode=zen")
+                .contains("--focus=zen")
                 .contains("--mini")
                 .contains("--user-name=John")
                 .contains("--location=NORTH_EAST")
