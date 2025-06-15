@@ -28,15 +28,9 @@ public class SessionService implements SessionServicePort {
 
     @Override
     public void open(Session session) {
-        var durationString = formatDuration(session.initialDuration());
-        App.logger.logSeparator();
-        App.logger.log("Opening mob session (duration = %s, id = %s)".formatted(durationString, session.id()));
+        logSessionStart(session);
         notificationPort.send(new SessionOpenNotification(session, "Starting driver session...", ""));
-        timerPort.runFor(
-                session,
-                this::refresh,
-                this::close
-        );
+        timerPort.runFor(session, this::onTick, this::onDone);
     }
 
     @Override
@@ -49,12 +43,16 @@ public class SessionService implements SessionServicePort {
     }
 
 
-    private void refresh(Session session, Duration remainingTime) {
+    private void onTick(Session session, Duration remainingTime) {
         if (session.isGracePeriodOver()) {
             handleGracePeriodOver(session);
         } else {
             App.logger.log("  Waiting for driving session to start");
         }
+    }
+
+    private void onDone(Session session) {
+        close(session);
     }
 
     private void startSession(Session session) {
@@ -63,7 +61,7 @@ public class SessionService implements SessionServicePort {
         App.logger.log("  Now driving ");
     }
 
-    private void refreshSession(Session session) {
+    private void sendRefreshNotification(Session session) {
         var durationString = formatDuration(session.remainingTime());
         var notification = new SessionRefreshNotification(session, session.username(), durationString, session.remainingTime());
         notificationPort.send(notification);
@@ -73,13 +71,9 @@ public class SessionService implements SessionServicePort {
     private void handleGracePeriodOver(Session session) {
         if (!session.hasStarted()) {
             startSession(session);
-        } else if (shouldRefresh(session)) {
-            refreshSession(session);
+        } else if (session.isOverSoon() || !session.hasFocus(ZEN)) {
+            sendRefreshNotification(session);
         }
-    }
-
-    private static boolean shouldRefresh(Session session) {
-        return session.isOverSoon() || !session.hasFocus(ZEN);
     }
 
     private void suggestMobNext(Session session) {
@@ -95,6 +89,12 @@ public class SessionService implements SessionServicePort {
         App.logger.logSeparator();
         App.logger.log("Pass keyboard! Next to drive.");
         mobPort.next();
+    }
+
+    private static void logSessionStart(Session session) {
+        var durationString = formatDuration(session.initialDuration());
+        App.logger.logSeparator();
+        App.logger.log("Opening mob session (duration = %s, id = %s)".formatted(durationString, session.id()));
     }
 
 }
