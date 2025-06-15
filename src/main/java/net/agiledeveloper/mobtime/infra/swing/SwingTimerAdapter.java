@@ -7,35 +7,34 @@ import net.agiledeveloper.mobtime.domain.ports.spi.TimerPort;
 import net.agiledeveloper.mobtime.domain.session.Session;
 
 import javax.swing.*;
-import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static java.time.Duration.ofMillis;
+import static net.agiledeveloper.mobtime.infra.swing.SwingTimerAdapter.TickFrequency.ofMilliseconds;
 
 public class SwingTimerAdapter implements TimerPort {
 
-    private static final Duration DEFAULT_FREQUENCY = ofMillis(1000);
+    private static final TickFrequency DEFAULT_FREQUENCY = ofMilliseconds(1000);
 
-    private final Duration tickFrequency;
+    private final TickFrequency frequency;
 
-    private OnTick refreshCallback;
-    private OnDone expiredCallback;
+    private OnTick onTick;
+    private OnDone onDone;
 
 
     public SwingTimerAdapter() {
         this(DEFAULT_FREQUENCY);
     }
 
-    public SwingTimerAdapter(Duration tickFrequency) {
-        this.tickFrequency = tickFrequency;
+    public SwingTimerAdapter(TickFrequency frequency) {
+        this.frequency = frequency;
     }
 
 
     @Override
     public void runFor(Session session, OnTick during, OnDone then) {
-        refreshCallback = during;
-        expiredCallback = then;
+        onTick = during;
+        onDone = then;
         runInBackground(session);
     }
 
@@ -65,7 +64,7 @@ public class SwingTimerAdapter implements TimerPort {
                 try {
                     publish();
                     synchronized (this) {
-                        wait(tickFrequency.toMillis());
+                        wait(frequency.milliseconds());
                     }
                     if (session.isOver()) {
                         stop();
@@ -94,12 +93,12 @@ public class SwingTimerAdapter implements TimerPort {
 
         @Override
         protected void process(List<String> chunks) {
-            refreshCallback.accept(session, session.remainingTime());
+            onTick.accept(session, session.remainingTime());
         }
 
         @Override
         protected void done() {
-            expiredCallback.accept(session);
+            onDone.accept(session);
         }
     }
 
@@ -107,6 +106,15 @@ public class SwingTimerAdapter implements TimerPort {
         public TimerException(String message) {
             super(message);
         }
+    }
+
+
+    public record TickFrequency(long milliseconds) {
+
+        public static TickFrequency ofMilliseconds(long milliseconds) {
+            return new TickFrequency(milliseconds);
+        }
+
     }
 
 }
