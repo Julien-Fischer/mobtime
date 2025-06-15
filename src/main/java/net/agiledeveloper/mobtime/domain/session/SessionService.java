@@ -36,9 +36,9 @@ public class SessionService implements SessionServicePort {
     @Override
     public void close(Session session) {
         if (session.shouldAutomaticallyPassKeyboard()) {
-            mobNext(session);
+            passKeyboardFrom(session);
         } else {
-            suggestMobNext(session);
+            suggestPassingKeyboardFrom(session);
         }
     }
 
@@ -76,19 +76,19 @@ public class SessionService implements SessionServicePort {
         }
     }
 
-    private void suggestMobNext(Session session) {
-        var notification = new SessionCloseNotification(session, "Pass keyboard", "");
-        notificationPort.send(notification);
-        App.logger.logSeparator();
-        App.logger.log("Pass keyboard - Use mob next to switch driver or mob done to end the mob session");
-    }
-
-    private void mobNext(Session session) {
+    private void passKeyboardFrom(Session session) {
         var notification = new SessionShutdownNotification(session, "Pass keyboard", "Next to drive.");
         notificationPort.send(notification);
         App.logger.logSeparator();
         App.logger.log("Pass keyboard! Next to drive.");
         mobPort.next();
+    }
+
+    private void suggestPassingKeyboardFrom(Session session) {
+        var notification = new SessionCloseNotification(session, "Pass keyboard", "");
+        notificationPort.send(notification);
+        App.logger.logSeparator();
+        App.logger.log("Pass keyboard - Use mob next to switch driver or mob done to end the mob session");
     }
 
     private static void logSessionStart(Session session) {
