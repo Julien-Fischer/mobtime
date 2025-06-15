@@ -9,7 +9,7 @@ public class AppLogger {
 
     public static final String DEFAULT_SEPARATOR = "-".repeat(60);
     public static final String ERROR_PREFIX = "/!\\";
-    public static final Level DEFAULT_LEVEL = INFO;
+    public static final Level DEFAULT_LEVEL = ERROR;
 
     private final Target target;
     private final TimeProvider timeProvider;

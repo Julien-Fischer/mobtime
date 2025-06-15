@@ -17,6 +17,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.stream.Stream;
 
+import static net.agiledeveloper.mobtime.utils.AppLogger.Level.INFO;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
@@ -28,6 +29,7 @@ class EntryPointTest {
 
     @BeforeEach
     void setUp() {
+        App.logger.setLevel(INFO);
         outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
     }

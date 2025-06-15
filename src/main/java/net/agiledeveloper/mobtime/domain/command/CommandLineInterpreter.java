@@ -109,7 +109,22 @@ public class CommandLineInterpreter {
     }
 
     private static Level readLogLevel(BashParameter argument) {
-        return Level.of(argument.value());
+        var level = Level.ERROR;
+        if (argument.hasValue()) {
+            try {
+                level = Level.of(argument.value());
+                if (level == null) {
+                    var message = format(
+                            "--log-level must be one of (%s). Received: %s",
+                            printValues(Level.class), level
+                    );
+                    throw new IllegalArgumentException(message);
+                }
+            } catch (Exception cause) {
+                reject(argument, cause);
+            }
+        }
+        return level;
     }
 
     private static FocusMode readFocus(BashParameter argument) {

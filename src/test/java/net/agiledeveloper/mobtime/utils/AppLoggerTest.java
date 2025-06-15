@@ -34,6 +34,8 @@ class AppLoggerTest {
 
     @Test
     void log_logs_specified_messages() {
+        logger.setLevel(INFO);
+
         logger.log("hello", "world", "!");
 
         expectThat(target.getMessage())
@@ -42,6 +44,8 @@ class AppLoggerTest {
 
     @Test
     void log_when_no_message_logs_current_time() {
+        logger.setLevel(INFO);
+
         logger.log();
 
         expectThat(target.getMessage())
@@ -50,6 +54,8 @@ class AppLoggerTest {
 
     @Test
     void err_logs_specified_messages() {
+        logger.setLevel(INFO);
+
         logger.err("hello", "world", "!");
 
         expectThat(target.getMessage())
@@ -58,6 +64,8 @@ class AppLoggerTest {
 
     @Test
     void err_logs_specified_exception() {
+        logger.setLevel(INFO);
+
         var exception = new IOException("hello world !");
 
         logger.err(exception);
@@ -68,6 +76,8 @@ class AppLoggerTest {
 
     @Test
     void logSeparator_uses_default_separator() {
+        logger.setLevel(INFO);
+
         logger.logSeparator();
 
         expectThat(target.getMessage())
@@ -76,6 +86,8 @@ class AppLoggerTest {
 
     @Test
     void logSeparator_uses_provided_separator_when_specified() {
+        logger.setLevel(INFO);
+
         logger.logSeparator("---");
 
         expectThat(target.getMessage())
