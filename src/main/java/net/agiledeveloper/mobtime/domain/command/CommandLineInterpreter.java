@@ -5,7 +5,7 @@ import net.agiledeveloper.mobtime.domain.command.commands.Command;
 import net.agiledeveloper.mobtime.domain.command.commands.impl.StartCommand;
 import net.agiledeveloper.mobtime.domain.command.parameters.Parameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.impl.*;
-import net.agiledeveloper.mobtime.domain.ports.spi.RoamingPort;
+import net.agiledeveloper.mobtime.domain.ports.spi.SessionStorage;
 import net.agiledeveloper.mobtime.domain.session.FocusMode;
 import net.agiledeveloper.mobtime.domain.session.Session;
 import net.agiledeveloper.mobtime.domain.session.Username;
@@ -24,12 +24,12 @@ import static net.agiledeveloper.mobtime.utils.EnumUtils.printValues;
 
 public class CommandLineInterpreter {
 
-    private final RoamingPort roaming;
+    private final SessionStorage sessionStorage;
 
     private final Set<Parameter> parameters = new HashSet<>();
 
-    public CommandLineInterpreter(RoamingPort roaming) {
-        this.roaming = roaming;
+    public CommandLineInterpreter(SessionStorage sessionStorage) {
+        this.sessionStorage = sessionStorage;
     }
 
 
@@ -65,7 +65,7 @@ public class CommandLineInterpreter {
             throw new IllegalArgumentException("No command specified");
         }
         App.logger.log(" ", "--start");
-        return new StartCommand(parameters, roaming);
+        return new StartCommand(parameters, sessionStorage);
     }
 
     private Parameter readParameter(BashParameter parameter) {
@@ -90,7 +90,7 @@ public class CommandLineInterpreter {
 
     private void apply(Command command) {
         if (command.hasOption(PausableParameter.class)) {
-            roaming.setPausable(true);
+            sessionStorage.setPausable(true);
         }
         var option = command.getOption(LogLevelParameter.class);
         if (option.isPresent() && option.get() instanceof LogLevelParameter level) {

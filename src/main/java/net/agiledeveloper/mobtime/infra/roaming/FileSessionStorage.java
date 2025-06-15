@@ -1,7 +1,7 @@
 package net.agiledeveloper.mobtime.infra.roaming;
 
 import net.agiledeveloper.App;
-import net.agiledeveloper.mobtime.domain.ports.spi.RoamingPort;
+import net.agiledeveloper.mobtime.domain.ports.spi.SessionStorage;
 import net.agiledeveloper.mobtime.infra.swing.gui.Coordinate;
 
 import java.io.FileInputStream;
@@ -13,16 +13,16 @@ import java.time.Duration;
 import java.util.Optional;
 import java.util.Properties;
 
-import static net.agiledeveloper.mobtime.infra.roaming.FileRoaming.Key.*;
+import static net.agiledeveloper.mobtime.infra.roaming.FileSessionStorage.Key.*;
 import static net.agiledeveloper.mobtime.utils.TimeFormatter.toDuration;
 
-public class FileRoaming implements RoamingPort {
+public class FileSessionStorage implements SessionStorage {
 
     private final Path roamingFile;
     private Properties properties;
 
 
-    public FileRoaming(Path roamingFile) {
+    public FileSessionStorage(Path roamingFile) {
         this.roamingFile = roamingFile;
     }
 

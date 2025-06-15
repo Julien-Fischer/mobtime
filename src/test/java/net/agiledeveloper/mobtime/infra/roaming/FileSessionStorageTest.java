@@ -13,10 +13,10 @@ import java.util.Optional;
 
 import static java.nio.file.StandardOpenOption.APPEND;
 import static java.nio.file.StandardOpenOption.CREATE;
-import static net.agiledeveloper.mobtime.infra.roaming.FileRoaming.Key.*;
+import static net.agiledeveloper.mobtime.infra.roaming.FileSessionStorage.Key.*;
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
-class FileRoamingPortTest {
+class FileSessionStorageTest {
 
     private static final Duration FIVE_MINUTES = Duration.ofMinutes(5);
     private static final Duration TWO_MINUTES = Duration.ofMinutes(2);
@@ -24,7 +24,7 @@ class FileRoamingPortTest {
     private static final Path ROAMING_FILE      = Path.of("COORDINATE_FILE_PATH");
     private static final Path NON_EXISTENT_FILE = Path.of("NON_EXISTENT_FILE");
 
-    private final FileRoaming roaming = new FileRoaming(ROAMING_FILE);
+    private final FileSessionStorage roaming = new FileSessionStorage(ROAMING_FILE);
 
     @AfterEach
     void tearDown() {
@@ -52,7 +52,7 @@ class FileRoamingPortTest {
 
     @Test
     void getCoordinate_returns_empty_optional_when_file_does_not_exist() {
-        var nonExistentRoaming = new FileRoaming(NON_EXISTENT_FILE);
+        var nonExistentRoaming = new FileSessionStorage(NON_EXISTENT_FILE);
 
         Optional<Coordinate> location = nonExistentRoaming.getCoordinate();
 
@@ -80,7 +80,7 @@ class FileRoamingPortTest {
 
     @Test
     void isPausable_returns_empty_optional_when_file_does_not_exist() {
-        var nonExistentRoaming = new FileRoaming(NON_EXISTENT_FILE);
+        var nonExistentRoaming = new FileSessionStorage(NON_EXISTENT_FILE);
 
         Boolean pausable = nonExistentRoaming.isPausable();
 
@@ -131,7 +131,7 @@ class FileRoamingPortTest {
 
     @Test
     void getActivityStop_returns_empty_optional_when_file_does_not_exist() {
-        var nonExistentRoaming = new FileRoaming(NON_EXISTENT_FILE);
+        var nonExistentRoaming = new FileSessionStorage(NON_EXISTENT_FILE);
 
         Optional<Duration> duration = nonExistentRoaming.getActivityDuration();
 
@@ -140,7 +140,7 @@ class FileRoamingPortTest {
 
     @Test
     void getActivityRemaining_returns_empty_optional_when_file_does_not_exist() {
-        var nonExistentRoaming = new FileRoaming(NON_EXISTENT_FILE);
+        var nonExistentRoaming = new FileSessionStorage(NON_EXISTENT_FILE);
 
         Optional<Duration> remaining = nonExistentRoaming.getActivityRemaining();
 
@@ -226,7 +226,7 @@ class FileRoamingPortTest {
         setProperty(ACTIVITY_DURATION, "malformed timestamp");
     }
 
-    private void setProperty(FileRoaming.Key key, Object value) throws IOException {
+    private void setProperty(FileSessionStorage.Key key, Object value) throws IOException {
         Files.writeString(ROAMING_FILE, System.lineSeparator() + key + "=" + value.toString(), CREATE, APPEND);
     }
 

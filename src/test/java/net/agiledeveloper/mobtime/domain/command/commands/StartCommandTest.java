@@ -4,7 +4,7 @@ import net.agiledeveloper.mobtime.domain.command.commands.impl.StartCommand;
 import net.agiledeveloper.mobtime.domain.command.parameters.Parameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.impl.*;
 import net.agiledeveloper.mobtime.domain.session.Session;
-import net.agiledeveloper.mobtime.infra.roaming.FileRoaming;
+import net.agiledeveloper.mobtime.infra.roaming.FileSessionStorage;
 import net.agiledeveloper.mobtime.test.builders.DurationParameterBuilder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -150,7 +150,7 @@ class StartCommandTest {
     }
 
     void havingParameters(Parameter... parameter) {
-        command = new StartCommand(Set.of(parameter), new FileRoaming(ROAMING_FILE));
+        command = new StartCommand(Set.of(parameter), new FileSessionStorage(ROAMING_FILE));
     }
 
     void havingParameters(DurationParameterBuilder... parameters) {

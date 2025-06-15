@@ -5,7 +5,7 @@ import net.agiledeveloper.mobtime.infra.swing.gui.Coordinate;
 import java.time.Duration;
 import java.util.Optional;
 
-public interface RoamingPort {
+public interface SessionStorage {
 
     void setCoordinate(Coordinate coordinate);
 

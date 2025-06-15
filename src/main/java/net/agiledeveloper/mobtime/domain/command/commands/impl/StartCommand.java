@@ -5,7 +5,7 @@ import net.agiledeveloper.mobtime.domain.command.commands.AbstractCommand;
 import net.agiledeveloper.mobtime.domain.command.parameters.Parameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.ValueParameter;
 import net.agiledeveloper.mobtime.domain.command.parameters.impl.*;
-import net.agiledeveloper.mobtime.domain.ports.spi.RoamingPort;
+import net.agiledeveloper.mobtime.domain.ports.spi.SessionStorage;
 import net.agiledeveloper.mobtime.domain.session.EndMode;
 import net.agiledeveloper.mobtime.domain.session.FocusMode;
 import net.agiledeveloper.mobtime.domain.session.Session;
@@ -21,13 +21,13 @@ import static net.agiledeveloper.mobtime.utils.TimeFormatter.formatDuration;
 
 public class StartCommand extends AbstractCommand {
 
-    private final RoamingPort roaming;
+    private final SessionStorage roaming;
 
     private Duration durationCache = null;
     private FocusMode focusCache = null;
 
 
-    public StartCommand(Set<Parameter> parameters, RoamingPort roaming) {
+    public StartCommand(Set<Parameter> parameters, SessionStorage roaming) {
         super(parameters);
         this.roaming = roaming;
     }
