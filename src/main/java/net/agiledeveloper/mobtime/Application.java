@@ -18,8 +18,6 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static net.agiledeveloper.mobtime.utils.AppLogger.Level.DEBUG;
-
 public class Application {
 
     private static final Path ROAMING_FILE = getAppDirectory().resolve("roaming");
@@ -38,10 +36,6 @@ public class Application {
         var commandLineParser = new CommandLineParser();
         List<BashParameter> bashParameters = getOrThrow(() -> commandLineParser.parse(commandLine));
         var options = new UIOptionSet(bashParameters);
-
-        if (options.isDebugModeEnabled()) {
-            App.logger.setLevel(DEBUG);
-        }
 
         var mobService = new MobService(mobPort);
         var notificationAdapter = new SwingNotificationAdapter(mobService, roaming, options);

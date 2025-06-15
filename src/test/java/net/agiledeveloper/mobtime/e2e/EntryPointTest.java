@@ -126,6 +126,8 @@ class EntryPointTest {
                 "--mini",
                 "--user-name=John",
                 "--location",
+                "--pausable",
+                "--log-level=INFO",
                 "--relocate"
         );
 
@@ -137,7 +139,9 @@ class EntryPointTest {
                 .contains("--mode=zen")
                 .contains("--mini")
                 .contains("--user-name=John")
-                .contains("--location")
+                .contains("--location=NORTH_EAST")
+                .contains("--pausable")
+                .contains("--log-level=INFO")
                 .contains("--relocate");
     }
 

@@ -10,6 +10,7 @@ import net.agiledeveloper.mobtime.domain.session.FocusMode;
 import net.agiledeveloper.mobtime.domain.session.Session;
 import net.agiledeveloper.mobtime.domain.session.Username;
 import net.agiledeveloper.mobtime.infra.cli.BashParameter;
+import net.agiledeveloper.mobtime.infra.swing.gui.Location;
 import net.agiledeveloper.mobtime.utils.App;
 import net.agiledeveloper.mobtime.utils.AppLogger.Level;
 
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 
 import static java.lang.String.format;
+import static java.util.Objects.requireNonNull;
 import static net.agiledeveloper.mobtime.utils.EnumUtils.printValues;
 
 public class CommandLineInterpreter {
@@ -26,6 +28,7 @@ public class CommandLineInterpreter {
     private final SessionServicePort sessionService;
     private final RoamingPort roaming;
 
+    private final Set<Parameter> parameters = new HashSet<>();
 
     public CommandLineInterpreter(SessionServicePort sessionService, RoamingPort roaming) {
         this.sessionService = sessionService;
@@ -34,74 +37,98 @@ public class CommandLineInterpreter {
 
 
     public Command interpret(List<BashParameter> commandLine) {
-        Set<Parameter> parameters = new HashSet<>();
-        Command command = null;
-
         App.logger.logSeparator();
         App.logger.log("MobTime");
         App.logger.log("Input parameters:");
-        for (var parameter : commandLine) {
-            App.logger.log(" ", parameter.toString());
 
-            if (parameter.hasName("start")) {
-                command = new StartCommand(parameters, sessionService, roaming);
-            }
-
-            else if (parameter.hasName("dry-run")) {
-                parameters.add(new DryRunParameter());
-            }
-
-            else if (parameter.hasName("duration")) {
-                parameters.add(new DurationParameter(readDuration(parameter)));
-            }
-
-            else if (parameter.hasName("auto-next")) {
-                parameters.add(new AutoNextParameter());
-            }
-
-            else if (parameter.hasName("focus")) {
-                parameters.add(new FocusModeParameter(readFocus(parameter)));
-            }
-
-            else if (parameter.hasName("user-name")) {
-                parameters.add(new UserNameParameter(readUserName(parameter)));
-            }
-
-            else if (parameter.hasName("pausable")) {
-                roaming.setPausable(true);
-            }
-
-            else if (parameter.hasName("reset")) {
-                parameters.add(new ResetParameter());
-            }
-
-            else if (parameter.hasName("log-level")) {
-                Level level = readLogLevel(parameter);
-                parameters.add(new LogLevelParameter(level));
-                App.logger.setLevel(level);
-            }
-
-            else if (parameter.hasName("invalid")) {
-                var msg = "Error: --invalid is not a valid argument";
-                App.logger.log(msg);
-                throw new IllegalArgumentException(msg);
-            }
-        }
-
-        if (command == null) {
-            throw new IllegalArgumentException("No command specified");
-        }
+        Command command = parse(commandLine);
 
         App.logger.logSeparator();
+        printParameters(command);
+
+        apply(command);
+        return command;
+    }
+
+    private Command parse(List<BashParameter> commandLine) {
+        var command = readCommand(commandLine);
+
+        for (int i = 1; i < commandLine.size(); i++) {
+            var parameter = commandLine.get(i);
+            App.logger.log(" ", parameter.toString());
+
+            parameters.add(readParameter(parameter));
+        }
+        return command;
+    }
+
+    private Command readCommand(List<BashParameter> commandLine) {
+        var first = requireNonNull(commandLine).getFirst();
+        if (first == null || !first.hasName("start")) {
+            throw new IllegalArgumentException("No command specified");
+        }
+        App.logger.log(" ", "--start");
+        return new StartCommand(parameters, sessionService, roaming);
+    }
+
+    private Parameter readParameter(BashParameter parameter) {
+        return switch (parameter.name()) {
+            case "dry-run"      -> new DryRunParameter();
+            case "duration"     -> new DurationParameter(readDuration(parameter));
+            case "auto-next"    -> new AutoNextParameter();
+            case "mode"         -> new FocusModeParameter(readFocus(parameter));
+            case "user-name"    -> new UserNameParameter(readUserName(parameter));
+            case "pausable"     -> new PausableParameter();
+            case "reset"        -> new ResetParameter();
+            case "log-level"    -> new LogLevelParameter(readLogLevel(parameter));
+            case "mini"         -> new MinimizeParameter();
+            case "relocate"     -> new RelocateParameter();
+            case "location"     -> new LocationParameter(readLocation(parameter));
+            default             -> throw new IllegalArgumentException(format(
+                    "Error: --%s is not a valid argument",
+                    parameter.name()
+            ));
+        };
+    }
+
+    private void apply(Command command) {
+        if (command.hasOption(PausableParameter.class)) {
+            roaming.setPausable(true);
+        }
+        var option = command.getOption(LogLevelParameter.class);
+        if (option.isPresent() && option.get() instanceof LogLevelParameter level) {
+            App.logger.setLevel(level.value());
+        }
+    }
+
+    private static void printParameters(Command command) {
         App.logger.log("Command parameters:");
         command.options()
                 .forEach(option -> App.logger.log(" ", option.toString()));
-        return command;
     }
 
 
     private static Username readUserName(BashParameter argument) {
         return argument.hasValue() ? new Username(argument.value()) : Session.DEFAULT_USERNAME;
+    }
+
+    private static Location readLocation(BashParameter argument) {
+        var location = Location.NORTH_EAST;
+        if (argument.hasValue()) {
+            try {
+                location = Location.of(argument.value());
+                if (location == null) {
+                    var message = format(
+                            "--location must be one of (%s). Received: %s",
+                            printValues(Location.class), location
+                    );
+                    throw new IllegalArgumentException(message);
+                }
+            } catch (Exception cause) {
+                reject(argument, cause);
+            }
+        }
+        return location;
     }
 
     private static Level readLogLevel(BashParameter argument) {

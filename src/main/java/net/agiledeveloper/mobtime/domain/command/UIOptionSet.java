@@ -8,10 +8,6 @@ import java.util.List;
 
 public record UIOptionSet(List<BashParameter> parameters) {
 
-    public boolean isDebugModeEnabled() {
-        return hasFlag("debug");
-    }
-
     public boolean shouldMinimize() {
         return hasFlag("mini");
     }
