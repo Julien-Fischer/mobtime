@@ -10,12 +10,13 @@ import java.time.ZoneId;
 
 public class SessionBuilder implements Builder<Session> {
 
-    private SessionId id = SessionId.random();
     private Clock clock = Clock.fixed(Instant.now(), ZoneId.systemDefault());
+    private SessionId id = SessionId.random();
     private Duration duration = Session.DEFAULT_DURATION;
     private FocusMode focusMode = FocusMode.NORMAL;
     private Username username = Session.DEFAULT_USERNAME;
     private EndMode endMode = EndMode.WAIT_FOR_INSTRUCTION;
+    private boolean started;
 
 
     private SessionBuilder() {}
@@ -25,10 +26,17 @@ public class SessionBuilder implements Builder<Session> {
         return new SessionBuilder();
     }
 
+    public SessionBuilder started() {
+        this.started = true;
+        return this;
+    }
+
+
     public SessionBuilder withId(SessionId id) {
         this.id = id;
         return this;
     }
+
     public SessionBuilder lasting(Duration duration) {
         this.duration = duration;
         return this;
@@ -56,7 +64,11 @@ public class SessionBuilder implements Builder<Session> {
 
     @Override
     public Session build() {
-        return new Session(id, clock, duration, endMode, focusMode, username);
+        var session = new Session(id, clock, duration, endMode, focusMode, username);
+        if (started) {
+            session.start();
+        }
+        return session;
     }
 
 }

@@ -3,8 +3,7 @@ package net.agiledeveloper.mobtime.infra.notification;
 import net.agiledeveloper.App;
 import net.agiledeveloper.mobtime.domain.command.UIOptionSet;
 import net.agiledeveloper.mobtime.domain.notification.Notification;
-import net.agiledeveloper.mobtime.domain.notification.session.SessionRefreshNotification;
-import net.agiledeveloper.mobtime.domain.notification.session.SessionShutdownNotification;
+import net.agiledeveloper.mobtime.domain.notification.session.*;
 import net.agiledeveloper.mobtime.domain.ports.api.SessionPort;
 import net.agiledeveloper.mobtime.domain.ports.spi.NotificationPort;
 import net.agiledeveloper.mobtime.domain.ports.spi.SessionStorage;
@@ -46,13 +45,13 @@ public class SwingNotificationAdapter implements NotificationPort {
 
 
     @Override
-    public void handleOpenNotification(Notification notification) {
+    public void handleOpenNotification(SessionOpenNotification notification) {
         showPopup(notification);
         notifySessionStart(notification);
     }
 
     @Override
-    public void handleStartNotification(Notification notification) {
+    public void handleStartNotification(SessionStartNotification notification) {
         displayMessage(notification);
     }
 
@@ -67,12 +66,12 @@ public class SwingNotificationAdapter implements NotificationPort {
     }
 
     @Override
-    public void handleCloseNotification(Notification notification) {
+    public void handleCloseNotification(SessionCloseNotification notification) {
         notifySessionEnd(notification);
     }
 
     @Override
-    public void handleShutdownNotification(Notification notification) {
+    public void handleShutdownNotification(SessionShutdownNotification notification) {
         shutdown(notification);
     }
 

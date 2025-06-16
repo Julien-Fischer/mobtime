@@ -1,7 +1,6 @@
 package net.agiledeveloper.mobtime.infra.notification;
 
-import net.agiledeveloper.mobtime.domain.notification.Notification;
-import net.agiledeveloper.mobtime.domain.notification.session.SessionRefreshNotification;
+import net.agiledeveloper.mobtime.domain.notification.session.*;
 import net.agiledeveloper.mobtime.domain.ports.spi.NotificationPort;
 
 import java.util.Set;
@@ -21,12 +20,12 @@ public class CompositeNotificationAdapter implements NotificationPort {
 
 
     @Override
-    public void handleShutdownNotification(Notification notification) {
+    public void handleShutdownNotification(SessionShutdownNotification notification) {
         forEach(port -> port.handleShutdownNotification(notification));
     }
 
     @Override
-    public void handleCloseNotification(Notification notification) {
+    public void handleCloseNotification(SessionCloseNotification notification) {
         forEach(port -> port.handleCloseNotification(notification));
     }
 
@@ -36,12 +35,12 @@ public class CompositeNotificationAdapter implements NotificationPort {
     }
 
     @Override
-    public void handleStartNotification(Notification notification) {
+    public void handleStartNotification(SessionStartNotification notification) {
         forEach(port -> port.handleStartNotification(notification));
     }
 
     @Override
-    public void handleOpenNotification(Notification notification) {
+    public void handleOpenNotification(SessionOpenNotification notification) {
         forEach(port -> port.handleOpenNotification(notification));
     }
 

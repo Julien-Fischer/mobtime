@@ -1,12 +1,10 @@
 package net.agiledeveloper.mobtime.domain.session;
 
-import net.agiledeveloper.mobtime.domain.notification.Notification;
-import net.agiledeveloper.mobtime.domain.notification.session.SessionRefreshNotification;
 import net.agiledeveloper.mobtime.domain.ports.api.OnDone;
 import net.agiledeveloper.mobtime.domain.ports.api.OnTick;
 import net.agiledeveloper.mobtime.domain.ports.spi.MobPort;
-import net.agiledeveloper.mobtime.domain.ports.spi.NotificationPort;
 import net.agiledeveloper.mobtime.domain.ports.spi.TimerPort;
+import net.agiledeveloper.mobtime.infra.notification.NotificationMock;
 import net.agiledeveloper.mobtime.test.lib.Mock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -70,35 +68,6 @@ class SessionServiceTest {
     }
 }
 
-
-class NotificationMock extends Mock implements NotificationPort {
-
-    @Override
-    public void handleShutdownNotification(Notification notification) {
-        incrementCallCount();
-    }
-
-    @Override
-    public void handleCloseNotification(Notification notification) {
-        incrementCallCount();
-    }
-
-    @Override
-    public void handleRefreshNotification(SessionRefreshNotification notification) {
-        incrementCallCount();
-    }
-
-    @Override
-    public void handleStartNotification(Notification notification) {
-        incrementCallCount();
-    }
-
-    @Override
-    public void handleOpenNotification(Notification notification) {
-        incrementCallCount();
-    }
-
-}
 
 class TimerMock extends Mock implements TimerPort {
 
