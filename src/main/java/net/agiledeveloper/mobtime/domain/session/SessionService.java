@@ -2,7 +2,7 @@ package net.agiledeveloper.mobtime.domain.session;
 
 import net.agiledeveloper.App;
 import net.agiledeveloper.mobtime.domain.notification.session.*;
-import net.agiledeveloper.mobtime.domain.ports.api.SessionServicePort;
+import net.agiledeveloper.mobtime.domain.ports.api.SessionPort;
 import net.agiledeveloper.mobtime.domain.ports.spi.MobPort;
 import net.agiledeveloper.mobtime.domain.ports.spi.NotificationPort;
 import net.agiledeveloper.mobtime.domain.ports.spi.TimerPort;
@@ -11,7 +11,7 @@ import java.time.Duration;
 
 import static net.agiledeveloper.mobtime.domain.session.FocusMode.ZEN;
 
-public class SessionService implements SessionServicePort {
+public class SessionService implements SessionPort {
 
     private final TimerPort timerPort;
     private final NotificationPort notificationPort;

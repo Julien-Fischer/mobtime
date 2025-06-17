@@ -4,7 +4,7 @@ import net.agiledeveloper.App;
 import net.agiledeveloper.mobtime.domain.command.UIOptionSet;
 import net.agiledeveloper.mobtime.domain.notification.Notification;
 import net.agiledeveloper.mobtime.domain.notification.session.*;
-import net.agiledeveloper.mobtime.domain.ports.api.SessionPort;
+import net.agiledeveloper.mobtime.domain.ports.spi.MobPort;
 import net.agiledeveloper.mobtime.domain.ports.spi.NotificationPort;
 import net.agiledeveloper.mobtime.domain.ports.spi.SessionStorage;
 import net.agiledeveloper.mobtime.domain.session.Session;
@@ -23,7 +23,7 @@ import static javax.swing.SwingUtilities.invokeLater;
 
 public class SwingNotificationAdapter implements NotificationPort {
 
-    private final SessionPort mobPort;
+    private final MobPort mobPort;
     private final SessionStorage roaming;
 
     private SwingPopup currentFrame;
@@ -34,8 +34,7 @@ public class SwingNotificationAdapter implements NotificationPort {
 
 
     public SwingNotificationAdapter(
-            SessionPort mobPort,
-            SessionStorage roaming,
+            MobPort mobPort, SessionStorage roaming,
             UIOptionSet options
     ) {
         this.mobPort = mobPort;

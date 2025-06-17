@@ -7,7 +7,6 @@ import net.agiledeveloper.mobtime.domain.command.commands.Command;
 import net.agiledeveloper.mobtime.domain.ports.spi.MobPort;
 import net.agiledeveloper.mobtime.domain.ports.spi.NotificationPort;
 import net.agiledeveloper.mobtime.domain.ports.spi.SessionStorage;
-import net.agiledeveloper.mobtime.domain.session.MobService;
 import net.agiledeveloper.mobtime.domain.session.SessionService;
 import net.agiledeveloper.mobtime.infra.cli.BashParameter;
 import net.agiledeveloper.mobtime.infra.cli.CommandLineParser;
@@ -40,8 +39,7 @@ public class Application {
         List<BashParameter> bashParameters = getOrThrow(() -> commandLineParser.parse(commandLine));
         var options = new UIOptionSet(bashParameters);
 
-        var mobService = new MobService(mobPort);
-        var notificationAdapter = getNotificationAdapter(mobService, options);
+        var notificationAdapter = getNotificationAdapter(options);
         var sessionService = new SessionService(new SwingTimerAdapter(), notificationAdapter, mobPort);
 
         var handler = new CommandLineInterpreter(sessionRepository);
@@ -54,9 +52,9 @@ public class Application {
         App.logger.log("Command processed");
     }
 
-    private NotificationPort getNotificationAdapter(MobService mobService, UIOptionSet options) {
+    private NotificationPort getNotificationAdapter(UIOptionSet options) {
         return new CompositeNotificationAdapter(
-                new SwingNotificationAdapter(mobService, sessionRepository, options),
+                new SwingNotificationAdapter(mobPort, sessionRepository, options),
                 new LoggerNotificationAdapter(App.logger)
         );
     }
