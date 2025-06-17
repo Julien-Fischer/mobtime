@@ -15,6 +15,7 @@ public interface SessionStorage {
 
     void setActivityRemaining(Duration remaining);
 
+
     Optional<Duration> getActivityDuration();
 
     Optional<Duration> getActivityRemaining();
@@ -22,6 +23,7 @@ public interface SessionStorage {
     Optional<Coordinate> getCoordinate();
 
     boolean isPausable();
+
 
     default boolean hasOngoingActivity() {
         var remaining = getActivityRemaining();

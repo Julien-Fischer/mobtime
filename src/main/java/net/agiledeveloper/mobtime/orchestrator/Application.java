@@ -26,12 +26,12 @@ public class Application {
     private static final Path ROAMING_FILE = getAppDirectory().resolve("roaming");
 
     private final MobPort mobPort;
-    private final SessionStorage roaming;
+    private final SessionStorage sessionRepository;
 
 
     public Application(MobPort mobPort) {
         this.mobPort = mobPort;
-        this.roaming = new FileSessionStorage(ROAMING_FILE);
+        this.sessionRepository = new FileSessionStorage(ROAMING_FILE);
     }
 
 
@@ -44,7 +44,7 @@ public class Application {
         var notificationAdapter = getNotificationAdapter(mobService, options);
         var sessionService = new SessionService(new SwingTimerAdapter(), notificationAdapter, mobPort);
 
-        var handler = new CommandLineInterpreter(roaming);
+        var handler = new CommandLineInterpreter(sessionRepository);
         Command command = getOrThrow(() -> handler.interpret(bashParameters));
 
         if (!command.isDryRunEnabled()) {
@@ -56,7 +56,7 @@ public class Application {
 
     private NotificationPort getNotificationAdapter(MobService mobService, UIOptionSet options) {
         return new CompositeNotificationAdapter(
-                new SwingNotificationAdapter(mobService, roaming, options),
+                new SwingNotificationAdapter(mobService, sessionRepository, options),
                 new LoggerNotificationAdapter(App.logger)
         );
     }
