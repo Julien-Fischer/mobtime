@@ -9,6 +9,8 @@ import java.util.function.Supplier;
 
 import static java.time.Duration.ofMinutes;
 import static java.time.Duration.ofSeconds;
+import static net.agiledeveloper.mobtime.domain.Ratio.ONE_QUARTER;
+import static net.agiledeveloper.mobtime.domain.Ratio.ZERO;
 import static net.agiledeveloper.mobtime.domain.session.EndMode.AUTOMATICALLY_PASS_KEYBOARD;
 import static net.agiledeveloper.mobtime.domain.session.FocusMode.NORMAL;
 import static net.agiledeveloper.mobtime.utils.TimeFormatter.formatDuration;
@@ -20,7 +22,7 @@ public class Session {
     public static final Duration DEFAULT_GRACE_DURATION = ofSeconds(2);
     public static final Username DEFAULT_USERNAME = new Username("Driver");
     public static final FocusMode DEFAULT_FOCUS_MODE = NORMAL;
-    public static final Ratio LOW_TIME_THRESHOLD = new Ratio(0.25);
+    public static final Ratio LOW_TIME_THRESHOLD = ONE_QUARTER;
 
     private final Clock clock;
 
@@ -90,7 +92,7 @@ public class Session {
     }
 
     public boolean isOver() {
-        return progress().lessOrEqualTo(Ratio.ZERO);
+        return progress().lessOrEqualTo(ZERO);
     }
 
     public Ratio progress() {
