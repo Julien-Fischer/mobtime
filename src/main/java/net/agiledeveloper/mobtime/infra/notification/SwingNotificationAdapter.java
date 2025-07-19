@@ -178,7 +178,7 @@ public class SwingNotificationAdapter implements NotificationPort {
     }
 
     private void executeInBackground(Runnable task) {
-        SwingWorker<Void, Void> worker = new SwingWorker<>() {
+        var worker = new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() {
                 task.run();
