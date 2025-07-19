@@ -12,10 +12,11 @@ public class Theme {
     public static final Color BUTTON_BG       = DARK_GRAY;
     public static final Color BUTTON_FG       = LIGHTGRAY;
 
-    public static final Color MESSAGE_OK      = GREEN;
-    public static final Color MESSAGE_INFO    = YELLOW;
-    public static final Color MESSAGE_WARN    = MAGENTA;
-    public static final Color MESSAGE_NEUTRAL = GRAY;
+    public static final Color MESSAGE_OK        = GREEN;
+    public static final Color MESSAGE_INFO      = YELLOW;
+    public static final Color MESSAGE_WARN      = MAGENTA;
+    public static final Color MESSAGE_NEUTRAL   = GRAY;
+    public static final Color MESSAGE_NEUTRAL_EMPHASIS = WHITE;
 
     public static Color of(Severity severity) {
         return switch (severity) {

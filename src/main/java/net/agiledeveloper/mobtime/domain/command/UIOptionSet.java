@@ -2,7 +2,7 @@ package net.agiledeveloper.mobtime.domain.command;
 
 import net.agiledeveloper.mobtime.infra.cli.BashParameter;
 import net.agiledeveloper.mobtime.infra.swing.gui.Location;
-import net.agiledeveloper.mobtime.infra.swing.gui.SessionRunningPopup;
+import net.agiledeveloper.mobtime.infra.swing.gui.popup.SessionRunningPopup;
 
 import java.util.List;
 

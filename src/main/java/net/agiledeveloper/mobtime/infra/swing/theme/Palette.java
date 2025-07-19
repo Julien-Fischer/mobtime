@@ -4,6 +4,7 @@ import java.awt.*;
 
 public class Palette {
 
+    public static final Color WHITE        = new Color(255, 255, 255);
     public static final Color LIGHTGRAY    = new Color(200, 200, 200);
     public static final Color GRAY         = new Color(180, 180, 180);
     public static final Color DARK_GRAY    = new Color(60, 60, 60);

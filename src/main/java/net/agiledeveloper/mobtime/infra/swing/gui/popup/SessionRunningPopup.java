@@ -1,4 +1,4 @@
-package net.agiledeveloper.mobtime.infra.swing.gui;
+package net.agiledeveloper.mobtime.infra.swing.gui.popup;
 
 import net.agiledeveloper.App;
 import net.agiledeveloper.mobtime.domain.Ratio;
@@ -6,16 +6,19 @@ import net.agiledeveloper.mobtime.domain.notification.Notification;
 import net.agiledeveloper.mobtime.domain.notification.session.SessionCloseNotification;
 import net.agiledeveloper.mobtime.domain.notification.session.SessionRefreshNotification;
 import net.agiledeveloper.mobtime.domain.session.FocusMode;
+import net.agiledeveloper.mobtime.infra.swing.gui.Coordinate;
+import net.agiledeveloper.mobtime.infra.swing.gui.GUIEvent;
+import net.agiledeveloper.mobtime.infra.swing.gui.Location;
 import net.agiledeveloper.mobtime.infra.swing.theme.Theme;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.function.Consumer;
 
-import static net.agiledeveloper.mobtime.infra.swing.theme.Theme.*;
+import static net.agiledeveloper.mobtime.infra.swing.theme.Theme.MESSAGE_INFO;
+import static net.agiledeveloper.mobtime.infra.swing.theme.Theme.WINDOW_BG;
 
-public class SessionRunningPopup extends JFrame {
+public class SessionRunningPopup extends SessionPopup {
 
     public static final Location DEFAULT_LOCATION = Location.NORTH;
 
@@ -23,7 +26,6 @@ public class SessionRunningPopup extends JFrame {
 
     private MouseListener onHover;
 
-    private Consumer<GUIEvent> onClickCallback;
     private JComponent mainContainer;
     private JComponent doneButton;
     private JComponent nextButton;
@@ -58,6 +60,7 @@ public class SessionRunningPopup extends JFrame {
         addComponentListener(createLocationChangeListener());
         pack();
     }
+
 
     public void updateProgress(SessionRefreshNotification notification) {
         gauge.setProgress(notification.progress());
@@ -108,10 +111,6 @@ public class SessionRunningPopup extends JFrame {
         mobButtonsContainer.setVisible(visible);
     }
 
-    public void onClick(Consumer<GUIEvent> onClickCallback) {
-        this.onClickCallback = onClickCallback;
-    }
-
     public void setPosition(Location location) {
         setLocationRelativeTo(null);
 
@@ -127,29 +126,35 @@ public class SessionRunningPopup extends JFrame {
         return currentLocation;
     }
 
+    public void derogate() {
+        setVisible(true);
+        counterLabel.setText("Prolongating driving session...");
+        counterLabel.setForeground(MESSAGE_INFO);
+        blink(counterLabel);
+        pack();
+    }
+
 
     private Point toPoint(Coordinate coordinate) {
         return new Point(coordinate.x(), coordinate.y());
     }
 
     private JComponent createButtonsContainer() {
-        nextButton = new MobButton("Next", GUIEvent.NEXT);
-        doneButton = new MobButton("Done", GUIEvent.DONE);
+        nextButton = new MobButton("Next", GUIEvent.NEXT).onClick(this::onButtonClick);
+        doneButton = new MobButton("Done", GUIEvent.DONE).onClick(this::onButtonClick);
         var separator = new JSeparator(SwingConstants.VERTICAL);
         separator.setForeground(WINDOW_BG);
         separator.setBackground(WINDOW_BG);
-        var container = borderWrap(
+        return borderWrap(
                 borderWrap(nextButton, separator),
                 doneButton
         );
-        container.setBackground(Color.RED);
-        return container;
     }
 
     private JComponent createContainer() {
         closeButtonContainer = new GlassPanel(new BorderLayout());
         closeButtonContainer.setVisible(false);
-        closeButtonContainer.add(new Button("X").onClick(e -> close()));
+        closeButtonContainer.add(new GlassButton("X").onClick(e -> close()));
         var notificationPanel = new GlassPanel(new BorderLayout());
         notificationPanel.add(messageLabel, BorderLayout.CENTER);
         notificationPanel.add(counterLabel, BorderLayout.EAST);
@@ -253,69 +258,23 @@ public class SessionRunningPopup extends JFrame {
         var container = new GlassPanel(new BorderLayout());
         container.add(center, BorderLayout.CENTER);
         container.add(east, BorderLayout.EAST);
-        container.setBackground(Color.RED);
         return container;
     }
 
 
-    private static class GlassPanel extends JPanel {
-
-        public GlassPanel() {
-            this(new FlowLayout(FlowLayout.LEFT));
-        }
-
-        public GlassPanel(LayoutManager layout) {
-            super(layout);
-            this.setOpaque(false);
-        }
-
-    }
-
-    private static class Button extends JButton {
-
-        public Button(String label) {
-            super(label);
-            setBackground(BUTTON_BG);
-            setForeground(BUTTON_FG);
-            setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-        }
-
-        public Button onClick(ActionListener listener) {
-            addActionListener(listener);
-            return this;
-        }
-
-    }
-
-    private class MobButton extends Button {
-
-        public MobButton(String label, GUIEvent event) {
-            super(label);
-            addActionListener(e -> dispatch(event));
-            setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
-        }
-
-        private void dispatch(GUIEvent event) {
-            if (onClickCallback != null) {
-                onClickCallback.accept(event);
-            }
-            close();
-        }
-
-    }
-
     private static class GlassLabel extends JLabel {
 
-        private GlassLabel(float alignment) {
+        public GlassLabel(float alignment) {
             this(alignment, 5);
         }
 
-        private GlassLabel(float alignment, int marginRight) {
+        public GlassLabel(float alignment, int marginRight) {
             setOpaque(false);
             setBorder(BorderFactory.createEmptyBorder(0, 10, 0, marginRight));
             setFont(new Font("Monospaced", Font.BOLD, 14));
             setAlignmentX(alignment);
         }
+
     }
 
     private class Gauge extends JPanel {

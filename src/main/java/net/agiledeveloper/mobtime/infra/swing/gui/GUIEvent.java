@@ -2,8 +2,9 @@ package net.agiledeveloper.mobtime.infra.swing.gui;
 
 public enum GUIEvent {
 
-    NEXT ("mobnext"),
-    DONE ("mobdone");
+    NEXT     ("mobnext"),
+    DONE     ("mobdone"),
+    DEROGATE ("derogate");
 
     private final String commandName;
 

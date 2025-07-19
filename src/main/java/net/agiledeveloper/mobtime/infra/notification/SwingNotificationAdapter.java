@@ -11,15 +11,17 @@ import net.agiledeveloper.mobtime.domain.session.Session;
 import net.agiledeveloper.mobtime.infra.InfraException;
 import net.agiledeveloper.mobtime.infra.swing.gui.Coordinate;
 import net.agiledeveloper.mobtime.infra.swing.gui.GUIEvent;
-import net.agiledeveloper.mobtime.infra.swing.gui.SessionRunningPopup;
-import net.agiledeveloper.mobtime.infra.swing.theme.Theme;
+import net.agiledeveloper.mobtime.infra.swing.gui.popup.SessionEndingPopup;
+import net.agiledeveloper.mobtime.infra.swing.gui.popup.SessionRunningPopup;
 
 import javax.swing.*;
+import java.awt.*;
 import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 import static javax.swing.SwingUtilities.invokeLater;
+import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 public class SwingNotificationAdapter implements NotificationPort {
 
@@ -81,14 +83,32 @@ public class SwingNotificationAdapter implements NotificationPort {
 
     private void notifySessionEnd(Notification notification) {
         invokeLater(() -> {
-            currentFrame.dispose();
-            currentFrame = createPopup(notification);
-            currentFrame.setLabelForeground(Theme.of(notification.severity()));
-            currentFrame.setVisible(true);
-            currentFrame.pack();
-            currentFrame.onClick(this::onGuiEvent);
-            currentFrame.setPosition(options.getLocation());
+            GraphicsConfiguration gc = currentFrame.getGraphicsConfiguration();
+            Rectangle screenBounds = gc.getBounds();
+            var sessionEndFrame = createSessionEndPopup(notification);
+            centerPopup(sessionEndFrame, screenBounds);
+            sessionEndFrame.setVisible(true);
         });
+    }
+
+    private SessionEndingPopup createSessionEndPopup(Notification ignored) {
+        var sessionEndFrame = new SessionEndingPopup();
+        sessionEndFrame.onClick(this::onGuiEvent);
+        sessionEndFrame.pack();
+        sessionEndFrame.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        return sessionEndFrame;
+    }
+
+    private static void centerPopup(SessionEndingPopup sessionEndFrame, Rectangle screenBounds) {
+        var comfortOffset = 100;
+        var width = sessionEndFrame.getWidth();
+        var height = sessionEndFrame.getHeight();
+        sessionEndFrame.setBounds(
+                screenBounds.x + (screenBounds.width - width) / 2,
+                screenBounds.y + (screenBounds.height - height) / 2 - comfortOffset,
+                width,
+                height
+        );
     }
 
     private void notifySessionStart(Notification notification) {
@@ -128,17 +148,30 @@ public class SwingNotificationAdapter implements NotificationPort {
     private void onGuiEvent(GUIEvent event) {
         closeRoaming();
         switch (event) {
-            case NEXT:
-                executeInBackground(mobPort::next);
-                break;
-            case DONE:
-                executeInBackground(mobPort::done);
-                break;
-            default:
-                throw new UnsupportedOperationException("Unsupported UI event: " + event);
+            case NEXT -> passKeyboard(event);
+            case DONE -> endSession(event);
+            case DEROGATE -> keepDriving();
+            default -> throw new UnsupportedOperationException("Unsupported UI event: " + event);
         }
+    }
+
+    private void keepDriving() {
+        currentFrame.derogate();
+    }
+
+    private void endSession(GUIEvent event) {
+        executeInBackground(mobPort::done);
+        awaitKillSignal(event);
+    }
+
+    private void passKeyboard(GUIEvent event) {
+        executeInBackground(mobPort::next);
+        awaitKillSignal(event);
+    }
+
+    private void awaitKillSignal(GUIEvent event) {
         awaitingKillSignal = true;
-        var message = "Executing " + event.commandName() + "...";
+        var message = "Executing %s...".formatted(event.commandName());
         invokeLater(() ->
             handleShutdownNotification(new SessionShutdownNotification(null, message, ""))
         );
