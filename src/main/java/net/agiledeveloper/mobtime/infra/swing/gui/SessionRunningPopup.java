@@ -15,7 +15,7 @@ import java.util.function.Consumer;
 
 import static net.agiledeveloper.mobtime.infra.swing.theme.Theme.*;
 
-public class SwingPopup extends JFrame {
+public class SessionRunningPopup extends JFrame {
 
     public static final Location DEFAULT_LOCATION = Location.NORTH;
 
@@ -39,11 +39,11 @@ public class SwingPopup extends JFrame {
     private int mouseY;
 
 
-    public SwingPopup(Notification notification, boolean minimized) {
+    public SessionRunningPopup(Notification notification, boolean minimized) {
         this(notification, minimized, null);
     }
 
-    public SwingPopup(Notification notification, boolean minimized, Coordinate currentLocation) {
+    public SessionRunningPopup(Notification notification, boolean minimized, Coordinate currentLocation) {
         super(DEFAULT_TITLE);
         this.currentLocation = currentLocation;
 

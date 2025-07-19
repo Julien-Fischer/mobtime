@@ -2,7 +2,7 @@ package net.agiledeveloper.mobtime.domain.command;
 
 import net.agiledeveloper.mobtime.infra.cli.BashParameter;
 import net.agiledeveloper.mobtime.infra.swing.gui.Location;
-import net.agiledeveloper.mobtime.infra.swing.gui.SwingPopup;
+import net.agiledeveloper.mobtime.infra.swing.gui.SessionRunningPopup;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ public record UIOptionSet(List<BashParameter> parameters) {
                 return Location.of(bashParameter.value());
             }
         }
-        return SwingPopup.DEFAULT_LOCATION;
+        return SessionRunningPopup.DEFAULT_LOCATION;
     }
 
 

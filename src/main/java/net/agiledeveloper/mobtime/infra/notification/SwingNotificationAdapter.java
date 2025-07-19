@@ -11,7 +11,7 @@ import net.agiledeveloper.mobtime.domain.session.Session;
 import net.agiledeveloper.mobtime.infra.InfraException;
 import net.agiledeveloper.mobtime.infra.swing.gui.Coordinate;
 import net.agiledeveloper.mobtime.infra.swing.gui.GUIEvent;
-import net.agiledeveloper.mobtime.infra.swing.gui.SwingPopup;
+import net.agiledeveloper.mobtime.infra.swing.gui.SessionRunningPopup;
 import net.agiledeveloper.mobtime.infra.swing.theme.Theme;
 
 import javax.swing.*;
@@ -26,7 +26,7 @@ public class SwingNotificationAdapter implements NotificationPort {
     private final MobPort mobPort;
     private final SessionStorage roaming;
 
-    private SwingPopup currentFrame;
+    private SessionRunningPopup currentFrame;
     private final UIOptionSet options;
 
     private boolean awaitingKillSignal = false;
@@ -118,11 +118,11 @@ public class SwingNotificationAdapter implements NotificationPort {
         currentFrame.setFocusableWindowState(false);
     }
 
-    private SwingPopup createPopup(Notification notification) {
+    private SessionRunningPopup createPopup(Notification notification) {
         Optional<Coordinate> offset = roaming.getCoordinate();
         return options.shouldRelocate() && offset.isPresent() ?
-                new SwingPopup(notification, options.shouldMinimize(), offset.get()) :
-                new SwingPopup(notification, options.shouldMinimize());
+                new SessionRunningPopup(notification, options.shouldMinimize(), offset.get()) :
+                new SessionRunningPopup(notification, options.shouldMinimize());
     }
 
     private void onGuiEvent(GUIEvent event) {
