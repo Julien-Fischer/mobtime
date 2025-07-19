@@ -29,7 +29,7 @@ public class SessionService implements SessionPort {
 
     @Override
     public void open(Session session) {
-        notificationPort.send(new SessionOpenNotification(session, "Starting driver session...", ""));
+        notificationPort.send(new SessionOpenNotification(session, "Starting driver session..."));
         timerPort.runFor(session, this::onTick, this::onDone);
     }
 
@@ -56,7 +56,7 @@ public class SessionService implements SessionPort {
     }
 
     private void startSession(Session session) {
-        var notification = new SessionStartNotification(session, "Driving", "");
+        var notification = new SessionStartNotification(session, "Driving");
         notificationPort.send(notification);
         startNotificationWasSent = true;
     }
@@ -85,7 +85,7 @@ public class SessionService implements SessionPort {
     }
 
     private void suggestPassingKeyboardFrom(Session session) {
-        var notification = new SessionCloseNotification(session, "Pass keyboard", "");
+        var notification = new SessionCloseNotification(session, "Pass keyboard");
         notificationPort.send(notification);
     }
 

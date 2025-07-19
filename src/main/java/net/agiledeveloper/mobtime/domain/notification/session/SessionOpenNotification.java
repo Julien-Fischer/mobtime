@@ -12,6 +12,10 @@ public record SessionOpenNotification(
         String value
 ) implements Notification {
 
+    public SessionOpenNotification(Session session, String message) {
+        this(session, message, "");
+    }
+
     @Override
     public Severity severity() {
         return INFO;
